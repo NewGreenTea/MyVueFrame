@@ -178,7 +178,11 @@
         }).then(res => {
           this.$Spin.hide();
           if(res.data.code==2 || res.data.code==4){
-            this.$Message.warning(res.data.msg);
+            this.$Message.warning({
+              content:res.data.msg,
+              duration: 300,
+              closable: true
+            });
           }else if(res.data.code==0){
             this.$Message.success(res.data.msg);
             this.writeLayout();

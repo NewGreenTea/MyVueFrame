@@ -75,7 +75,7 @@
         uploaderInstance.opts.query={archNo : this.archNoPage};
       },
       uploading (file) { // 上传中的事件
-        console.log('上传中--' + file.name)
+
       },
       allUpload: function () { // 全部上传
         const uploaderInstance = this.$refs.myupload.$children[2] // 获得uploader下的filelist
@@ -93,20 +93,12 @@
       },
       fileSuccess(rootFile, file, message, chunk){  //上传成功
         let resmsg=JSON.parse(chunk.xhr.response).msg
-        if(resmsg=='201'){
-          this.$Message.error(rootFile.name+"：所上传文件不存在!")
-        }else if(resmsg=='202'){
-          this.$Message.error(rootFile.name+"：文件路径错误!")
-        }else if(resmsg=='203'){
-          this.$Message.error(rootFile.name+"：档号格式错误!")
-        }else if(resmsg=='203'){
-          this.$Message.error(rootFile.name+"：档号不存在!")
-        }else if(resmsg=='203'){
-          this.$Message.error(rootFile.name+"：文件重复上传!")
-        }else if(resmsg=='203'){
-          this.$Message.error(rootFile.name+"：文件名错误!")
-        }else if(resmsg=='203'){
-          this.$Message.error(rootFile.name+"：系统错误!")
+        if(resmsg!='200'){
+          this.$Message.error({
+            content:resmsg,
+            duration: 300,
+            closable: true
+          });
         }
       },
       fileError(rootFile, file, message, chunk){  //上传失败
