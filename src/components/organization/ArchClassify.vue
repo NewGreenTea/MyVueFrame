@@ -177,7 +177,7 @@
           if(res.data.code==2 || res.data.code==4){
             this.$Message.warning({
               content:res.data.msg,
-              duration: 300,
+              duration: 10,
               closable: true
             });
           }else if(res.data.code==0){

@@ -11,7 +11,7 @@
             </FormItem>
             <Modal
               v-model="checkmodal"
-              title="档号："
+              :title=archno
               @on-ok="inputok"
               @on-cancel="inputcancel">
               <Input v-model="bzinput" type="textarea" :autosize="{minRows: 4,maxRows: 5}" placeholder="请输入备注信息..." />
@@ -150,7 +150,6 @@
                       },
                       on: {
                         click: () => {
-                          this.archno=params.row.archNo;
                           let param = new URLSearchParams();
                           param.append('ids', params.row.archId);
                           axios({
@@ -176,6 +175,7 @@
                       on: {
                         click: () => {
                           this.bzid=params.row.archId
+                          this.archno="档号："+params.row.archNo
                           this.checkmodal = true
                         }
                       }
@@ -262,7 +262,6 @@
         },
         //不通过备注
         inputok : function(){
-          this.checkmodal.title='档号：'+this.archno;
           let param = new URLSearchParams();
           param.append('ids', this.bzid);
           param.append('bz', this.bzinput);
