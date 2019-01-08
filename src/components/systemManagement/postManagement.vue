@@ -39,7 +39,7 @@
         <FormItem label="位置">
           <Input type="text" v-model="addInfo.position"></Input>
         </FormItem>
-        <FormItem label="上级职位">
+        <FormItem label="所属部门">
           <Select v-model="addInfo.departId">
             <Option v-for="item in departments" :key="item.id" :value="item.id">{{item.departName}}</Option>
           </Select>
@@ -62,7 +62,7 @@
         <FormItem label="位置">
           <Input type="text" v-model="editInfo.position"></Input>
         </FormItem>
-        <FormItem label="上级职位">
+        <FormItem label="所属部门">
           <Select v-model="editInfo.departId">
             <Option v-for="item in departments" :key="item.id" :value="item.id">{{item.departName}}</Option>
           </Select>
