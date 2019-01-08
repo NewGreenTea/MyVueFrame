@@ -2,6 +2,49 @@
   <div>
     <div :class="loadData">
       <Row>
+        <!-- 加载档案数据待著录条件框 -->
+        <Col style="margin-left: 20px;margin-right: 20px">
+          <Form>
+            <Row>
+              <Col span="2">
+                <FormItem>
+                  <Button type="success">筛选条件</Button>
+                </FormItem>
+              </Col>
+              <Col span="4">
+                <FormItem>
+                  <Input placeholder="档号等"/>
+                </FormItem>
+              </Col>
+              <Col span="4">
+                <FormItem>
+                  <Row>
+                    <Col span="7" offset="5">
+                      档案状态：
+                    </Col>
+                    <Col span="12">
+                      <i-select placeholder="状态">
+                        <i-option :key="item" v-for="item in twoStatues" :value="item">{{item}}</i-option>
+                      </i-select>
+                    </Col>
+                  </Row>
+                </FormItem>
+              </Col>
+              <Col span="2" offset="1">
+                <FormItem>
+                  <Button type="primary">搜索</Button>
+                </FormItem>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+        <!-- 加载档案数据待著录表格 -->
+        <Col>
+          <Table border :columns="needToDoColumns" :data="needToDoData"></Table>
+          <Page :current="needToDoPage" :total="needToDoCount" :page-size="needToDoPageSize" show-elevator show-total
+                show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="needToDoPSO"/>
+        </Col>
+
         <!-- 选择类别 -->
         <Col>选择著录类别</Col>
         <Col span="2">&nbsp;</Col>
@@ -19,43 +62,6 @@
       </Row>
 
       <Row v-if="showArchData" style="margin-top: 20px;">
-        <!-- 加载搜索档案数据条件框 -->
-        <Col style="margin-left: 20px;margin-right: 20px">
-          <Form>
-            <Row>
-              <Col span="2">
-                <FormItem>
-                  <Button type="success">筛选条件</Button>
-                </FormItem>
-              </Col>
-              <Col span="4">
-                <FormItem>
-                  <Input search placeholder="档号，发文号，立案号"/>
-                </FormItem>
-              </Col>
-              <Col span="4">
-                <FormItem>
-                  <Row>
-                    <Col span="12">
-                      档案状态：
-                    </Col>
-                    <Col span="12">
-                      <i-select placeholder="状态">
-                        <i-option :key="item" v-for="item in twoStatues" :value="item">{{item}}</i-option>
-                      </i-select>
-                    </Col>
-                  </Row>
-                </FormItem>
-              </Col>
-              <Col span="3">
-                <FormItem>
-                  <Button type="primary">搜索</Button>
-                </FormItem>
-              </Col>
-            </Row>
-          </Form>
-        </Col>
-
         <!-- 加载档案数据表格 -->
         <Col style="margin-left: 20px;margin-right: 20px">
           <Table border :columns="columns" :data="tableData"></Table>
@@ -65,11 +71,15 @@
         </Col>
       </Row>
     </div>
+
+    <!-- 完成著录后是否进入修改提示框 -->
     <Modal v-model="showModal" :title="modalTitle" @on-ok="tips" @on-cancel="cancelTips">
       <div>
         是否进入为修改操作?
       </div>
     </Modal>
+
+    <!-- 著录档案信息的路由界面 -->
     <div v-if="showWriteData">
       <router-view :name="viewName" @changeShowView="showView"></router-view>
     </div>
@@ -100,7 +110,7 @@
         totalCount: 0, // 分页插件：总数量
         pageSize: 10, // 分页插件：显示条数
         pageSizeOpt: [10, 20, 30, 40, 50, 100], // 分页插件：选择显示条数框
-        twoStatues: ['待著录', '著录中', '已著录'], // 档案状态搜索
+        twoStatues: ['待著录', '已著录'], // 档案状态搜索
         // 显示表格的属性列
         columns: [
           {
@@ -173,7 +183,7 @@
                             } else { //res.data.data === 1 的时候
                               this.showModal = true;
                               this.modalTitle = '基本信息已完成';
-                              this.pushConf=
+                              this.pushConf =
                                 {
                                   name: this.viewName,
                                   params: {
@@ -233,7 +243,7 @@
                             } else { //res.data.data === 1 的时候
                               this.showModal = true;
                               this.modalTitle = '专业信息已完成';
-                              this.pushConf=
+                              this.pushConf =
                                 {
                                   name: this.viewName,
                                   params: {
@@ -286,10 +296,10 @@
                                     operation: true
                                   }
                                 })
-                            }else {
+                            } else {
                               this.showModal = true;
                               this.modalTitle = '文件信息已完成';
-                              this.pushConf=
+                              this.pushConf =
                                 {
                                   name: this.viewName,
                                   params: {
@@ -309,10 +319,98 @@
           }
         ],
         // 表格数据
-        tableData: []
+        tableData: [],
+        //分配到登录工作组的待著录档案数据
+        needToDoData: [],
+        //分配到登录工作组的待著录档案表格格式
+        needToDoColumns: [
+          {
+            title: '序号',
+            type: 'index'
+          },
+          {
+            title: '档号',
+            render: (h, params) => {
+              return h('p',params.row.archVO.archNo)
+            }
+          },
+          {
+            title: '档号状态',
+            render: (h, params) => {
+              return h('p',statueTwoDes(params.row.archVO.twoStatue))
+            }
+          },
+          {
+            title: '操作状态',
+            render: (h, params) => {
+              //判断档案著录进行到哪一步，是否完成著录
+              if(params.row.baseCode === 0 && params.row.profCode === 0 && params.row.fileCode === 0){
+                return h('p','待著录')
+              }
+              else{
+                if(params.row.baseCode !== 0 && params.row.profCode === 0 && params.row.fileCode === 0){
+                  return h('p', '专业信息和文件信息未著录')
+                }else if(params.row.baseCode === 0 && params.row.profCode !== 0 && params.row.fileCode === 0){
+                  return h('p', '基本信息和文件信息未著录')
+                }else if(params.row.baseCode === 0 && params.row.profCode === 0 && params.row.fileCode !== 0){
+                  return h('p', '基本信息和专业信息未著录')
+                }else if(params.row.baseCode !== 0 && params.row.profCode !== 0 && params.row.fileCode === 0){
+                  return h('p', '文件信息未著录')
+                }else if(params.row.baseCode !== 0 && params.row.profCode === 0 && params.row.fileCode !== 0){
+                  return h('p', '专业信息未著录')
+                }else if(params.row.baseCode === 0 && params.row.profCode !== 0 && params.row.fileCode !== 0){
+                  return h('p', '基本信息未著录')
+                }else{
+                  return h('button', {
+                    props: {
+                      type: 'primary', size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        // 修改档案状态，变为已著录/待质检的状态
+                        this.axios.post('/api/loadArch/writeComplete', this.qs.stringify({archID: params.row.archId}))
+                          .then(res =>{
+                            this.loadGroupArch()
+                          })
+                      }
+                    }
+                  },'确认完成')
+                }
+              }
+
+              return h('p',params.row.archVO.twoStatue)
+            }
+          }
+        ],
+        //工作组著录分页配置
+        needToDoPage: 1,
+        needToDoCount: 0,
+        needToDoPageSize: 5,
+        needToDoPSO: [1,2,3,4,5,6,8,10],
+        //用户信息id
+        userID: this.$store.state.userID
       }
     },
     methods: {
+      //加载工作组负责的待著录档案数据
+      loadGroupArch(){
+        if(this.userID === ''){
+          this.userID = window.localStorage.getItem('userid')
+        }
+        this.axios.get('/api/loadArch/getGroupArch',{
+          params:{
+            'userID': this.userID,
+            'page': this.needToDoPage,
+            'pageSize':this.needToDoPageSize}
+        }).then(res => {
+            this.needToDoData = res.data.data.list;
+            this.needToDoCount = res.data.data.total
+          }
+        )
+      },
       // 显示一级分类
       loadOneTypes() {
         this.axios.get('/api/loadArch/getOneClass').then(res => {
@@ -348,14 +446,17 @@
           this.totalCount = res.data.data.total
         })
       },
-      showView() { // 显示著录列表，隐藏著录界面
+      // 显示著录列表，隐藏著录界面
+      showView() {
         this.showWriteData = false;
         this.loadData = {
           view: true,
           hidd: false
-        }
+        };
+        this.loadGroupArch()
       },
-      tips () { //进入修改界面
+      //进入修改界面
+      tips() {
         this.loadData = {
           view: false,
           hidd: true
@@ -363,24 +464,60 @@
         this.showWriteData = true;
         this.$router.push(this.pushConf)
       },
-      cancelTips () { // 取消进入修改界面
+      // 取消进入修改界面
+      cancelTips() {
         // this.showWriteData = false
         // this.loadData = {
         //   view: true,
         //   hidd: false
         // }
+      },
+      //切换页码
+      destPage(index){
+        this.needToDoPage = index;
+        if(this.userID === ''){
+          this.userID = window.localStorage.getItem('userid')
+        }
+        this.axios.get('/api/loadArch/getGroupArch', {
+          params:{
+            'userID': this.userID,
+            'page': this.needToDoPage,
+            'pageSize':this.needToDoPageSize}
+        }).then(res => {
+          this.needToDoData = res.data.data.list;
+          this.needToDoCount = res.data.data.total
+        })
+      },
+      //切换配置页
+      changePageSize(index){
+        this.needToDoPageSize = index;
+        if(this.userID === ''){
+          this.userID = window.localStorage.getItem('userid')
+        }
+        this.axios.get('/api/loadArch/getGroupArch', {
+          params:{
+            'userID': this.userID,
+            'page': this.needToDoPage,
+            'pageSize':this.needToDoPageSize}
+        }).then(res => {
+          this.needToDoData = res.data.data.list;
+          this.needToDoCount = res.data.data.total
+        })
       }
     },
     mounted() {
-      this.loadOneTypes()
+      this.loadOneTypes();
+      this.loadGroupArch();
     }
   }
 
+  //档案二级状态解释说明
   function statueTwoDes(statue) {
     let statueName = null;
-    if (statue === 2) {
-      statueName = '著录中'
-    } else if (statue === 1) {
+    // if (statue === 2) {
+    //   statueName = '著录中'
+    // } else
+      if (statue === 1) {
       statueName = '待著录'
     } else if (statue === 3) {
       statueName = '已著录'
