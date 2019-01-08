@@ -49,15 +49,8 @@
     data () {
       return {
         keyword: '', // 搜索关键词（档号，创建人，批次等）
-        firstDate: '', // 搜索日期(一)
         tempData: [], //档案临时存储
         ids:[],//档案id临时储存
-        archOS: '', // 选择的档案一级状态
-        archTS: '', // 选择的档案二级状态
-        showATS: false, // [false, false, false], // 档案多类型状态显示控制
-        showTSD: false, // 档案多类型日期显示控制
-        showSSD: false, // 档案多类型日期显示控制
-        showDateNum: 0, // 多类型日期显示控制参数
         WriterArchData: [], // 档案数据临时集合
         pageSize: 10, // 分页插件：每页显示总数
         pso: [10, 20, 30, 50, 100], // 分页显示条数
@@ -167,6 +160,10 @@
       },
       //组卷
       doArchClassify : function() {
+        if(this.tempData.length==0){
+          this.$Message.warning("请选择需要操作的记录");
+          return false;
+        }
         this.showing();
         for (let i=0; i<this.tempData.length; i++){
           this.ids.push(this.tempData[i].archId)

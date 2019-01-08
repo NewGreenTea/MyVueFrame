@@ -44,10 +44,11 @@ import testTable from './../components/test/testTable' // 测试用
 import archManagement from './../components/systemManagement/archData'
 import classtype from './../components/test/classtype'
 import archTool from './../components/organization/archNoTool'
-import archClassify from './../components/organization/ArchClassify'
+import archClassify from './../components/organization/archClassify'
 import userManagement from '../components/systemManagement/userManagement'
 import departmentManagement from '../components/systemManagement/departmentManagement'
 import postManagement from '../components/systemManagement/postManagement'
+import archSmCheck from '../components/organization/archSmCheck'
 
 Vue.use(Router);
 
@@ -105,6 +106,13 @@ export default new Router({
             name: 'archClassify',
             components: {
               archClassify: archClassify
+            }
+          },
+          { // 扫描质检
+            path: 'archSmCheck',
+            name: 'archSmCheck',
+            components: {
+              archSmCheck: archSmCheck
             }
           },
           { // 业务流程创建

@@ -19,7 +19,7 @@
           <router-link to=""><p @click="checkLauout">著录质检</p></router-link>
         </MenuItem>
         <MenuItem name="1-5">
-          <router-link to="">扫描质检</router-link>
+          <router-link to="/index/viewcont/archSmCheck"><p @click="smcheckLauout">扫描质检</p></router-link>
         </MenuItem>
         <MenuItem name="1-6">
           <router-link to="/index/viewcont/upload"><p @click="fileuploadLauout">上传</p></router-link>
@@ -178,6 +178,16 @@
         }
       },
       checkLauout() {
+      },
+      smcheckLauout(){
+        let path = this.getTabViewPath
+        let temp = {name: 'archSmCheck', path: '/index/viewcont/archSmCheck'}
+        if (recopy(path, 'archSmCheck', '/index/viewcont/archSmCheck')) {
+          this.$emit('showIndexCont', 'archSmCheck')
+        } else {
+          this.$emit('showIndexCont', 'archSmCheck') // 子向父组件传值
+          this.$store.dispatch('AddTabView', temp)
+        }
       },
       archAdminLauout() {
         let path = this.getTabViewPath
