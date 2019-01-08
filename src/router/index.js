@@ -47,6 +47,7 @@ import archTool from './../components/organization/archNoTool'
 import archClassify from './../components/organization/ArchClassify'
 import userManagement from '../components/systemManagement/userManagement'
 import departmentManagement from '../components/systemManagement/departmentManagement'
+import postManagement from '../components/systemManagement/postManagement'
 
 Vue.use(Router);
 
@@ -228,6 +229,13 @@ export default new Router({
             name: 'departmentManagement',
             components: {
               departmentManagement: departmentManagement
+            }
+          },
+          {
+            path: 'postManagement',
+            name: 'postManagement',
+            components: {
+              postManagement: postManagement
             }
           },
           { // 档案业务数据管理
