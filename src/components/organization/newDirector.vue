@@ -646,7 +646,7 @@
             writeGroupID: this.taskWG,
             ids: temp
           })).then(res => {
-            alert(res.data.message);
+            this.$Message.success(res.data.msg);
             this.hackReset = false;
             this.$nextTick(() => {
               this.hackReset = true;
@@ -733,7 +733,6 @@
             this.archDataCount = res.data.data.total
           });
         }
-
       },
       //表格选中操作（4个）
       selectAllData(selection) {
@@ -754,19 +753,18 @@
             this.tempArchData.splice(i, 1)
           }
         }
-        console.log('取消后的temp：' + JSON.stringify(this.tempArchData))
       },
       //*******任务表格分页方法******
       destPage1(index) {
         this.assCurrentPage = index;
         this.assUrlParams.pageNum = index;
         this.axios.get(this.assPageUrl, {params: this.assUrlParams}).then(res => {
-          if (this.assPageUrl === '/api/importArch/checkAssignment') {
-            this.AssignmentHisData = res.data.data.list;
-          } else if (this.assPageUrl === '/api/importArch/checkAssignment') {
-            this.AssignmentData = res.data.data.list;
-          } else if (this.assPageUrl === '/api/importArch/checkDistAssignment') {
+          if (this.assPageUrl === '/api/importArch/checkDistAssignment') {
             this.AssignmentDisData = res.data.data.list;
+          }else if (this.assUrlParams.batchStatue === 1) {
+            this.AssignmentHisData = res.data.data.list;
+          } else if (this.assUrlParams.batchStatue === 0) {
+            this.AssignmentData = res.data.data.list;
           }
           this.assDataCount = res.data.data.total
         });

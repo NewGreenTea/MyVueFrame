@@ -12,7 +12,9 @@ import archAdmin from './../components/organization/archAmin'
 //import director from './../components/organization/director'
 import director from './../components/organization/newDirector'
 import writerGroup from './../components/organization/writerGroup'
+import checkWrite from './../components/organization/checkWrite'
 import echarts from './../components/test/testEcharts'
+//著录时需要的界面
 import BaseInfo from './../components/writeLayout/BaseInfo'
 import ProfInfo from './../components/writeLayout/ProfInfo'
 import FileInfo from './../components/writeLayout/FileInfo'
@@ -37,8 +39,9 @@ import D63 from '../components/writeLayout/specialLayout/D63'
 import MeasureInfo from '../components/writeLayout/specialLayout/MeasureInfo'
 import D61NumAreaInfo from '../components/writeLayout/specialLayout/D61NumAreaInfo'
 import D61PubBuildInfo from '../components/writeLayout/specialLayout/D61PubBuildInfo'
-// import B13 from './../components/writeLayout/B13'
-// import C41 from './../components/writeLayout/C41'
+//著录质检需要的界面
+import CheckLayout from '../components/organization/CheckLayout'
+
 import testTable from './../components/test/testTable' // 测试用
 //import testForm from './../components/test/testFormVailator' // 测试用
 import archManagement from './../components/systemManagement/archData'
@@ -150,7 +153,7 @@ export default new Router({
               director: director
             }
           },
-          { // 著录组
+          { // 著录
             path: 'writerGroup',
             name: 'writerGroup',
             components: {
@@ -214,6 +217,22 @@ export default new Router({
                 name: 'FileInfo',
                 components: {
                   FileInfo: FileInfo
+                }
+              }
+            ]
+          },
+          { // 著录质检
+            path: 'checkWrite',
+            name: 'checkWrite',
+            components: {
+              checkWrite: checkWrite
+            },
+            children: [
+              {
+                path: 'CheckLayout',
+                name: 'CheckLayout',
+                components: {
+                  CheckLayout: CheckLayout
                 }
               }
             ]

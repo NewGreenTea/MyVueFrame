@@ -576,7 +576,7 @@
           this.tempData.push(selection[i])
         }
       },
-      //取消某个记录 todo
+      //取消某个记录
       cancelData(selection, row) {
         for (let i = 0; i < this.tempData.length; i++) {
           if (this.tempData[i].archId === row.archId) {

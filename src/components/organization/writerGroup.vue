@@ -58,7 +58,6 @@
         <Col v-for="type in archTwoTypes" :key="type.index" span="8">
           <Button size="large" long style="text-align: left" @click="writeLayout(type)">{{type.className}}</Button>
         </Col>
-        <!--<Col span="1">&nbsp;</Col>-->
       </Row>
 
       <Row v-if="showArchData" style="margin-top: 20px;">
@@ -146,9 +145,8 @@
           {
             title: '基本信息',
             render: (h, params) => {
-              return h('div', [
-                h('Button',
-                  {
+              return h('div',[
+                h('Button', {
                     props: {
                       type: 'primary', size: 'small'
                     },
@@ -202,7 +200,8 @@
                       }
                     }
                   }, '+')
-              ])
+                ]
+              )
             }
           },
           {
@@ -403,6 +402,7 @@
         this.axios.get('/api/loadArch/getGroupArch',{
           params:{
             'userID': this.userID,
+            'archStatue': 1,
             'page': this.needToDoPage,
             'pageSize':this.needToDoPageSize}
         }).then(res => {

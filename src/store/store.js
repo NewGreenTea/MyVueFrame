@@ -17,7 +17,7 @@ export default new Vuex.Store({
     //（设置）保存用户id
     setUserID (state, id) {
       state.userID = id;
-      window.localStorage.setItem('userID', state.userID)
+      window.localStorage.setItem('userid', state.userID)
     },
     //（设置）保存用户名
     setUserName (state, name) {

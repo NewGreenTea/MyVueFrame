@@ -22,7 +22,9 @@
       <Col>
         <Button @click="addArchNO">添加</Button>
         <Button @click="deleteArchNO">删除</Button>
-        <Table ref="table" border :columns="columns" :data="ArchNoData" v-if="ArchNoData != null"></Table>
+        <Table ref="table" border :columns="columns" :data="ArchNoData" v-if="ArchNoData != null"
+               @on-select-all="selectAllData" @on-select="selectData"
+               @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
       </Col>
 
       <Col>
@@ -63,7 +65,7 @@
 
 <script>
   import {isFourInteger, isFourIntegerNotMust} from "../../js/validate";
-  import {CommonFunction} from "../../js/global";
+  import {ArchRequestConfig} from "../../js/global";
 
   export default {
     name: "archNoTool",
@@ -80,6 +82,12 @@
         //设置好的档号流水号
         ArchNoData: [],
         columns: [
+          {
+            type: 'selection',
+            width: 60,
+            align: 'center',
+            key: '_checked'
+          },
           {
             title: '序号',
             type: 'index'
@@ -127,7 +135,9 @@
         twoID: '',
         yearKey: '',
         oneData: '',
-        clearTwoClass: true
+        clearTwoClass: true,
+        //档号设置表格数据选择存储变量
+        tempData: []
       }
     },
     methods: {
@@ -230,7 +240,28 @@
       },
       //删除新档号流水号
       deleteArchNO() {
+        if(this.tempData.length === 0){
+          this.$Message.info('请选择要删除的档号设置')
+        }else{
+          this.axios.post('/api/archTool/delete', JSON.stringify(this.tempData), ArchRequestConfig).then(res => {
+            if(res.data.code === 0){
+              this.$Message.success(res.data.msg);
+            }else{
+              this.$Message.error(res.data.msg);
+            }
 
+            let temp = {
+              classId: this.twoID
+            };
+            this.$refs.serialnumForm.resetFields();
+            this.axios.get('/api/archTool/getByTwoType', {params:temp}).then(res => {
+              this.ArchNoData = [];
+              this.ArchNoData = res.data.data;
+              this.twoID = '';
+              this.AddOrUpdate = false
+            })
+          })
+        }
       },
       //添加新档号流水号
       addCondition() {
@@ -238,29 +269,36 @@
           if (valid) {
             this.serialnumInfo.parentId = this.oneID;
             this.serialnumInfo.classId = this.twoID;
-            this.axios.post('/api/archTool/add', this.serialnumInfo, {
-              //判断字段是否为null，是则转为空字符串
-              transformRequest: [function (data) {
-                return CommonFunction.dataIsNull(data)
-              }]
-            }).then(res => {
+            //添加前检测是否重复
+            this.axios.post('/api/archTool/check', this.serialnumInfo, ArchRequestConfig).then(res =>{
               if(res.data.code === 0){
-                this.$Message.success(res.data.msg);
-              }else{
-                this.$Message.error(res.data.msg);
-              }
+                this.axios.post('/api/archTool/add', this.serialnumInfo, ArchRequestConfig)
+                  .then(res => {
+                    if(res.data.code === 0){
+                      this.$Message.success(res.data.msg);
+                    }else{
+                      this.$Message.error(res.data.msg);
+                      //todo
+                      this.$refs.TwoCalssSelect.clearSingleSelect();
+                    }
 
-              let temp = {
-                classId: this.twoID,
-                archYear: this.serialnumInfo.archYear
-              };
-              this.$refs.serialnumForm.resetFields();
-              this.axios.get('/api/archTool/getByTwoType', {params:temp}).then(res => {
-                this.ArchNoData = res.data.data;
-                this.twoID = '';
-                this.AddOrUpdate = false
-              })
-            })
+                    let temp = {
+                      classId: this.twoID,
+                      archYear: this.serialnumInfo.archYear
+                    };
+                    this.$refs.serialnumForm.resetFields();
+                    this.axios.get('/api/archTool/getByTwoType', {params:temp}).then(res => {
+                      this.ArchNoData = [];
+                      this.ArchNoData = res.data.data;
+                      this.twoID = '';
+                      this.AddOrUpdate = false
+                    })
+                  })
+              }else{
+                this.$Message.error(res.data.msg)
+              }
+            });
+
           }
           else {
             this.$Message.error('设置格式有误！')
@@ -278,7 +316,29 @@
       },
       stringToObject(str) { //todo 第一级换级的时候第一次有一个undefined
         return JSON.parse(str);
-      }
+      },
+      // 选择单条记录
+      selectData(selection, row) {
+        this.tempData.push(row)
+      },
+      // 选择所有记录
+      selectAllData(selection) {
+        for (let i = 0; i < selection.length; i++) {
+          this.tempData.push(selection[i])
+        }
+      },
+      //取消某个记录
+      cancelData(selection, row) {
+        for (let i = 0; i < this.tempData.length; i++) {
+          if (this.tempData[i].id === row.id) {
+            this.tempData.splice(i, 1)
+          }
+        }
+      },
+      //取消所有记录
+      cancelAllData(selection) {
+        this.tempData = []
+      },
     },
     mounted() {
       this.loadArchType();

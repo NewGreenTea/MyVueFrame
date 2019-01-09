@@ -70,7 +70,7 @@
 
 <script>
   import {isDecimalNotMust} from '../../../js/validate'
-  import {CommonFunction, ArchRequestConfig} from "../../../js/global";
+  import {ArchRequestConfig} from "../../../js/global";
 
   export default {
     name: "D32",
