@@ -96,7 +96,7 @@
         if(resmsg!='200'){
           this.$Message.error({
             content:resmsg,
-            duration: 300,
+            duration: 10,
             closable: true
           });
         }

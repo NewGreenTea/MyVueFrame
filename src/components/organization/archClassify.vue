@@ -100,10 +100,10 @@
               return h('div', statue)
             }
           },
-          {
-            title: '创建人',
-            key: 'importer'
-          },
+          // {
+          //   title: '创建人',
+          //   key: 'importer'
+          // },
           {
             title: '导入日期',
             key: 'importDate',

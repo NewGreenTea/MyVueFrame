@@ -21,6 +21,9 @@
         <MenuItem name="1-5">
           <router-link to="/index/viewcont/archSmCheck"><p @click="smcheckLauout">扫描质检</p></router-link>
         </MenuItem>
+        <MenuItem name="1-5">
+          <router-link to="/index/viewcont/archPrint"><p @click="printLauout">打印</p></router-link>
+        </MenuItem>
         <MenuItem name="1-6">
           <router-link to="/index/viewcont/upload"><p @click="fileuploadLauout">上传</p></router-link>
         </MenuItem>
@@ -134,6 +137,16 @@
           this.$emit('showIndexCont', 'archClassify')
         } else {
           this.$emit('showIndexCont', 'archClassify'); // 子向父组件传值
+          this.$store.dispatch('AddTabView', temp)
+        }
+      },
+      printLauout() {
+        let path = this.getTabViewPath
+        let temp = {name: 'archPrint', path: '/index/viewcont/archPrint'}
+        if (recopy(path, 'archPrint', '/index/viewcont/archPrint')) {
+          this.$emit('showIndexCont', 'archPrint')
+        } else {
+          this.$emit('showIndexCont', 'archPrint') // 子向父组件传值
           this.$store.dispatch('AddTabView', temp)
         }
       },

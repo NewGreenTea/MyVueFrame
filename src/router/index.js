@@ -52,6 +52,8 @@ import userManagement from '../components/systemManagement/userManagement'
 import departmentManagement from '../components/systemManagement/departmentManagement'
 import postManagement from '../components/systemManagement/postManagement'
 import archSmCheck from '../components/organization/archSmCheck'
+import archPrint from '../components/archPrint'
+
 
 Vue.use(Router);
 
@@ -116,6 +118,13 @@ export default new Router({
             name: 'archSmCheck',
             components: {
               archSmCheck: archSmCheck
+            }
+          },
+          { // 档案打印
+            path: 'archPrint',
+            name: 'archPrint',
+            components: {
+              archPrint: archPrint
             }
           },
           { // 业务流程创建
