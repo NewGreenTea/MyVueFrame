@@ -62,7 +62,7 @@
         <MenuItem name="4-4">
           <router-link to="/index/viewcont/postManagement"><p @click="postManagement">职位管理</p></router-link>
         </MenuItem>
-        <MenuItem name="4-5">模板管理</MenuItem>
+        <!--<MenuItem name="4-5">模板管理</MenuItem>-->
       </Submenu>
       <Submenu name="5">
         <template slot="title">
@@ -122,7 +122,7 @@
       },
       fileuploadLauout() {
         let path = this.getTabViewPath;
-        let temp = {name: 'fileupload', path: '/index/viewcont/fileupload'};
+        let temp = {name: 'fileupload', path: '/index/viewcont/fileupload', desName: '文件上传'};
         if (recopy(path, 'fileupload', '/index/viewcont/fileupload')) {
           this.$emit('showIndexCont', 'fileupload')
         } else {
@@ -132,7 +132,7 @@
       },
       archClassifyLauout() {
         let path = this.getTabViewPath;
-        let temp = {name: 'archClassify', path: '/index/viewcont/archClassify'};
+        let temp = {name: 'archClassify', path: '/index/viewcont/archClassify', desName: '档案组卷'};
         if (recopy(path, 'archClassify', '/index/viewcont/archClassify')) {
           this.$emit('showIndexCont', 'archClassify')
         } else {
@@ -141,12 +141,12 @@
         }
       },
       printLauout() {
-        let path = this.getTabViewPath
-        let temp = {name: 'archPrint', path: '/index/viewcont/archPrint'}
+        let path = this.getTabViewPath;
+        let temp = {name: 'archPrint', path: '/index/viewcont/archPrint', desName: '打印'};
         if (recopy(path, 'archPrint', '/index/viewcont/archPrint')) {
           this.$emit('showIndexCont', 'archPrint')
         } else {
-          this.$emit('showIndexCont', 'archPrint') // 子向父组件传值
+          this.$emit('showIndexCont', 'archPrint'); // 子向父组件传值
           this.$store.dispatch('AddTabView', temp)
         }
       },
@@ -172,7 +172,7 @@
       },
       directorLauout() {
         let path = this.getTabViewPath;
-        let temp = {name: 'director', path: '/index/viewcont/director'};
+        let temp = {name: 'director', path: '/index/viewcont/director', desName: '任务分配'};
         if (recopy(path, 'director', '/index/viewcont/director')) {
           this.$emit('showIndexCont', 'director')
         } else {
@@ -182,7 +182,7 @@
       },
       writerLauout() {
         let path = this.getTabViewPath;
-        let temp = {name: 'writerGroup', path: '/index/viewcont/writerGroup'};
+        let temp = {name: 'writerGroup', path: '/index/viewcont/writerGroup', desName: '著录'};
         if (recopy(path, 'writerGroup', '/index/viewcont/writerGroup')) {
           this.$emit('showIndexCont', 'writerGroup')
         } else {
@@ -192,7 +192,7 @@
       },
       checkWriter() {
         let path = this.getTabViewPath;
-        let temp = {name: 'checkWrite', path: '/index/viewcont/checkWrite'};
+        let temp = {name: 'checkWrite', path: '/index/viewcont/checkWrite', desName: '著录质检'};
         if (recopy(path, 'checkWrite', '/index/viewcont/checkWrite')) {
           this.$emit('showIndexCont', 'checkWrite')
         } else {
@@ -201,18 +201,18 @@
         }
       },
       smcheckLauout(){
-        let path = this.getTabViewPath
-        let temp = {name: 'archSmCheck', path: '/index/viewcont/archSmCheck'}
+        let path = this.getTabViewPath;
+        let temp = {name: 'archSmCheck', path: '/index/viewcont/archSmCheck', desName: '扫描质检'};
         if (recopy(path, 'archSmCheck', '/index/viewcont/archSmCheck')) {
           this.$emit('showIndexCont', 'archSmCheck')
         } else {
-          this.$emit('showIndexCont', 'archSmCheck') // 子向父组件传值
+          this.$emit('showIndexCont', 'archSmCheck'); // 子向父组件传值
           this.$store.dispatch('AddTabView', temp)
         }
       },
       archAdminLauout() {
         let path = this.getTabViewPath;
-        let temp = {name: 'archAdmin', path: '/index/viewcont/archAdmin'};
+        let temp = {name: 'archAdmin', path: '/index/viewcont/archAdmin', desName: '导入清单'};
         if (recopy(path, 'archAdmin', '/index/viewcont/archAdmin')) {
           this.$emit('showIndexCont', 'archAdmin')
         } else {
@@ -245,7 +245,7 @@
       },
       userManagement() {
         let path = this.getTabViewPath;
-        let temp = {name: 'userManagement', path: '/index/viewcont/userManagement'};
+        let temp = {name: 'userManagement', path: '/index/viewcont/userManagement', desName: '用户管理'};
         if (recopy(path, 'userManagement', '/index/viewcont/userManagement')) {
           this.$emit('showIndexCont', 'userManagement')
         } else {
@@ -255,7 +255,7 @@
       },
       departmentManagement() {
         let path = this.getTabViewPath;
-        let temp = {name: 'departmentManagement', path: '/index/viewcont/departmentManagement'};
+        let temp = {name: 'departmentManagement', path: '/index/viewcont/departmentManagement', desName: '部门管理'};
         if (recopy(path, 'departmentManagement', '/index/viewcont/departmentManagement')) {
           this.$emit('showIndexCont', 'departmentManagement')
         } else {
@@ -265,7 +265,7 @@
       },
       postManagement() {
         let path = this.getTabViewPath;
-        let temp = {name: 'postManagement', path: '/index/viewcont/postManagement'};
+        let temp = {name: 'postManagement', path: '/index/viewcont/postManagement', desName: '职位管理'};
         if (recopy(path, 'postManagement', '/index/viewcont/postManagement')) {
           this.$emit('showIndexCont', 'postManagement')
         } else {

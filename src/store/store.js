@@ -54,7 +54,8 @@ export default new Vuex.Store({
     addTabView (state, path) {
       state.visitViewPath.push({
         name: path.name,
-        path: path.path
+        path: path.path,
+        desName: path.desName
       })
     },
     //查看当前标签视图
