@@ -1,6 +1,6 @@
 <template>
   <div style="width: 240px;">
-    <Menu active-name="1-1">
+    <Menu active-name="1-1" accordion="true">
       <Submenu name="1">
         <template slot="title">
           <Icon type="ios-analytics"/>
@@ -36,7 +36,7 @@
           <Icon type="ios-filing"/>
           借阅管理
         </template>
-        <MenuItem name="2-1">待做</MenuItem>
+        <MenuItem name="2-1">待完善</MenuItem>
       </Submenu>
       <Submenu name="3">
         <template slot="title">
@@ -44,7 +44,8 @@
           检索统计
         </template>
         <MenuItem name="3-1">
-          <router-link to="">档案统计</router-link>
+          待完善
+          <!--<router-link to="">档案统计</router-link>-->
         </MenuItem>
       </Submenu>
       <Submenu name="4">

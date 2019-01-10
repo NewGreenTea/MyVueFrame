@@ -1,11 +1,17 @@
 <template>
   <div>
-    <Button @click="showBaseInfo">基本信息</Button>
-    <Button @click="showProfInfo">专业信息</Button>
-    <Button @click="showFileInfo">文件信息</Button>
-    <Button @click="successCheck">质检通过</Button>
-    <Button @click="failCheck">质检不通过</Button>
-    <Button @click="goBack">返回</Button>
+    <Row>
+      <Col span="9" offset="3">
+        <Button @click="showBaseInfo">基本信息</Button>
+        <Button @click="showProfInfo">专业信息</Button>
+        <Button @click="showFileInfo">文件信息</Button>
+        <Button @click="goBack">返回</Button>
+      </Col>
+      <Col span="6" offset="6">
+        <Button @click="successCheck" type="info">质检通过</Button>
+        <Button @click="failCheck" type="info">质检不通过</Button>
+      </Col>
+    </Row>
 
     <Modal v-model="showModal" :title="modalTitle" draggable :closable="false" @on-ok="modelOK"
            @on-cancel="modelCancel">
