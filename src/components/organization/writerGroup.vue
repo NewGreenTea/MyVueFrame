@@ -11,11 +11,11 @@
                   <Button type="success">筛选条件</Button>
                 </FormItem>
               </Col>
-              <Col span="4">
-                <FormItem>
-                  <Input placeholder="档号等"/>
-                </FormItem>
-              </Col>
+              <!--<Col span="4">-->
+                <!--<FormItem>-->
+                  <!--<Input placeholder="档号等"/>-->
+                <!--</FormItem>-->
+              <!--</Col>-->
               <Col span="4">
                 <FormItem>
                   <Row>
@@ -23,16 +23,16 @@
                       档案状态：
                     </Col>
                     <Col span="12">
-                      <i-select placeholder="状态">
-                        <i-option :key="item" v-for="item in twoStatues" :value="item">{{item}}</i-option>
-                      </i-select>
+                      <Select placeholder="状态" @on-change="oneSelect" clearable>
+                        <Option :key="item" v-for="item in twoStatues" :value="item">{{item}}</Option>
+                      </Select>
                     </Col>
                   </Row>
                 </FormItem>
               </Col>
               <Col span="2" offset="1">
                 <FormItem>
-                  <Button type="primary">搜索</Button>
+                  <Button type="primary" @click="searchArch">搜索</Button>
                 </FormItem>
               </Col>
             </Row>
@@ -109,7 +109,7 @@
         totalCount: 0, // 分页插件：总数量
         pageSize: 10, // 分页插件：显示条数
         pageSizeOpt: [10, 20, 30, 40, 50, 100], // 分页插件：选择显示条数框
-        twoStatues: ['待著录', '已著录'], // 档案状态搜索
+        twoStatues: ['待著录', '已著录', '不通过'], // 档案状态搜索
         // 显示表格的属性列
         columns: [
           {
@@ -135,7 +135,7 @@
             key: 'archNo'
           },
           {
-            title: '档号状态',
+            title: '档案状态',
             key: 'twoStatue',
             render: (h, params) => {
               let statue = statueTwoDes(params.row.twoStatue);
@@ -360,27 +360,30 @@
                 }else if(params.row.baseCode === 0 && params.row.profCode !== 0 && params.row.fileCode !== 0){
                   return h('p', '基本信息未著录')
                 }else{
-                  return h('button', {
-                    props: {
-                      type: 'primary', size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        // 修改档案状态，变为已著录/待质检的状态
-                        this.axios.post('/api/loadArch/writeComplete', this.qs.stringify({archID: params.row.archId}))
-                          .then(res =>{
-                            this.loadGroupArch()
-                          })
+                  if(params.row.archVO.twoStatue === 3){
+                    return h('p','')
+                  }else{
+                    return h('button', {
+                      props: {
+                        type: 'primary', size: 'small'
+                      },
+                      style: {
+                        marginRight: '5px'
+                      },
+                      on: {
+                        click: () => {
+                          // 修改档案状态，变为已著录/待质检的状态
+                          this.axios.post('/api/loadArch/writeComplete', this.qs.stringify({archID: params.row.archId}))
+                            .then(res =>{
+                              this.loadGroupArch()
+                            })
+                        }
                       }
-                    }
-                  },'确认完成')
+                    },'确认完成');
+                    return h('p',params.row.archVO.twoStatue)
+                  }
                 }
               }
-
-              return h('p',params.row.archVO.twoStatue)
             }
           }
         ],
@@ -390,7 +393,9 @@
         needToDoPageSize: 5,
         needToDoPSO: [1,2,3,4,5,6,8,10],
         //用户信息id
-        userID: this.$store.state.userID
+        userID: this.$store.state.userID,
+        //查询档案二级状态码
+        archStatueCode: 1
       }
     },
     methods: {
@@ -472,15 +477,28 @@
         //   hidd: false
         // }
       },
+      //搜索条件中的状态条件
+      oneSelect(value){
+        this.archStatueCode=statueTwoCode(value);
+      },
+      //搜索条件中的点击搜索按钮
+      searchArch(){
+        this.axios.get('/api/loadArch/getGroupArch', {
+          params:{
+            'archStatue': this.archStatueCode,
+            'page': this.needToDoPage,
+            'pageSize':this.needToDoPageSize}
+        }).then(res => {
+          this.needToDoData = res.data.data.list;
+          this.needToDoCount = res.data.data.total;
+        })
+      },
       //切换页码
       destPage(index){
         this.needToDoPage = index;
-        if(this.userID === ''){
-          this.userID = window.localStorage.getItem('userid')
-        }
         this.axios.get('/api/loadArch/getGroupArch', {
           params:{
-            'userID': this.userID,
+            'archStatue': this.archStatueCode,
             'page': this.needToDoPage,
             'pageSize':this.needToDoPageSize}
         }).then(res => {
@@ -491,12 +509,9 @@
       //切换配置页
       changePageSize(index){
         this.needToDoPageSize = index;
-        if(this.userID === ''){
-          this.userID = window.localStorage.getItem('userid')
-        }
         this.axios.get('/api/loadArch/getGroupArch', {
           params:{
-            'userID': this.userID,
+            'archStatue': this.archStatueCode,
             'page': this.needToDoPage,
             'pageSize':this.needToDoPageSize}
         }).then(res => {
@@ -514,13 +529,25 @@
   //档案二级状态解释说明
   function statueTwoDes(statue) {
     let statueName = null;
-    // if (statue === 2) {
-    //   statueName = '著录中'
-    // } else
-      if (statue === 1) {
+    if (statue === 1) {
       statueName = '待著录'
     } else if (statue === 3) {
       statueName = '已著录'
+    } else if (statue === 6){
+        statueName = '不通过'
+    }
+    return statueName
+  }
+
+  //档案二级状态名转状态码
+  function statueTwoCode(statue) {
+    let statueName = null;
+    if (statue === '待著录') {
+      statueName = 1
+    } else if (statue === '已著录') {
+      statueName = 3
+    } else if (statue === '不通过'){
+      statueName = 6
     }
     return statueName
   }

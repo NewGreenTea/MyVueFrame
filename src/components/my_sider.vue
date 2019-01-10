@@ -1,6 +1,6 @@
 <template>
   <div style="width: 240px;">
-    <Menu active-name="1-1" accordion="true">
+    <Menu active-name="1-1" :accordion="menuAccordion">
       <Submenu name="1">
         <template slot="title">
           <Icon type="ios-analytics"/>
@@ -107,7 +107,8 @@
             value: 'beijing',
             label: '上海'
           }
-        ]
+        ],
+        menuAccordion: true
       }
     },
     methods: {

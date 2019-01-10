@@ -12,7 +12,7 @@
         <Layout name="mianHeader">
           <!-- 头部 -->
           <!--<Header style="background-color: burlywood;">-->
-          <Header style="background-color:white">
+          <Header style="background-color:white;padding: 0px">
             <router-view name="index_header"></router-view>
           </Header>
 

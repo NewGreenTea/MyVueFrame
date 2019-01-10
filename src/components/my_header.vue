@@ -1,12 +1,15 @@
 <style scoped>
-
+  .ivu-col{
+    margin: 0;
+    padding: 0;
+  }
 </style>
 <template>
   <!-- 栅格系统 -->
   <layout>
     <content style="width: 100%">
       <Row>
-        <Col span="6" push="18" align="right">
+        <Col align="right" style="padding-right: 40px">
           <Icon type="ios-contact"/>
           管理员&nbsp;
           <Dropdown>
