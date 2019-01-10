@@ -16,7 +16,7 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="立案号" prop="registerNo">
+                  <FormItem class="FormItemClass" label="立案号">
                     <Input placeholder="..." v-model="baseArch.registerNo" class="writeInput"/>
                   </FormItem>
                 </Col>
@@ -265,7 +265,7 @@
       },
       getDispatchNoNum(DispatchNo) {
         let index = DispatchNo.lastIndexOf("〕");
-        return DispatchNo.substring(index + 1, DispatchNo.length)
+        return DispatchNo.substring(index + 1, DispatchNo.length-1)
       },
       reset() {
         this.baseArch.archTitle = '';
