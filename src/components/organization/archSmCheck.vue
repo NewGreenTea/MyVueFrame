@@ -26,7 +26,7 @@
           </Col>
           <Col span="6">
             <FormItem>
-              <Input search enter-button placeholder="档号搜索" v-model="keyword"
+              <Input search enter-button placeholder="请输入档号，发文号进行搜索" v-model="keyword"
                      @keyup.enter.native="handleSerach()"/>
             </FormItem>
           </Col>

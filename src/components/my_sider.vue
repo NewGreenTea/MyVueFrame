@@ -21,14 +21,14 @@
         <MenuItem name="1-5">
           <router-link to="/index/viewcont/archSmCheck"><p @click="smcheckLauout">扫描质检</p></router-link>
         </MenuItem>
-        <MenuItem name="1-5">
-          <router-link to="/index/viewcont/archPrint"><p @click="printLauout">打印</p></router-link>
-        </MenuItem>
         <MenuItem name="1-6">
           <router-link to="/index/viewcont/upload"><p @click="fileuploadLauout">上传</p></router-link>
         </MenuItem>
         <MenuItem name="1-7">
           <router-link to="/index/viewcont/archClassify"><p @click="archClassifyLauout">档案组卷</p></router-link>
+        </MenuItem>
+        <MenuItem name="1-8">
+          <router-link to="/index/viewcont/archPrint"><p @click="printLauout">打印</p></router-link>
         </MenuItem>
       </Submenu>
       <Submenu name="2">

@@ -9,19 +9,19 @@
               v-on:finish="finishUpload"
               v-if="show">
       <uploader-unsupport></uploader-unsupport>
-      <uploader-drop>
+      <uploader-drop style="background: white">
         <p style="margin: 10px 0px;padding:5px;border: 1px #c64e53 dashed;">
           提示：最多上传200个文件（单个文件大小不超过20mb），支持格式为jpg、png、pdf、gif、word文档、execl文档
         </p>
         <div style="margin: 10px 0px;padding:5px;border: 1px #c64e53 dashed;border-radius: 5px;">
-          <uploader-btn :attrs="attrs" @click="clickFileUpload">上传文件</uploader-btn>
-          <span>档号：<input type="text" style="height: 25px;font-size: medium" placeholder="请输入需要替换文件的档号" v-model="archNoPage" @change="changeInputValue"/></span>
+          <uploader-btn :attrs="attrs" class="uploadbutton" @click="clickFileUpload">选择文件</uploader-btn>
+          <span>档号：<Input size="large" style="width: 300px;" placeholder="请输入需要替换文件的档号" v-model="archNoPage" @change="changeInputValue"/></span>
         </div>
         <div style="padding: 5px;border: 1px #c64e53 dashed;">
-          <uploader-btn :directory="true">选择文件夹</uploader-btn>
-          <button class="uploader-btn" @click="clear">清空</button>
-          <button class="uploader-btn" @click="allUpload">全部上传</button>
-          <button class="uploader-btn" @click="allPause">全部暂停</button>
+          <uploader-btn :directory="true" class="uploadbutton">选择文件夹</uploader-btn>
+          <Button type="primary" @click="allUpload">全部上传</Button>
+          <Button type="warning" @click="allPause">全部暂停</Button>
+          <Button type="error" @click="clear">清空</Button>
         </div>
       </uploader-drop>
       <uploader-list ref="uploadList"></uploader-list>
@@ -92,20 +92,17 @@
         }
       },
       fileSuccess(rootFile, file, message, chunk){  //上传成功
-        let resmsg=JSON.parse(chunk.xhr.response).msg
-        if(resmsg!='200'){
-          this.$Message.error({
-            content:resmsg,
-            duration: 10,
-            closable: true
-          });
-        }
+
       },
       fileError(rootFile, file, message, chunk){  //上传失败
-        console.log('error', rootFile, file, message, chunk)
+        let resmsg=JSON.parse(chunk.xhr.response).msg
+        this.$Message.warning({
+          content:resmsg,
+          duration: 20,
+          closable: true
+        });
       },
       finishUpload(e){
-        debugger;
         let res=JSON.parse(e);
         console.log(res);
       }
@@ -115,18 +112,30 @@
 </script>
 
 <style scoped>
-  .uploader-example {
-    width: 880px;
-    padding: 15px;
-    margin: 40px auto 0;
-    font-size: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .4);
+  .uploadbutton {
+    display: inline-block;
+    position: relative;
+    padding: 4px 8px;
+    font-size: 100%;
+    line-height: 1.5;
+    color: white;
+    border: 1px solid #2baee9;
+    cursor: pointer;
+    border-radius: 5px;
+    background: #2baee9;
+    outline: none;
   }
-  .uploader-example .uploader-btn {
-    margin-right: 4px;
+  .uploadbutton:hover {
+    background-color: rgba(45, 183, 245, 0.8);
+  }
+  .uploader-example {
+    padding: 16px;
+    margin: 40px 50px 10px;
+    font-size: 15px;
+    box-shadow: 0 0 10px #888888;
   }
   .uploader-example .uploader-list {
-    max-height: 440px;
+    /*max-height: 440px;*/
     overflow: auto;
     overflow-x: hidden;
     overflow-y: auto;
