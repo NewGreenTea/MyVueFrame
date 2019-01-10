@@ -349,8 +349,8 @@
               this.tempData.push(temp)
             }
             else {
-              this.AddData.unshift(temp);
-              this.tableData = this.AddData;
+              this.UpdateAddData.unshift(temp);
+              this.tableData = this.UpdateAddData;
             }
             this.reset();
             this.AddModal = false;
@@ -368,7 +368,7 @@
       },
       //点击保存按钮
       saveArch() {
-        this.axios.post('/api/fileInfo/add', JSON.stringify(this.AddData), config).then(res => {
+        this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), config).then(res => {
           alert('保存完毕');
           this.loadFileArch();
         });
@@ -401,48 +401,53 @@
         let check = true;
         this.$refs.updateForm.validate((valid) => {
           if (valid) {
-              for (let i = 0; i < this.UpdateAddData.length; i++) {
-                if (this.UpdateAddData[i].fileNo === this.tempData[0].fileNo ) {
-                  this.UpdateAddData.splice(i, 1);
-                  this.UpdateAddData.unshift(temp);
-                  this.tableData.splice(i, 1);
-                  this.tableData.unshift(temp);
-                  check = false;
-                  this.reset()
+            for (let i = 0; i < this.UpdateAddData.length; i++) {
+              if (this.UpdateAddData[i].fileNo === this.tempData[0].fileNo) {
+                this.UpdateAddData.splice(i, 1);
+                this.UpdateAddData.unshift(temp);
+                for(let j = 0; j < this.tableData.length; j++){  //2019/01/10更新，添加时，修改临时添加的数据后，不渲染表格数据问题
+                  if(this.tableData[j].fileNo === this.tempData[0].fileNo){
+                    this.tableData.splice(j, 1);
+                    this.tableData.unshift(temp);
+                  }
                 }
+                check = false;
+                this.reset();
+                break;
               }
-              if (check === true) {
-                let data = [];
-                data.push(temp);
-                this.axios.post('/api/fileInfo/update', JSON.stringify(data),config).then(res => {
-                    this.axios.get('/api/loadArch/getArchInfo',{params: {archId: this.archId, ArchInfo: 'FileInfo'}})
-                      .then(res => {
+            }
+            if (check === true) {
+              let data = [];
+              data.push(temp);
+              this.axios.post('/api/fileInfo/update', JSON.stringify(data), config).then(res => {
+                  this.axios.get('/api/loadArch/getArchInfo', {params: {archId: this.archId, ArchInfo: 'FileInfo'}})
+                    .then(res => {
                       this.tableData = res.data.data;
                       //更新后，删掉‘准备删除’的数据
                       let index = [];
-                      for(let i=0;i<this.UpdateDeleteData.length;i++){
-                        for(let j=0;j<this.tableData.length;j++){
-                          if(this.UpdateDeleteData[i].fileNo === this.tableData[j].fileNo){
+                      for (let i = 0; i < this.UpdateDeleteData.length; i++) {
+                        for (let j = 0; j < this.tableData.length; j++) {
+                          if (this.UpdateDeleteData[i].fileNo === this.tableData[j].fileNo) {
                             index.push(j)
                           }
                         }
                       }
-                      for(let i=0;i<index.length;i++){
-                        this.tableData.splice(index[i],1)
+                      for (let i = 0; i < index.length; i++) {
+                        this.tableData.splice(index[i], 1)
                       }
                       //更新后，添加‘准备添加’的数据
                       for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
                         this.tableData.unshift(this.UpdateAddData[i])
                       }
                     });
-                    this.fileArch.id = null;
-                    this.reset();
-                    this.tempData = []
-                  }
-                );
-              }
-              this.UpdateModal = false
-          }else {
+                  this.fileArch.id = null;
+                  this.reset();
+                  this.tempData = []
+                }
+              );
+            }
+            this.UpdateModal = false
+          } else {
             setTimeout(() => {
               this.loading = false;
               this.$nextTick(() => {
@@ -501,13 +506,6 @@
         if (Object.keys(this.tempData).length === 0) {
           alert('请钩选要删除的文件')
         } else {
-          // this.axios.post('/api/fileInfo/delete', JSON.stringify(this.tempData), config).then(res => {
-          //   this.axios.get('/api/loadArch/getArchInfo', {params: {archId: this.archId, ArchInfo: 'FileInfo'}}).then(
-          //     res => {
-          //       this.tableData = res.data.data
-          //     }
-          //   )
-          // })
           let index = [];
           //删除的是‘准备添加’的数据
           for (let i = 0; i < this.tempData.length; i++) {
@@ -540,26 +538,50 @@
             }
           }
           if (this.operation === true) {
-            this.AddData = this.tableData;
+            this.tableData =this.UpdateAddData;
           }
           this.tempData = []
         }
       },
       // 双击显示修改弹窗
       updateRowData(row, index) {
-          this.UpdateModal = true;
-          this.fileArch.id = row.id;
-          this.fileArch.archId = this.archId;
-          this.fileArch.archNo = this.archNo;
-          this.fileArch.classId = this.classId;
-          this.fileArch.fileIndex = row.fileIndex;
-          this.fileArch.fileNo = row.fileNo;
-          this.fileArch.liableId = row.liableId;
-          this.fileArch.fileTitle = row.fileTitle;
-          this.fileArch.fileType = row.fileType;
-          this.fileArch.fileDate = row.fileDate;
-          this.fileArch.pageNo = row.pageNo;
-          this.fileArch.remark = row.remark;
+        this.UpdateModal = true;
+        this.fileArch.id = row.id;
+        this.fileArch.archId = this.archId;
+        this.fileArch.archNo = this.archNo;
+        this.fileArch.classId = this.classId;
+        this.fileArch.fileIndex = row.fileIndex;
+        this.fileArch.fileNo = row.fileNo;
+        this.fileArch.liableId = row.liableId;
+        this.fileArch.fileTitle = row.fileTitle;
+        this.fileArch.fileType = row.fileType;
+        this.fileArch.fileDate = row.fileDate;
+        this.fileArch.pageNo = row.pageNo;
+        this.fileArch.remark = row.remark;
+        let temp = {
+          id: '',
+          archId: this.archId, // 读取出来
+          archNo: this.archNo,
+          fileIndex: '',
+          fileNo: '',
+          liableId: '',
+          fileTitle: '',
+          fileType: '',
+          fileDate: '',
+          pageNo: '',
+          remark: '',
+          classId: this.classId
+        };
+        temp.id = row.id;
+        temp.fileIndex = this.fileArch.fileIndex;
+        temp.fileNo = this.fileArch.fileNo;
+        temp.liableId = this.fileArch.liableId;
+        temp.fileTitle = this.fileArch.fileTitle;
+        temp.fileType = this.fileArch.fileType;
+        temp.fileDate = this.fileArch.fileDate;
+        temp.pageNo = this.fileArch.pageNo;
+        temp.remark = this.fileArch.remark;
+        this.tempData.push(temp)
       },
       // 取消更新
       cancleUpdate() {
