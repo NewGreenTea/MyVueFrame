@@ -1,27 +1,28 @@
 <template>
-  <Form class="formClass" :model="C62Info">
-    <Row>
-      <Col>
-        <Row>
+  <Row>
+    <Col span="20" offset="1">
+      <Form class="formClass" :model="C62Info" :label-width="labelWidth">
+        <Row class="WriteLayoutFont" :gutter="16">
           <Col span="8">
             <FormItem class="FormItemClass" label="规划设计单位">
               <Input placeholder="..." v-model="C62Info.designCompany" class="writeInput"/>
             </FormItem>
           </Col>
         </Row>
-      </Col>
-    </Row>
-  </Form>
+      </Form>
+    </Col>
+  </Row>
 </template>
 
 <script>
   import {ArchRequestConfig} from "../../../js/global";
 
   export default {
-    name: "C62",
+    name: 'C62',
     props: ['isUpdate'],
     data() {
       return {
+        labelWidth: 100,
         archId: this.$route.params.archId,
         C62Info: {
           id: null,
@@ -48,7 +49,7 @@
         this.axios.post('/api/profETC/updateC62', this.C62Info, ArchRequestConfig);
         this.$emit('RealUpdate');
       },
-      goback(){
+      goback() {
         this.$router.go(-2);
       }
     },

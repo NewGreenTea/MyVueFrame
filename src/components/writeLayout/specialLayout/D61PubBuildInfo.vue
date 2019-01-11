@@ -1,10 +1,16 @@
 <template>
-  <Row>
+  <Row class="WriteLayoutFont">
     <Col>
-      公建配套
-      <Button @click="saveMInfo">+</Button>
-      <Button @click="updateMInfo" v-if="isUpdate">√</Button>
-      <Button @click="cancelMInfo">-</Button>
+      <Row>
+        <Col span="12">
+          公建配套
+        </Col>
+        <Col span="12">
+          <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
+          <Button @click="updateMInfo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="saveMInfo" class="profButtonFloat">+</Button>
+        </Col>
+      </Row>
     </Col>
     <Col>
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
@@ -143,14 +149,14 @@
         }
       }
     },
-    methods:{
-      loadPBI () {
+    methods: {
+      loadPBI() {
         if (this.isUpdate === true) {
-        this.axios.get('/api/profETC/getD61PubBuildInfo', {params: {archId: this.archId}}).then(
-          res => {
-            this.tableData = res.data.data
-          })
-      }
+          this.axios.get('/api/profETC/getD61PubBuildInfo', {params: {archId: this.archId}}).then(
+            res => {
+              this.tableData = res.data.data
+            })
+        }
       },
       saveMInfo() {
         this.D61PubBuildInfo.id = '';
@@ -177,7 +183,7 @@
           this.D61PubBuildInfo.position = this.tempData[0].position;
         }
       },
-      cancleUpdate (){
+      cancleUpdate() {
         this.tempData = []
       },
       UpdatePBIData() {
@@ -218,7 +224,7 @@
               if (check === true) {
                 let data = [];
                 data.push(temp);
-                this.axios.post('/api/profETC/updateD61PubBuildInfo', JSON.stringify(data),ArchRequestConfig).then(res => {
+                this.axios.post('/api/profETC/updateD61PubBuildInfo', JSON.stringify(data), ArchRequestConfig).then(res => {
                   this.axios.get('/api/profETC/getD61PubBuildInfo', {
                     params: {
                       archId: data[0].archId
@@ -248,7 +254,7 @@
                 });
               }
             }
-            else{
+            else {
               this.UpdateModal = false
             }
           }
@@ -267,11 +273,11 @@
         this.tempData = [];
       },
       updatePMI() {
-        this.axios.post('/api/profETC/addD61PubBuildInfo', JSON.stringify(this.UpdateAddData),ArchRequestConfig).then(res => {
+        this.axios.post('/api/profETC/addD61PubBuildInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
           this.UpdateAddData = []
           //todo,有错报错，没错提示并跳转
         });
-        this.axios.post('/api/profETC/deleteD61PubBuildInfo', JSON.stringify(this.UpdateDeleteData),ArchRequestConfig).then(res => {
+        this.axios.post('/api/profETC/deleteD61PubBuildInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig).then(res => {
           this.UpdateDeleteData = []
           //todo,有错报错，没错提示并跳转
         })
@@ -302,7 +308,7 @@
           this.tempData.push(temp)
         }
       },
-      addcancle () {
+      addcancle() {
         this.$refs.addForm.resetFields();
         this.formReset();
       },
@@ -338,7 +344,7 @@
               }
               this.AddModal = false
             }
-            else{
+            else {
               this.AddModal = false
             }
           }
@@ -421,7 +427,7 @@
       cancelAllData(selection) {
         this.tempData = []
       },
-      formReset () {
+      formReset() {
         this.D61PubBuildInfo.projectName = '';
         this.D61PubBuildInfo.independentArea = '';
         this.D61PubBuildInfo.buildArea = '';

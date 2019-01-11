@@ -41,7 +41,7 @@
                 <FormItem prop="startNum" class="FormItemClass">
                   <Input type="text" v-model="serialnumInfo.startNum" placeholder="定义开始流水号"/>
                 </FormItem>
-                <FormItem prop="endNum" class="FormItemClass">
+                <FormItem prop="endNum" class="FormItemClass" hidden>
                   <Input type="text" v-model="serialnumInfo.endNum" placeholder="定义结束流水号"/>
                 </FormItem>
               </Form>
@@ -104,10 +104,10 @@
             title: '开始流水号',
             key: 'startNum'
           },
-          {
-            title: '结束流水号',
-            key: 'endNum'
-          }
+          // {
+          //   title: '结束流水号',
+          //   key: 'endNum'
+          // }
         ],
         //流水号结构体
         serialnumInfo: {

@@ -1,10 +1,16 @@
 <template>
-  <Row>
+  <Row class="WriteLayoutFont">
     <Col>
-      地图型号表
-      <Button @click="saveMInfo">+</Button>
-      <Button @click="updateMInfo" v-if="isUpdate">√</Button>
-      <Button @click="cancelMInfo">-</Button>
+      <Row>
+        <Col span="12">
+          地图型号表
+        </Col>
+        <Col span="12">
+          <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
+          <Button @click="updateMInfo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="saveMInfo" class="profButtonFloat">+</Button>
+        </Col>
+      </Row>
     </Col>
     <Col>
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
@@ -33,7 +39,7 @@
 <script>
   import {CommonFunction} from '../../js/global'
   //档案数据对象的传输配置
-  const config={
+  const config = {
     headers: {'Content-Type': 'application/json'}
   };
 
@@ -64,7 +70,7 @@
           },
           {
             title: '序号',
-            width: 100,
+            width: 70,
             type: 'index'
           },
           {
@@ -140,9 +146,9 @@
           if (check === true) {
             let data = [];
             data.push(temp);
-            this.axios.post('/api/profInfo/updateMapInfo', data,{
+            this.axios.post('/api/profInfo/updateMapInfo', data, {
               //判断字段是否为null，是则转为空字符串
-              transformRequest: [function (data){
+              transformRequest: [function (data) {
                 return CommonFunction.dataIsNull(data)
               }]
             }).then(res => {
@@ -155,15 +161,15 @@
                 this.tableData = res.data.data;
                 //更新后，删掉‘准备删除’的数据
                 let index = [];
-                for(let i=0;i<this.UpdateDeleteData.length;i++){
-                  for(let j=0;j<this.tableData.length;j++){
-                    if(this.UpdateDeleteData[i].mapNo === this.tableData[j].mapNo){
+                for (let i = 0; i < this.UpdateDeleteData.length; i++) {
+                  for (let j = 0; j < this.tableData.length; j++) {
+                    if (this.UpdateDeleteData[i].mapNo === this.tableData[j].mapNo) {
                       index.push(j)
                     }
                   }
                 }
-                for(let i=0;i<index.length;i++){
-                  this.tableData.splice(index[i],1)
+                for (let i = 0; i < index.length; i++) {
+                  this.tableData.splice(index[i], 1)
                 }
                 for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
                   this.tableData.unshift(this.UpdateAddData[i])
@@ -182,13 +188,13 @@
       //更新档案信息
       updatePMI() {
         //(实际为：新增的数据)
-        this.axios.post( '/api/profInfo/addMapInfo', JSON.stringify(this.UpdateAddData),config)
+        this.axios.post('/api/profInfo/addMapInfo', JSON.stringify(this.UpdateAddData), config)
           .then(res => {
-          this.UpdateAddData = []
-          //todo,有错报错，没错提示并跳转
-        });
+            this.UpdateAddData = []
+            //todo,有错报错，没错提示并跳转
+          });
         //(实际为：删除已存在的数据)
-        this.axios.post('/api/profInfo/deleteMapInfo', JSON.stringify(this.UpdateDeleteData),config).then(res => {
+        this.axios.post('/api/profInfo/deleteMapInfo', JSON.stringify(this.UpdateDeleteData), config).then(res => {
           this.UpdateDeleteData = []
           //todo,有错报错，没错提示并跳转
         })

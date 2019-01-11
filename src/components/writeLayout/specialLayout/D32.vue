@@ -1,8 +1,8 @@
 <template>
-  <Form class="formClass" :model="D32Info" :rules="rules" ref="D32form">
-    <Row>
-      <Col>
-        <Row>
+  <Row>
+    <Col span="20" offset="1">
+      <Form class="formClass" :model="D32Info" :rules="rules" ref="D32form" :label-width="labelWidth">
+        <Row class="WriteLayoutFont" :gutter="16">
           <Col span="8">
             <FormItem class="FormItemClass" label="起止点">
               <Input placeholder="..." v-model="D32Info.roadStart" class="writeInput"/>
@@ -14,13 +14,17 @@
             </FormItem>
           </Col>
           <Col span="8">
-            <FormItem class="FormItemClass" label="道路长度" prop="roadLength">
-              <Input placeholder="..." v-model="D32Info.roadLength" class="writeInput"/>
-            </FormItem>
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="道路长度" prop="roadLength">
+                  <Input placeholder="..." v-model="D32Info.roadLength" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （米/m）
+              </Col>
+            </Row>
           </Col>
-        </Row>
-
-        <Row>
           <Col span="8">
             <FormItem class="FormItemClass" label="道路开口">
               <Input placeholder="..." v-model="D32Info.roadCrossing" class="writeInput"/>
@@ -36,36 +40,51 @@
               <Input placeholder="..." v-model="D32Info.bridgeCrossingArea" class="writeInput"/>
             </FormItem>
           </Col>
-        </Row>
-
-        <Row>
           <Col span="8">
-            <FormItem class="FormItemClass" label="桥面长度" prop="bridgeLength">
-              <Input placeholder="..." v-model="D32Info.bridgeLength" class="writeInput"/>
-            </FormItem>
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="桥面长度" prop="bridgeLength">
+                  <Input placeholder="..." v-model="D32Info.bridgeLength" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （米/m）
+              </Col>
+            </Row>
           </Col>
           <Col span="8">
-            <FormItem class="FormItemClass" label="总长度" prop="bridgeTotalLength">
-              <Input placeholder="..." v-model="D32Info.bridgeTotalLength" class="writeInput"/>
-            </FormItem>
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="总长度" prop="bridgeTotalLength">
+                  <Input placeholder="..." v-model="D32Info.bridgeTotalLength" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （米/m）
+              </Col>
+            </Row>
           </Col>
           <Col span="8">
-            <FormItem class="FormItemClass" label="净空高度" prop="bridgeHight">
-              <Input placeholder="..." v-model="D32Info.bridgeHight" class="writeInput"/>
-            </FormItem>
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="净空高度" prop="bridgeHight">
+                  <Input placeholder="..." v-model="D32Info.bridgeHight" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （米/m）
+              </Col>
+            </Row>
           </Col>
-        </Row>
-
-        <Row>
           <Col span="8">
             <FormItem class="FormItemClass" label="平面位置">
               <Input placeholder="..." v-model="D32Info.bridgeAspectPosition" class="writeInput"/>
             </FormItem>
           </Col>
         </Row>
-      </Col>
-    </Row>
-  </Form>
+      </Form>
+    </Col>
+  </Row>
 </template>
 
 <script>
@@ -77,6 +96,7 @@
     props: ['isUpdate'],
     data() {
       return {
+        labelWidth: 100,
         archId: this.$route.params.archId,
         D32Info: {
           id: null,

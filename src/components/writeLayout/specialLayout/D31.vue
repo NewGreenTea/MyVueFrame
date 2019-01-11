@@ -1,35 +1,29 @@
 <template>
-  <div style="overflow: auto;">
   <Row>
-    <Col>
-      <Form class="formClass" :model="D31Info">
-        <Row>
-          <Col>
-            <Row>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="设计单位">
-                  <Input placeholder="..." v-model="D31Info.designCompany" class="writeInput"/>
-                </FormItem>
-              </Col>
-            </Row>
+    <Col span="20" offset="1">
+      <Form class="formClass" :model="D31Info" :label-width="labelWidth">
+        <Row class="WriteLayoutFont" :gutter="16">
+          <Col span="8">
+            <FormItem class="FormItemClass" label="设计单位">
+              <Input placeholder="..." v-model="D31Info.designCompany" class="writeInput"/>
+            </FormItem>
           </Col>
         </Row>
       </Form>
     </Col>
 
-    <Col>
-    <!-- 报建项目详细 -->
-    <RouterView ref="BPInfo" name="BuildProjInfo" :isUpdate="updateInfo"
-                @saveBuildProjInfoData="saveD31BPI" class="routeView"></RouterView>
+    <Col span="20" offset="1">
+      <!-- 报建项目详细 -->
+      <RouterView ref="BPInfo" name="BuildProjInfo" :isUpdate="updateInfo"
+                  @saveBuildProjInfoData="saveD31BPI" class="routeView"></RouterView>
     </Col>
 
-    <Col>
-    <!-- 公建配套 -->
-    <RouterView ref="PBInfo" name="D31PubBuildInfo" :isUpdate="updateInfo"
-                @savePubBuildInfoData="saveD31PBI" class="routeView"></RouterView>
+    <Col span="20" offset="1">
+      <!-- 公建配套 -->
+      <RouterView ref="PBInfo" name="D31PubBuildInfo" :isUpdate="updateInfo"
+                  @savePubBuildInfoData="saveD31PBI" class="routeView"></RouterView>
     </Col>
   </Row>
-  </div>
 </template>
 
 <script>
@@ -40,6 +34,7 @@
     props: ['isUpdate'],
     data() {
       return {
+        labelWidth: 100,
         archId: this.$route.params.archId,
         D31Info: {
           id: null,
@@ -63,17 +58,17 @@
       },
       saveArch() {
         this.$emit('RealSave');
-        this.axios.post('/api/profETC/addD31', this.D31Info,{
+        this.axios.post('/api/profETC/addD31', this.D31Info, {
           //判断字段是否为null，是则转为空字符串
-          transformRequest: [function (data){
+          transformRequest: [function (data) {
             return CommonFunction.dataIsNull(data)
           }]
         });
         if (this.BuildProjInfoData !== []) {
-          this.axios.post('/api/profETC/addD31BuildProjInfo', JSON.stringify(this.BuildProjInfoData),ArchRequestConfig);
+          this.axios.post('/api/profETC/addD31BuildProjInfo', JSON.stringify(this.BuildProjInfoData), ArchRequestConfig);
         }
         if (this.PubBuildInfoData !== []) {
-          this.axios.post('/api/profETC/addD31PubBuildInfo', JSON.stringify(this.PubBuildInfoData),ArchRequestConfig);
+          this.axios.post('/api/profETC/addD31PubBuildInfo', JSON.stringify(this.PubBuildInfoData), ArchRequestConfig);
         }
       },
       saveD31BPI(data) {
@@ -88,8 +83,8 @@
         this.$refs.BPInfo.updatePMI();
         this.$refs.PBInfo.updatePMI();
       },
-      goback () {
-        //todo
+      goback() {
+
       }
     },
     mounted() {
@@ -100,7 +95,7 @@
 </script>
 
 <style scoped>
-  .routeView{
+  .routeView {
     margin-top: 10px;
     margin-bottom: 10px;
   }

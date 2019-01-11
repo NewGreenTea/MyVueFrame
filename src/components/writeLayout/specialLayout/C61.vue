@@ -1,62 +1,119 @@
 <template>
-  <Form class="formClass" :model="C61Info" ref="C61form" :rules="rules">
-    <Row>
-      <Col>
-        <Row>
+  <Row>
+    <Col span="20" offset="1">
+      <Form class="formClass" :model="C61Info" ref="C61form" :rules="rules" :label-width="labelWidth">
+        <Row class="WriteLayoutFont" :gutter="16">
           <Col span="8">
-            <FormItem class="FormItemClass" label="总用地面积" prop="totalArea">
-              <Input placeholder="..." v-model="C61Info.totalArea" class="writeInput"/>
-            </FormItem>
+                <Row>
+                  <Col span="16">
+                    <FormItem class="FormItemClass" label="总用地面积" prop="totalArea">
+                      <Input placeholder="..." v-model="C61Info.totalArea" class="profWriteInput"/>
+                    </FormItem>
+                  </Col>
+                  <Col span="6" class="profWriteUnit">
+                    （平方米/m²）
+                  </Col>
+                </Row>
           </Col>
-          <Col span="8">
-            <FormItem class="FormItemClass" label="可建设用地面积(净用地面积)" prop="buildArea">
-              <Input placeholder="..." v-model="C61Info.buildArea" class="writeInput"/>
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem class="FormItemClass" label="道路用地面积" prop="roadArea">
-              <Input placeholder="..." v-model="C61Info.roadArea" class="writeInput"/>
-            </FormItem>
-          </Col>
-        </Row>
-      </Col>
 
-      <Col>
-        <Row>
           <Col span="8">
-            <FormItem class="FormItemClass" label="容积率" prop="plotRatio">
-              <Input placeholder="..." v-model="C61Info.plotRatio" class="writeInput"/>
-            </FormItem>
+                <Row>
+                  <Col span="16">
+                    <FormItem class="FormItemClass" label="可建设用地面积(净用地面积)" prop="buildArea">
+                      <Input placeholder="..." v-model="C61Info.buildArea" class="profWriteInput"/>
+                    </FormItem>
+                  </Col>
+                  <Col span="6" class="profWriteUnit">
+                    （平方米/m²）
+                  </Col>
+                </Row>
           </Col>
-          <Col span="8">
-            <FormItem class="FormItemClass" label="建筑密度" prop="buildDensity">
-              <Input placeholder="..." v-model="C61Info.buildDensity" class="writeInput"/>
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem class="FormItemClass" label="绿地率" prop="greenSpaceRatio">
-              <Input placeholder="..." v-model="C61Info.greenSpaceRatio" class="writeInput"/>
-            </FormItem>
-          </Col>
-        </Row>
-      </Col>
 
-      <Col>
-        <Row>
           <Col span="8">
-            <FormItem class="FormItemClass" label="居住人口" prop="population">
-              <Input placeholder="..." v-model="C61Info.population" class="writeInput"/>
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem class="FormItemClass" label="计算容积率建筑面积" prop="plotRatioArea">
-              <Input placeholder="..." v-model="C61Info.plotRatioArea" class="writeInput"/>
-            </FormItem>
+                <Row>
+                  <Col span="16">
+                    <FormItem class="FormItemClass" label="道路用地面积" prop="roadArea">
+                      <Input placeholder="..." v-model="C61Info.roadArea" class="profWriteInput"/>
+                    </FormItem>
+                  </Col>
+                  <Col span="6" class="profWriteUnit">
+                    （平方米/m²）
+                  </Col>
+                </Row>
           </Col>
         </Row>
-      </Col>
-    </Row>
-  </Form>
+
+        <Row class="WriteLayoutFont" :gutter="16">
+          <Col span="8">
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="容积率" prop="plotRatio">
+                  <Input placeholder="..." v-model="C61Info.plotRatio" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （%）
+              </Col>
+            </Row>
+          </Col>
+
+          <Col span="8">
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="建筑密度" prop="buildDensity">
+                  <Input placeholder="..." v-model="C61Info.buildDensity" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （kg/m³）
+              </Col>
+            </Row>
+          </Col>
+
+          <Col span="8">
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="绿地率" prop="greenSpaceRatio">
+                  <Input placeholder="..." v-model="C61Info.greenSpaceRatio" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （%）
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+
+        <Row class="WriteLayoutFont" :gutter="16">
+          <Col span="8">
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="居住人口" prop="population">
+                  <Input placeholder="..." v-model="C61Info.population" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （???单位）
+              </Col>
+            </Row>
+          </Col>
+
+          <Col span="8">
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="计算容积率建筑面积" prop="plotRatioArea">
+                  <Input placeholder="..." v-model="C61Info.plotRatioArea" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （平方米/m²）
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Form>
+    </Col>
+  </Row>
 </template>
 
 <script>
@@ -68,6 +125,7 @@
     props: ['isUpdate'],
     data() {
       return {
+        labelWidth: 100,
         archId: this.$route.params.archId,
         // 表单用一个基本信息档案类装字段
         C61Info: {
@@ -143,7 +201,7 @@
           }
         })
       },
-      goback(){
+      goback() {
         this.$router.go(-2);
       }
     },

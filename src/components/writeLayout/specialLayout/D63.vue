@@ -1,91 +1,108 @@
 <template>
-  <div>
-    <Row>
-      <Col>
-        <Form class="formClass" :model="D63PipelineInfo" ref="D63form" :rules="rules">
-          <Row>
-            <Col>
-              <Row>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="起止点">
-                    <Input placeholder="..." v-model="D63PipelineInfo.overheadPipeStart" class="writeInput"/>
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="管径规格">
-                    <Input placeholder="..." v-model="D63PipelineInfo.overheadPipeType" class="writeInput"/>
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="管线长度" prop="overheadPipeLength">
-                    <Input placeholder="..." v-model="D63PipelineInfo.overheadPipeLength" class="writeInput"/>
-                  </FormItem>
-                </Col>
-              </Row>
+  <Row>
+    <Col span="20" offset="1">
+      <Form class="formClass" :model="D63PipelineInfo" ref="D63form" :rules="rules" :label-width="labelWidth">
+        <Row class="WriteLayoutFont" :gutter="16">
+          <Col span="8">
+            <FormItem class="FormItemClass" label="起止点">
+              <Input placeholder="..." v-model="D63PipelineInfo.overheadPipeStart" class="writeInput"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem class="FormItemClass" label="管径规格">
+              <Input placeholder="..." v-model="D63PipelineInfo.overheadPipeType" class="writeInput"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="管线长度" prop="overheadPipeLength">
+                  <Input placeholder="..." v-model="D63PipelineInfo.overheadPipeLength" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="7" class="profWriteUnit">
+                （平方米/m²）
+              </Col>
+            </Row>
+          </Col>
+          <Col span="8">
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="架空高度" prop="overheadPipeHight">
+                  <Input placeholder="..." v-model="D63PipelineInfo.overheadPipeHight" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="7" class="profWriteUnit">
+                （平方米/m²）
+              </Col>
+            </Row>
+          </Col>
+          <Col span="8">
+            <FormItem class="FormItemClass" label="其他">
+              <Input placeholder="..." v-model="D63PipelineInfo.overheadPipeEtc" class="writeInput"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem class="FormItemClass" label="起止点">
+              <Input placeholder="..." v-model="D63PipelineInfo.underPipeStart" class="writeInput"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem class="FormItemClass" label="管径规格">
+              <Input placeholder="..." v-model="D63PipelineInfo.underPipeType" class="writeInput"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="管线长度" prop="underPipeLength">
+                  <Input placeholder="..." v-model="D63PipelineInfo.underPipeLength" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="7" class="profWriteUnit">
+                （平方米/m²）
+              </Col>
+            </Row>
+          </Col>
+          <Col span="8">
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="埋设深度" prop="underPipeHight">
+                  <Input placeholder="..." v-model="D63PipelineInfo.underPipeHight" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="7" class="profWriteUnit">
+                （平方米/m²）
+              </Col>
+            </Row>
+          </Col>
+          <Col span="8">
+            <FormItem class="FormItemClass" label="其他">
+              <Input placeholder="..." v-model="D63PipelineInfo.underPipeEtc" class="writeInput"/>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+    </Col>
 
-              <Row>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="架空高度" prop="overheadPipeHight">
-                    <Input placeholder="..." v-model="D63PipelineInfo.overheadPipeHight" class="writeInput"/>
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="其他">
-                    <Input placeholder="..." v-model="D63PipelineInfo.overheadPipeEtc" class="writeInput"/>
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="起止点">
-                    <Input placeholder="..." v-model="D63PipelineInfo.underPipeStart" class="writeInput"/>
-                  </FormItem>
-                </Col>
-              </Row>
-
-              <Row>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="管径规格">
-                    <Input placeholder="..." v-model="D63PipelineInfo.underPipeType" class="writeInput"/>
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="管线长度" prop="underPipeLength">
-                    <Input placeholder="..." v-model="D63PipelineInfo.underPipeLength" class="writeInput"/>
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="埋设深度" prop="underPipeHight">
-                    <Input placeholder="..." v-model="D63PipelineInfo.underPipeHight" class="writeInput"/>
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="其他">
-                    <Input placeholder="..." v-model="D63PipelineInfo.underPipeEtc" class="writeInput"/>
-                  </FormItem>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Form>
-      </Col>
-
-      <Col>
-        <!-- 验收测量记录册 -->
-        <RouterView ref="MeaInfo" name="MeasureInfo" :isUpdate="updateInfo"
-                    @saveMeasureInfoData="saveD63MI"></RouterView>
-      </Col>
-    </Row>
-  </div>
+    <Col span="20" offset="1">
+      <!-- 验收测量记录册 -->
+      <RouterView ref="MeaInfo" name="MeasureInfo" :isUpdate="updateInfo"
+                  @saveMeasureInfoData="saveD63MI"></RouterView>
+    </Col>
+  </Row>
 </template>
 
 <script>
   import {isDecimalNotMust} from '../../../js/validate'
-  import {CommonFunction,ArchRequestConfig} from "../../../js/global";
+  import {ArchRequestConfig} from "../../../js/global";
 
   export default {
     name: "D63",
     props: ['isUpdate'],
     data() {
       return {
+        labelWidth: 100,
         archType: this.$route.params.archType,
         archId: this.$route.params.archId,
         D63PipelineInfo: {
@@ -135,7 +152,7 @@
           if (valid) {
             this.axios.post('/api/profETC/addD63PipelineInfo', this.D63PipelineInfo, ArchRequestConfig);
             if (this.MeasureInfoData !== []) {
-              this.axios.post('/api/profETC/addD63MI', JSON.stringify(this.MeasureInfoData),ArchRequestConfig);
+              this.axios.post('/api/profETC/addD63MI', JSON.stringify(this.MeasureInfoData), ArchRequestConfig);
             }
             this.$emit('RealSave');
           } else {
@@ -157,7 +174,7 @@
       saveD63MI(data) {
         this.MeasureInfoData = data
       },
-      goback(){
+      goback() {
         this.$router.go(-3);
       }
     },

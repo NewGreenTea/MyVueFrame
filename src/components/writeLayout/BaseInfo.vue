@@ -1,13 +1,11 @@
 <template>
-  <div style="overflow: auto">
-    <!--<div style="height: 520px">-->
-    <!--<div ref="ss">-->
-    <Row>
+  <div class="WriteLayoutFont">
+    <Row style="height: 450px">
       <Col span="3">
-        <Tooltip content="档号">
-          <p>档号</p>
+        <Card class="tips">
+          <p slot="title">档号</p>
           <p>{{archNo}}</p>
-        </Tooltip>
+        </Card>
       </Col>
       <Col span="18">
         <Form class="formClass" :model="baseArch" :rules="rules" ref="BaseInfoForm">
@@ -17,17 +15,17 @@
               <Row>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="立案号">
-                    <Input placeholder="..." v-model="baseArch.registerNo" class="writeInput"/>
+                    <Input placeholder="..." v-model="baseArch.registerNo" class="baseWriteInput"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="档号">
-                    <Input placeholder="..." v-model="baseArch.archNo" class="colorBack writeInput" disabled/>
+                    <Input placeholder="..." v-model="baseArch.archNo" class="colorBack baseWriteInput" disabled/>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="案卷类别">
-                    <Input placeholder="..." v-model="baseArch.archType" class="colorBack writeInput" disabled/>
+                    <Input placeholder="..." v-model="baseArch.archType" class="colorBack baseWriteInput" disabled/>
                   </FormItem>
                 </Col>
               </Row>
@@ -36,14 +34,14 @@
             <!--案卷标题-->
             <Col>
               <FormItem class="FormItemClass" label="案卷标题" prop="archTitle">
-                <Input placeholder="..." v-model="baseArch.archTitle" style="width: 93%;float: right"/>
+                <Input placeholder="..." v-model="baseArch.archTitle" style="width: 92%;float: right"/>
               </FormItem>
             </Col>
 
             <!--编制单位-->
             <Col>
               <FormItem class="FormItemClass" label="编制单位">
-                <Input placeholder="..." v-model="baseArch.company" style="width: 93%;float: right"/>
+                <Input placeholder="..." v-model="baseArch.company" style="width: 92%;float: right"/>
               </FormItem>
             </Col>
 
@@ -52,19 +50,19 @@
               <Row>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="编制日期" prop="date">
-                    <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="writeInput"
+                    <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="baseWriteInput"
                                 @on-change="baseArch.date=$event" v-model="baseArch.date"></DatePicker>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="进管日期" prop="inputDate">
-                    <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="writeInput"
+                    <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="baseWriteInput"
                                 @on-change="baseArch.inputDate=$event" v-model="baseArch.inputDate"></DatePicker>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="保管期限">
-                    <Input placeholder="..." v-model="baseArch.storageType" class="writeInput"/>
+                    <Input placeholder="..." v-model="baseArch.storageType" class="baseWriteInput"/>
                   </FormItem>
                 </Col>
               </Row>
@@ -75,18 +73,25 @@
               <Row>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="文种类别" prop="dispatchNoType">
-                    <Input placeholder="发文号：文种类别" v-model="baseArch.dispatchNoType" class="writeInput"/>
+                    <Input placeholder="发文号：文种类别" v-model="baseArch.dispatchNoType" class="baseWriteInput"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="年份" prop="dispatchNoYear">
-                    <Input placeholder="发文号：年份" v-model="baseArch.dispatchNoYear" class="writeInput"/>
+                    <Input placeholder="发文号：年份" v-model="baseArch.dispatchNoYear" class="baseWriteInput"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="流水号" prop="dispatchNoNum">
-                    <Input placeholder="发文号：流水号" v-model="baseArch.dispatchNoNum" class="writeInput"/>
-                  </FormItem>
+                  <Row>
+                    <Col span="22">
+                      <FormItem class="FormItemClass" label="流水号" prop="dispatchNoNum">
+                        <Input placeholder="发文号：流水号" v-model="baseArch.dispatchNoNum" style="width: 265px;float: right;"/>
+                      </FormItem>
+                    </Col>
+                    <Col span="2" style="padding-top: 5px;padding-left: 5px">
+                      号
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
             </Col>
@@ -95,19 +100,19 @@
               <Row>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="公开属性">
-                    <i-select placeholder="属性" class="writeInput" v-model="baseArch.publicProperty">
+                    <i-select placeholder="属性" class="baseWriteInput" v-model="baseArch.publicProperty">
                       <i-option :key="item" v-for="item in pubProperty" :value="item">{{item}}</i-option>
                     </i-select>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="密级">
-                    <Input placeholder="..." v-model="baseArch.secretLv" class="writeInput"/>
+                    <Input placeholder="..." v-model="baseArch.secretLv" class="baseWriteInput"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="案卷页数" prop="archPage">
-                    <Input placeholder="..." v-model="baseArch.archPage" class="writeInput"/>
+                    <Input placeholder="..." v-model="baseArch.archPage" class="baseWriteInput"/>
                   </FormItem>
                 </Col>
               </Row>
@@ -117,17 +122,17 @@
               <Row>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="经办人">
-                    <Input placeholder="..." v-model="baseArch.operator" class="writeInput"/>
+                    <Input placeholder="..." v-model="baseArch.operator" class="baseWriteInput"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="立卷审核人">
-                    <Input placeholder="..." v-model="baseArch.archAuditor" class="writeInput"/>
+                    <Input placeholder="..." v-model="baseArch.archAuditor" class="baseWriteInput"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="立卷人">
-                    <Input placeholder="..." v-model="baseArch.archfileCreator" class="writeInput"/>
+                    <Input placeholder="..." v-model="baseArch.archfileCreator" class="baseWriteInput"/>
                   </FormItem>
                 </Col>
               </Row>
@@ -137,10 +142,14 @@
       </Col>
     </Row>
 
-    <Button @click="saveArch" v-if="operation">保存</Button>
-    <Button @click="updateArch" v-if="!operation">修改</Button>
-    <Button @click="reset">重置</Button>
-    <Button @click="goBack">返回</Button>
+    <Row>
+      <Col span="3" offset="9">
+        <Button @click="saveArch" v-if="operation">保存</Button>
+        <Button @click="updateArch" v-if="!operation">修改</Button>
+        <Button @click="reset">重置</Button>
+        <Button @click="goBack">返回</Button>
+      </Col>
+    </Row>
   </div>
 </template>
 
@@ -265,7 +274,7 @@
       },
       getDispatchNoNum(DispatchNo) {
         let index = DispatchNo.lastIndexOf("〕");
-        return DispatchNo.substring(index + 1, DispatchNo.length-1)
+        return DispatchNo.substring(index + 1, DispatchNo.length - 1)
       },
       reset() {
         this.baseArch.archTitle = '';
@@ -292,11 +301,6 @@
 </script>
 
 <style scoped>
-  .writeInput {
-    width: 310px;
-    float: right;
-  }
-
   .FormItemClass {
     margin-left: 10px;
   }

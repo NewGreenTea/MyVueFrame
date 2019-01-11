@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="checkWriteCss">
     <Row>
       <Col span="9" offset="3">
-        <Button @click="showBaseInfo">基本信息</Button>
-        <Button @click="showProfInfo">专业信息</Button>
-        <Button @click="showFileInfo">文件信息</Button>
+        <Button @click="showBaseInfo" :class="{'buttonSelect': butOnSelect.activeIndex === 1}">基本信息</Button>
+        <Button @click="showProfInfo" :class="{'buttonSelect': butOnSelect.activeIndex === 2}">专业信息</Button>
+        <Button @click="showFileInfo" :class="{'buttonSelect': butOnSelect.activeIndex === 3}">文件信息</Button>
         <Button @click="goBack">返回</Button>
       </Col>
       <Col span="6" offset="6">
@@ -18,7 +18,7 @@
       <div>
         <Form>
           <FormItem label="原因：">
-            <Input type="textarea" :autosize="reasonText"  placeholder="..." v-model="reason"/>
+            <Input type="textarea" :autosize="reasonText" placeholder="..." v-model="reason"/>
           </FormItem>
         </Form>
       </div>
@@ -33,19 +33,19 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="立案号:" prop="registerNo">
+                  <FormItem class="FormItemClass" label="立案号：" prop="registerNo">
                     <!--<Input placeholder="..." v-model="baseArch.registerNo" class="writeInput"/>-->
                     {{baseArch.registerNo}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="档号:">
+                  <FormItem class="FormItemClass" label="档号：">
                     <!--<Input placeholder="..." v-model="baseArch.archNo" class="colorBack writeInput" disabled/>-->
                     {{baseArch.archNo}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="案卷类别:">
+                  <FormItem class="FormItemClass" label="案卷类别：">
                     <!--<Input placeholder="..." v-model="baseArch.archType" class="colorBack writeInput" disabled/>-->
                     {{baseArch.archType}}
                   </FormItem>
@@ -55,7 +55,7 @@
 
             <!--案卷标题-->
             <Col>
-              <FormItem class="FormItemClass" label="案卷标题:" prop="archTitle">
+              <FormItem class="FormItemClass" label="案卷标题：">
                 <!--<Input placeholder="..." v-model="baseArch.archTitle" style="width: 93%;float: right"/>-->
                 {{baseArch.archTitle}}
               </FormItem>
@@ -63,7 +63,7 @@
 
             <!--编制单位-->
             <Col>
-              <FormItem class="FormItemClass" label="编制单位:">
+              <FormItem class="FormItemClass" label="编制单位：">
                 <!--<Input placeholder="..." v-model="baseArch.company" style="width: 93%;float: right"/>-->
                 {{baseArch.company}}
               </FormItem>
@@ -73,21 +73,21 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="编制日期:" prop="date">
+                  <FormItem class="FormItemClass" label="编制日期：">
                     <!--<DatePicker placeholder="Select date" format="yyyy-MM-dd" class="writeInput"-->
                     <!--@on-change="baseArch.date=$event" v-model="baseArch.date"></DatePicker>-->
                     {{baseArch.date}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="进管日期:" prop="inputDate">
+                  <FormItem class="FormItemClass" label="进管日期：">
                     <!--<DatePicker placeholder="Select date" format="yyyy-MM-dd" class="writeInput"-->
                     <!--@on-change="baseArch.inputDate=$event" v-model="baseArch.inputDate"></DatePicker>-->
                     {{baseArch.inputDate}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="保管期限:">
+                  <FormItem class="FormItemClass" label="保管期限：">
                     <!--<Input placeholder="..." v-model="baseArch.storageType" class="writeInput"/>-->
                     {{baseArch.storageType}}
                   </FormItem>
@@ -99,19 +99,19 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="文种类别:" prop="dispatchNoType">
+                  <FormItem class="FormItemClass" label="文种类别：">
                     <!--<Input placeholder="发文号：文种类别" v-model="baseArch.dispatchNoType" class="writeInput"/>-->
                     {{baseArch.dispatchNoType}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="年份:" prop="dispatchNoYear">
+                  <FormItem class="FormItemClass" label="年份：">
                     <!--<Input placeholder="发文号：年份" v-model="baseArch.dispatchNoYear" class="writeInput"/>-->
                     {{baseArch.dispatchNoYear}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="流水号:" prop="dispatchNoNum">
+                  <FormItem class="FormItemClass" label="流水号：">
                     <!--<Input placeholder="发文号：流水号" v-model="baseArch.dispatchNoNum" class="writeInput"/>-->
                     {{baseArch.dispatchNoNum}}
                   </FormItem>
@@ -122,7 +122,7 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="公开属性:">
+                  <FormItem class="FormItemClass" label="公开属性：">
                     <!--<i-select placeholder="属性" class="writeInput" v-model="baseArch.publicProperty">-->
                     <!--<i-option :key="item" v-for="item in pubProperty" :value="item">{{item}}</i-option>-->
                     <!--</i-select>-->
@@ -130,13 +130,13 @@
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="密级:">
+                  <FormItem class="FormItemClass" label="密级：">
                     <!--<Input placeholder="..." v-model="baseArch.secretLv" class="writeInput"/>-->
                     {{baseArch.secretLv}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="案卷页数:" prop="archPage">
+                  <FormItem class="FormItemClass" label="案卷页数：">
                     <!--<Input placeholder="..." v-model="baseArch.archPage" class="writeInput"/>-->
                     {{baseArch.archPage}}
                   </FormItem>
@@ -147,19 +147,19 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="经办人:">
+                  <FormItem class="FormItemClass" label="经办人：">
                     <!--<Input placeholder="..." v-model="baseArch.operator" class="writeInput"/>-->
                     {{baseArch.operator}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="立卷审核人:">
+                  <FormItem class="FormItemClass" label="立卷审核人：">
                     <!--<Input placeholder="..." v-model="baseArch.archAuditor" class="writeInput"/>-->
                     {{baseArch.archAuditor}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="立卷人:">
+                  <FormItem class="FormItemClass" label="立卷人：">
                     <!--<Input placeholder="..." v-model="baseArch.archfileCreator" class="writeInput"/>-->
                     {{baseArch.archfileCreator}}
                   </FormItem>
@@ -180,13 +180,13 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="建设单位">
+                  <FormItem class="FormItemClass" label="建设单位：">
                     <!--<Input placeholder="..." v-model="profArch.buildCompany" class="writeInput"/>-->
                     {{profArch.buildCompany}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="建设项目">
+                  <FormItem class="FormItemClass" label="建设项目：">
                     <!--<Input placeholder="..." v-model="profArch.buildProject" class="writeInput"/>-->
                     {{profArch.buildProject}}
                   </FormItem>
@@ -203,25 +203,25 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem label="区" class="FormItemClass">
+                  <FormItem label="区：" class="FormItemClass">
                     <!--<Input placeholder="..." v-model="buildingAddressInfo.area" class="writeInput"/>-->
                     {{buildingAddressInfo.area}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem label="路" class="FormItemClass">
+                  <FormItem label="路：" class="FormItemClass">
                     <!--<Input placeholder="..." v-model="buildingAddressInfo.road" class="writeInput"/>-->
                     {{buildingAddressInfo.road}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem label="街" class="FormItemClass">
+                  <FormItem label="街：" class="FormItemClass">
                     <!--<Input placeholder="..." v-model="buildingAddressInfo.street" class="writeInput"/>-->
                     {{buildingAddressInfo.street}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem label="号" class="FormItemClass" prop="no">
+                  <FormItem label="号：" class="FormItemClass" prop="no">
                     <!--<Input placeholder="..." v-model="buildingAddressInfo.no" class="writeInput"/>-->
                     {{buildingAddressInfo.no}}
                   </FormItem>
@@ -239,19 +239,19 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="总用地面积" prop="totalArea">
+                  <FormItem class="FormItemClass" label="总用地面积：" prop="totalArea">
                     <!--<Input placeholder="..." v-model="C61Info.totalArea" class="writeInput"/>-->
                     {{C61Info.totalArea}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="可建设用地面积(净用地面积)" prop="buildArea">
+                  <FormItem class="FormItemClass" label="可建设用地面积(净用地面积)：" prop="buildArea">
                     <!--<Input placeholder="..." v-model="C61Info.buildArea" class="writeInput"/>-->
                     {{C61Info.buildArea}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="道路用地面积" prop="roadArea">
+                  <FormItem class="FormItemClass" label="道路用地面积：" prop="roadArea">
                     <!--<Input placeholder="..." v-model="C61Info.roadArea" class="writeInput"/>-->
                     {{C61Info.roadArea}}
                   </FormItem>
@@ -262,19 +262,19 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="容积率" prop="plotRatio">
+                  <FormItem class="FormItemClass" label="容积率：" prop="plotRatio">
                     <!--<Input placeholder="..." v-model="C61Info.plotRatio" class="writeInput"/>-->
                     {{C61Info.plotRatio}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="建筑密度" prop="buildDensity">
+                  <FormItem class="FormItemClass" label="建筑密度：" prop="buildDensity">
                     <!--<Input placeholder="..." v-model="C61Info.buildDensity" class="writeInput"/>-->
                     {{C61Info.buildDensity}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="绿地率" prop="greenSpaceRatio">
+                  <FormItem class="FormItemClass" label="绿地率：" prop="greenSpaceRatio">
                     <!--<Input placeholder="..." v-model="C61Info.greenSpaceRatio" class="writeInput"/>-->
                     {{C61Info.greenSpaceRatio}}
                   </FormItem>
@@ -285,13 +285,13 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="居住人口" prop="population">
+                  <FormItem class="FormItemClass" label="居住人口：" prop="population">
                     <!--<Input placeholder="..." v-model="C61Info.population" class="writeInput"/>-->
                     {{C61Info.population}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="计算容积率建筑面积" prop="plotRatioArea">
+                  <FormItem class="FormItemClass" label="计算容积率建筑面积：" prop="plotRatioArea">
                     <!--<Input placeholder="..." v-model="C61Info.plotRatioArea" class="writeInput"/>-->
                     {{C61Info.plotRatioArea}}
                   </FormItem>
@@ -306,7 +306,7 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="规划设计单位">
+                  <FormItem class="FormItemClass" label="规划设计单位：">
                     <!--<Input placeholder="..." v-model="C62Info.designCompany" class="writeInput"/>-->
                     {{C62Info.designCompany}}
                   </FormItem>
@@ -321,7 +321,7 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="规划设计单位">
+                  <FormItem class="FormItemClass" label="规划设计单位：">
                     <!--<Input placeholder="..." v-model="C63Info.designCompany" class="writeInput"/>-->
                     {{C63Info.designCompany}}
                   </FormItem>
@@ -336,13 +336,13 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="规划批面积（总用地面积）" prop="totalArea">
+                  <FormItem class="FormItemClass" label="规划批面积（总用地面积）：" prop="totalArea">
                     <!--<Input placeholder="..." v-model="D21Info.totalArea" class="writeInput"/>-->
                     {{D21Info.totalArea}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="拟征地现状土地类别">
+                  <FormItem class="FormItemClass" label="拟征地现状土地类别：">
                     <!--<Input placeholder="..." v-model="D21Info.areaClass" class="writeInput"/>-->
                     {{D21Info.areaClass}}
                   </FormItem>
@@ -357,13 +357,13 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="规划批面积（总用地面积）" prop="totalArea">
+                  <FormItem class="FormItemClass" label="规划批面积（总用地面积）：" prop="totalArea">
                     <!--<Input placeholder="..." v-model="D22Info.totalArea" class="writeInput"/>-->
                     {{D22Info.totalArea}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="拟征地现状土地类别">
+                  <FormItem class="FormItemClass" label="拟征地现状土地类别：">
                     <!--<Input placeholder="..." v-model="D22Info.areaClass" class="writeInput"/>-->
                     {{D22Info.areaClass}}
                   </FormItem>
@@ -378,7 +378,7 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="设计单位">
+                  <FormItem class="FormItemClass" label="设计单位：">
                     <!--<Input placeholder="..." v-model="D31Info.designCompany" class="writeInput"/>-->
                     {{D31Info.designCompany}}
                   </FormItem>
@@ -393,19 +393,19 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="起止点">
+                  <FormItem class="FormItemClass" label="起止点：">
                     <!--<Input placeholder="..." v-model="D32Info.roadStart" class="writeInput"/>-->
                     {{D32Info.roadStart}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="断面形式">
+                  <FormItem class="FormItemClass" label="断面形式：">
                     <!--<Input placeholder="..." v-model="D32Info.roadTypeAspect" class="writeInput"/>-->
                     {{D32Info.roadTypeAspect}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="道路长度" prop="roadLength">
+                  <FormItem class="FormItemClass" label="道路长度：">
                     <!--<Input placeholder="..." v-model="D32Info.roadLength" class="writeInput"/>-->
                     {{D32Info.roadLength}}
                   </FormItem>
@@ -414,19 +414,19 @@
 
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="道路开口">
+                  <FormItem class="FormItemClass" label="道路开口：">
                     <!--<Input placeholder="..." v-model="D32Info.roadCrossing" class="writeInput"/>-->
                     {{D32Info.roadCrossing}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="平面位置">
+                  <FormItem class="FormItemClass" label="平面位置：">
                     <!--<Input placeholder="..." v-model="D32Info.roadAspectPosition" class="writeInput"/>-->
                     {{D32Info.roadAspectPosition}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="跨越区域">
+                  <FormItem class="FormItemClass" label="跨越区域：">
                     <!--<Input placeholder="..." v-model="D32Info.bridgeCrossingArea" class="writeInput"/>-->
                     {{D32Info.bridgeCrossingArea}}
                   </FormItem>
@@ -435,19 +435,19 @@
 
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="桥面长度" prop="bridgeLength">
+                  <FormItem class="FormItemClass" label="桥面长度：">
                     <!--<Input placeholder="..." v-model="D32Info.bridgeLength" class="writeInput"/>-->
                     {{D32Info.bridgeLength}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="总长度" prop="bridgeTotalLength">
+                  <FormItem class="FormItemClass" label="总长度：">
                     <!--<Input placeholder="..." v-model="D32Info.bridgeTotalLength" class="writeInput"/>-->
                     {{D32Info.bridgeTotalLength}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="净空高度" prop="bridgeHight">
+                  <FormItem class="FormItemClass" label="净空高度：">
                     <!--<Input placeholder="..." v-model="D32Info.bridgeHight" class="writeInput"/>-->
                     {{D32Info.bridgeHight}}
                   </FormItem>
@@ -456,7 +456,7 @@
 
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="平面位置">
+                  <FormItem class="FormItemClass" label="平面位置：">
                     <!--<Input placeholder="..." v-model="D32Info.bridgeAspectPosition" class="writeInput"/>-->
                     {{D32Info.bridgeAspectPosition}}
                   </FormItem>
@@ -471,19 +471,19 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="起止点">
+                  <FormItem class="FormItemClass" label="起止点：">
                     <!--<Input placeholder="..." v-model="D34Info.overheadPipeStart" class="writeInput"/>-->
                     {{D34Info.overheadPipeStart}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="管径规格">
+                  <FormItem class="FormItemClass" label="管径规格：">
                     <!--<Input placeholder="..." v-model="D34Info.overheadPipeType" class="writeInput"/>-->
                     {{D34Info.overheadPipeType}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="管线长度" prop="overheadPipeLength">
+                  <FormItem class="FormItemClass" label="管线长度：">
                     <!--<Input placeholder="..." v-model="D34Info.overheadPipeLength" class="writeInput"/>-->
                     {{D34Info.overheadPipeLength}}
                   </FormItem>
@@ -492,19 +492,19 @@
 
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="架空高度" prop="overheadPipeHight">
+                  <FormItem class="FormItemClass" label="架空高度：">
                     <!--<Input placeholder="..." v-model="D34Info.overheadPipeHight" class="writeInput"/>-->
                     {{D34Info.overheadPipeHight}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="平面位置">
+                  <FormItem class="FormItemClass" label="平面位置：">
                     <!--<Input placeholder="..." v-model="D34Info.overheadPipeEtc" class="writeInput"/>-->
                     {{D34Info.overheadPipeEtc}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="起止点">
+                  <FormItem class="FormItemClass" label="起止点：">
                     <!--<Input placeholder="..." v-model="D34Info.underPipeStart" class="writeInput"/>-->
                     {{D34Info.underPipeStart}}
                   </FormItem>
@@ -513,19 +513,19 @@
 
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="管径规格">
+                  <FormItem class="FormItemClass" label="管径规格：">
                     <!--<Input placeholder="..." v-model="D34Info.underPipeType" class="writeInput"/>-->
                     {{D34Info.underPipeType}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="管线长度" prop="underPipeLength">
+                  <FormItem class="FormItemClass" label="管线长度：">
                     <!--<Input placeholder="..." v-model="D34Info.underPipeLength" class="writeInput"/>-->
                     {{D34Info.underPipeLength}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="埋设深度" prop="underPipeHight">
+                  <FormItem class="FormItemClass" label="埋设深度：">
                     <!--<Input placeholder="..." v-model="D34Info.underPipeHight" class="writeInput"/>-->
                     {{D34Info.underPipeHight}}
                   </FormItem>
@@ -534,7 +534,7 @@
 
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="平面位置">
+                  <FormItem class="FormItemClass" label="平面位置：">
                     <!--<Input placeholder="..." v-model="D34Info.underPipePosition" class="writeInput"/>-->
                     {{D34Info.underPipePosition}}
                   </FormItem>
@@ -549,19 +549,19 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="起止点">
+                  <FormItem class="FormItemClass" label="起止点：">
                     <!--<Input placeholder="..." v-model="D63Info.overheadPipeStart" class="writeInput"/>-->
                     {{D63Info.overheadPipeStart}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="管径规格">
+                  <FormItem class="FormItemClass" label="管径规格：">
                     <!--<Input placeholder="..." v-model="D63Info.overheadPipeType" class="writeInput"/>-->
                     {{D63Info.overheadPipeType}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="管线长度" prop="overheadPipeLength">
+                  <FormItem class="FormItemClass" label="管线长度：">
                     <!--<Input placeholder="..." v-model="D63Info.overheadPipeLength" class="writeInput"/>-->
                     {{D63Info.overheadPipeLength}}
                   </FormItem>
@@ -570,19 +570,19 @@
 
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="架空高度" prop="overheadPipeHight">
+                  <FormItem class="FormItemClass" label="架空高度：">
                     <!--<Input placeholder="..." v-model="D63Info.overheadPipeHight" class="writeInput"/>-->
                     {{D63Info.overheadPipeHight}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="其他">
+                  <FormItem class="FormItemClass" label="其他：">
                     <!--<Input placeholder="..." v-model="D63Info.overheadPipeEtc" class="writeInput"/>-->
                     {{D63Info.overheadPipeEtc}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="起止点">
+                  <FormItem class="FormItemClass" label="起止点：">
                     <!--<Input placeholder="..." v-model="D63Info.underPipeStart" class="writeInput"/>-->
                     {{D63Info.underPipeStart}}
                   </FormItem>
@@ -591,25 +591,25 @@
 
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="管径规格">
+                  <FormItem class="FormItemClass" label="管径规格：">
                     <!--<Input placeholder="..." v-model="D63Info.underPipeType" class="writeInput"/>-->
                     {{D63Info.underPipeType}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="管线长度" prop="underPipeLength">
+                  <FormItem class="FormItemClass" label="管线长度：">
                     <!--<Input placeholder="..." v-model="D63Info.underPipeLength" class="writeInput"/>-->
                     {{D63Info.underPipeLength}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="埋设深度" prop="underPipeHight">
+                  <FormItem class="FormItemClass" label="埋设深度：">
                     <!--<Input placeholder="..." v-model="D63Info.underPipeHight" class="writeInput"/>-->
                     {{D63Info.underPipeHight}}
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="其他">
+                  <FormItem class="FormItemClass" label="其他：">
                     <!--<Input placeholder="..." v-model="D63Info.underPipeEtc" class="writeInput"/>-->
                     {{D63Info.underPipeEtc}}
                   </FormItem>
@@ -623,29 +623,36 @@
       <!-- 个性专业表格信息 -->
       <Col span="20" offset="1">
         <Row v-if="showD212">
+          用地性质详细著录表
           <Table border :columns="UseAreaInfoColumns" :data="UseAreaInfoData" :height="tableHeight2"></Table>
         </Row>
 
         <Row v-if="showD31">
+          报建项目详细表
           <Table border :columns="D31BuildProjColumns" :data="D31BuildProjData" :height="tableHeight2"></Table>
         </Row>
         <Row v-if="showD31">
+          公建配套表
           <Table border :columns="D31PubBuildColumns" :data="D31PubBuildData" :height="tableHeight2"></Table>
         </Row>
 
         <Row v-if="showD61">
+          公建配套详细表
           <Table border :columns="PubBuildInfoColumns" :data="PubBuildInfoData" :height="tableHeight2"></Table>
         </Row>
         <Row v-if="showD61">
+          验收建筑层数与面积
           <Table border :columns="NumAreaInfoColumns" :data="NumAreaInfoData" :height="tableHeight2"></Table>
         </Row>
         <Row v-if="showD6123">
+          验收测量记录册
           <Table border :columns="MeasureInfoColumns" :data="MeasureInfoData" :height="tableHeight2"></Table>
         </Row>
       </Col>
 
+      <!-- 个性专业三大基本表格信息 -->
       <Col span="20" offset="1">
-        <Row>
+        <Row :gutter="16">
           <!-- 专业：地图型号 -->
           <Col span="8">
             地图型号
@@ -1061,6 +1068,9 @@
         reasonText: {
           minRows: 5,
           maxRows: 15
+        },
+        butOnSelect: {
+          activeIndex: 0
         }
       }
     },
@@ -1139,7 +1149,8 @@
           this.prof = false;
           this.file = false
         }
-        this.base = true
+        this.base = true;
+        this.butOnSelect.activeIndex = 1;
       },
       //显示档案专业信息
       showProfInfo() {
@@ -1147,7 +1158,8 @@
           this.base = false;
           this.file = false
         }
-        this.prof = true
+        this.prof = true;
+        this.butOnSelect.activeIndex = 2;
       },
       //显示档案文件信息
       showFileInfo() {
@@ -1155,14 +1167,15 @@
           this.base = false;
           this.prof = false
         }
-        this.file = true
+        this.file = true;
+        this.butOnSelect.activeIndex = 3;
       },
       //质检通过
       successCheck() {
         this.axios.post('/api/loadArch/writeCheckComplete', this.qs.stringify({
           archID: this.baseArch.archId,
           result: '通过'
-        })).then(res =>{
+        })).then(res => {
           this.$Message.success(res.data.msg);
           this.goBack();
         })
@@ -1191,7 +1204,7 @@
       //返回
       goBack() {
         this.$router.go(-1);
-        let type={
+        let type = {
           id: this.baseArch.classId,
           className: this.baseArch.archType
         };
@@ -1243,5 +1256,19 @@
 </script>
 
 <style scoped>
-
+  /*选中按钮改变的颜色*/
+  .buttonSelect {
+    background-color: deepskyblue;
+  }
+  /*页面的css*/
+  .formClass /deep/ .ivu-form-item-content{
+    font-size: 20px;
+    line-height: 42px;
+  }
+  .formClass /deep/ .ivu-form-item-label{
+    font-size: 20px;
+  }
+  .checkWriteCss{
+    font-size: 20px;
+  }
 </style>

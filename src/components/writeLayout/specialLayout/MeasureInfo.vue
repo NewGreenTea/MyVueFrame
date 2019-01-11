@@ -1,10 +1,16 @@
 <template>
-  <Row>
+  <Row class="WriteLayoutFont">
     <Col>
-      记录册编号
-      <Button @click="saveMInfo">+</Button>
-      <Button @click="updateMInfo" v-if="isUpdate">√</Button>
-      <Button @click="cancelMInfo">-</Button>
+      <Row>
+        <Col span="12">
+          记录册编号
+        </Col>
+        <Col span="12">
+          <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
+          <Button @click="updateMInfo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="saveMInfo" class="profButtonFloat">+</Button>
+        </Col>
+      </Row>
     </Col>
     <Col>
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
@@ -32,7 +38,7 @@
 </template>
 
 <script>
-  import {CommonFunction,ArchRequestConfig} from '../../../js/global'
+  import {CommonFunction, ArchRequestConfig} from '../../../js/global'
 
   export default {
     name: "MeasureInfo",
@@ -74,7 +80,7 @@
         UpdateModal: false
       }
     },
-    methods:{
+    methods: {
       loadDMI(data) {
         if (this.isUpdate === true) {
           this.axios.get('/api/profETC/getMeasureInfo', {params: {archId: this.archId, ArchInfo: data}}).then(
@@ -101,10 +107,10 @@
           this.MeasureInfo.remarkNo = this.tempData[0].remarkNo
         }
       },
-      cancleUpdate () {
+      cancleUpdate() {
         this.tempData = []
       },
-      update61MIData () {
+      update61MIData() {
         let temp = {
           id: null,
           archId: '',
@@ -114,20 +120,20 @@
         temp.archId = this.archId;
         temp.remarkNo = this.MeasureInfo.remarkNo;
         let check = true;
-        if(!CommonFunction.isEmpty(temp.remarkNo)){
+        if (!CommonFunction.isEmpty(temp.remarkNo)) {
           for (let i = 0; i < this.UpdateAddData.length; i++) {
-          if (this.UpdateAddData[i].remarkNo === this.tempData[0].remarkNo) {
-            this.UpdateAddData.splice(i, 1);
-            this.UpdateAddData.unshift(temp);
-            this.tableData.splice(i, 1);
-            this.tableData.unshift(temp);
-            check = false
+            if (this.UpdateAddData[i].remarkNo === this.tempData[0].remarkNo) {
+              this.UpdateAddData.splice(i, 1);
+              this.UpdateAddData.unshift(temp);
+              this.tableData.splice(i, 1);
+              this.tableData.unshift(temp);
+              check = false
+            }
           }
-        }
           if (check === true) {
             let data = [];
             data.push(temp);
-            this.axios.post('/api/profETC/update' + this.archType + 'MI', JSON.stringify(data),ArchRequestConfig).then(res => {
+            this.axios.post('/api/profETC/update' + this.archType + 'MI', JSON.stringify(data), ArchRequestConfig).then(res => {
               this.axios.get('/api/profETC/getMeasureInfo', {
                 params: {
                   archId: data[0].archId,
@@ -155,7 +161,7 @@
             });
           }
         }
-        else{
+        else {
           this.$Message.error('记录册编号不能为空!')
         }
 
@@ -165,11 +171,11 @@
         this.tempData = [];
       },
       updatePMI() {
-        this.axios.post('/api/profETC/add' + this.archType + 'MI', JSON.stringify(this.UpdateAddData),ArchRequestConfig).then(res => {
+        this.axios.post('/api/profETC/add' + this.archType + 'MI', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
           this.UpdateAddData = []
           //todo,有错报错，没错提示并跳转
         });
-        this.axios.post('/api/profETC/delete' + this.archType + 'MI', JSON.stringify(this.UpdateDeleteData),ArchRequestConfig).then(res => {
+        this.axios.post('/api/profETC/delete' + this.archType + 'MI', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig).then(res => {
           this.UpdateDeleteData = []
           //todo,有错报错，没错提示并跳转
         })
@@ -199,7 +205,7 @@
         };
         temp.archId = this.archId;
         temp.remarkNo = this.MeasureInfo.remarkNo;
-        if(!CommonFunction.isEmpty(this.MeasureInfo.remarkNo)){
+        if (!CommonFunction.isEmpty(this.MeasureInfo.remarkNo)) {
           if (this.isUpdate === true) {
             this.UpdateAddData.unshift(temp);
             this.tableData.unshift(temp)
@@ -209,7 +215,7 @@
             this.tableData = this.MeasureInfoData;
             this.$emit('saveMeasureInfoData', this.tableData)
           }
-        }else {
+        } else {
           this.$Message.error('记录册编号不能为空');
         }
 

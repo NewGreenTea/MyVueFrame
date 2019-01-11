@@ -151,12 +151,16 @@
           </Col>
 
           <!-- 分配界面：主体右边：（下半部分）档案数据分配表格 -->
-          <Col span="24">
+          <Col span="24" class="tableLoading">
             <Table ref="table" :height="tableHeight" border :columns="ArchTableColumn" :data="DistributeArchData"
                    v-if="DistributeArchData != null" @on-select-all="selectAllData" @on-select="selectRowData"
                    @on-select-cancel="cancelRowData" @on-select-all-cancel="cancelAllData"></Table>
             <Page :current="currentPage" :total="archDataCount" :page-size="pageSize" show-elevator show-total
                   show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="pso"/>
+            <Spin fix v-if="spinShow">
+              <Icon type="ios-loading" size=36 class="demo-spin-icon-load"></Icon>
+              <div>加载中</div>
+            </Spin>
           </Col>
         </Row>
       </Col>
@@ -513,7 +517,9 @@
         keyDate: '',
         searchData: false,
         //vue 组件属性
-        InputClear: true
+        InputClear: true,
+        //加载动画
+        spinShow: false,
       }
     },
     methods: {
@@ -527,10 +533,13 @@
       loadDistributeArchData() {
         this.currentPage = 1;
         this.urlParams = {'assignmentStatue': 0, 'pageNum': null, 'pageSize': this.pageSize};
+        this.spinShow = true;
         this.axios.get(this.pageUrl, {params: this.urlParams}).then(res => {
           this.DistributeArchData = res.data.data.list;
-          this.archDataCount = res.data.data.total
+          this.archDataCount = res.data.data.total;
+          this.spinShow = false;
         });
+
       },
       //加载档案批次任务
       showBatchAssignment() {
@@ -674,6 +683,7 @@
             pageNum: 1,
             pageSize: this.pageSize
           };
+          this.spinShow = true;
           this.axios.post(this.pageUrl, this.qs.stringify(this.urlParams, {indices: false}))
             .then(res => {
               this.DistributeArchData = res.data.data.list;
@@ -684,7 +694,9 @@
               this.keyword = '';
               //清空下拉选项的选择值
               this.$refs.ArchStatue.clearSingleSelect();
+              this.spinShow = false;
             })
+
         }else{
           this.$Message.error('筛选条件没有正确选择！')
         }

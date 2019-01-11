@@ -1,10 +1,16 @@
 <template>
-  <Row>
+  <Row class="WriteLayoutFont">
     <Col>
-      局历史审批文件编号表
-      <Button @click="saveAHNo">+</Button>
-      <Button @click="updateAHNo" v-if="isUpdate">√</Button>
-      <Button @click="cancelAHNo">-</Button>
+      <Row>
+        <Col span="12">
+          局历史审批文件编号表
+        </Col>
+        <Col span="12">
+          <Button @click="cancelAHNo" class="profButtonFloat">-</Button>
+          <Button @click="updateAHNo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="saveAHNo" class="profButtonFloat">+</Button>
+        </Col>
+      </Row>
     </Col>
     <Col>
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
@@ -47,7 +53,7 @@
   import {isIntegerNotMust} from '../../js/validate'
   import {CommonFunction} from '../../js/global'
   //档案数据对象的传输配置
-  const config={
+  const config = {
     headers: {'Content-Type': 'application/json'}
   };
 
@@ -86,6 +92,7 @@
           },
           {
             title: '序号',
+            width: 70,
             type: 'index'
           },
           {
@@ -186,7 +193,7 @@
               if (check === true) {
                 let data = [];
                 data.push(temp);
-                this.axios.post('/api/loadArch/updateAreaHisNo', JSON.stringify(data),config).then(res => {
+                this.axios.post('/api/loadArch/updateAreaHisNo', JSON.stringify(data), config).then(res => {
                   this.axios.get('/api/loadArch/getProfInfo', {
                     params: {
                       archId: data[0].archId,
@@ -236,10 +243,10 @@
         })
       },
       updatePAHN() {
-        this.axios.post('/api/profInfo/addAreaHisNo', JSON.stringify(this.UpdateAddData),config).then(res => {
+        this.axios.post('/api/profInfo/addAreaHisNo', JSON.stringify(this.UpdateAddData), config).then(res => {
           this.UpdateAddData = []
         });
-        this.axios.post('/api/profInfo/deleteAreaHisNo', JSON.stringify(this.UpdateDeleteData),config).then(res => {
+        this.axios.post('/api/profInfo/deleteAreaHisNo', JSON.stringify(this.UpdateDeleteData), config).then(res => {
           this.UpdateDeleteData = []
         })
       },

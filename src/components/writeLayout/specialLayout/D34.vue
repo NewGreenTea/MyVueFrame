@@ -1,8 +1,8 @@
 <template>
-  <Form class="formClass" :model="D34Info" ref="D34form" :rules="rules">
-    <Row>
-      <Col>
-        <Row>
+  <Row>
+    <Col span="20" offset="1">
+      <Form class="formClass" :model="D34Info" ref="D34form" :rules="rules" :label-width="labelWidth">
+        <Row class="WriteLayoutFont" :gutter="16">
           <Col span="8">
             <FormItem class="FormItemClass" label="起止点">
               <Input placeholder="..." v-model="D34Info.overheadPipeStart" class="writeInput"/>
@@ -14,18 +14,31 @@
             </FormItem>
           </Col>
           <Col span="8">
-            <FormItem class="FormItemClass" label="管线长度" prop="overheadPipeLength">
-              <Input placeholder="..." v-model="D34Info.overheadPipeLength" class="writeInput"/>
-            </FormItem>
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="管线长度" prop="overheadPipeLength">
+                  <Input placeholder="..." v-model="D34Info.overheadPipeLength" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （米/m）
+              </Col>
+            </Row>
           </Col>
-        </Row>
 
-        <Row>
           <Col span="8">
-            <FormItem class="FormItemClass" label="架空高度" prop="overheadPipeHight">
-              <Input placeholder="..." v-model="D34Info.overheadPipeHight" class="writeInput"/>
-            </FormItem>
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="架空高度" prop="overheadPipeHight">
+                  <Input placeholder="..." v-model="D34Info.overheadPipeHight" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （米/m）
+              </Col>
+            </Row>
           </Col>
+
           <Col span="8">
             <FormItem class="FormItemClass" label="平面位置">
               <Input placeholder="..." v-model="D34Info.overheadPipeEtc" class="writeInput"/>
@@ -36,36 +49,48 @@
               <Input placeholder="..." v-model="D34Info.underPipeStart" class="writeInput"/>
             </FormItem>
           </Col>
-        </Row>
 
-        <Row>
           <Col span="8">
             <FormItem class="FormItemClass" label="管径规格">
               <Input placeholder="..." v-model="D34Info.underPipeType" class="writeInput"/>
             </FormItem>
           </Col>
-          <Col span="8">
-            <FormItem class="FormItemClass" label="管线长度" prop="underPipeLength">
-              <Input placeholder="..." v-model="D34Info.underPipeLength" class="writeInput"/>
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem class="FormItemClass" label="埋设深度" prop="underPipeHight">
-              <Input placeholder="..." v-model="D34Info.underPipeHight" class="writeInput"/>
-            </FormItem>
-          </Col>
-        </Row>
 
-        <Row>
+          <Col span="8">
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="管线长度" prop="underPipeLength">
+                  <Input placeholder="..." v-model="D34Info.underPipeLength" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （米/m）
+              </Col>
+            </Row>
+          </Col>
+
+          <Col span="8">
+            <Row>
+              <Col span="16">
+                <FormItem class="FormItemClass" label="埋设深度" prop="underPipeHight">
+                  <Input placeholder="..." v-model="D34Info.underPipeHight" class="profWriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6" class="profWriteUnit">
+                （米/m）
+              </Col>
+            </Row>
+          </Col>
+
           <Col span="8">
             <FormItem class="FormItemClass" label="平面位置">
               <Input placeholder="..." v-model="D34Info.underPipePosition" class="writeInput"/>
             </FormItem>
           </Col>
         </Row>
-      </Col>
-    </Row>
-  </Form>
+      </Form>
+    </Col>
+  </Row>
 </template>
 
 <script>
@@ -77,6 +102,7 @@
     props: ['isUpdate'],
     data() {
       return {
+        labelWidth: 100,
         archId: this.$route.params.archId,
         D34Info: {
           id: null,
@@ -138,7 +164,7 @@
           }
         })
       },
-      goback(){
+      goback() {
         this.$router.go(-2);
       }
     },

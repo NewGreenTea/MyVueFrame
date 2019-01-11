@@ -1,6 +1,53 @@
-.writeInput {
-  width: 200px;
+.baseWriteInput {
+  width: 300px;
   float: right;
+}
+
+/*专业信息特性著录框的样式*/
+.profWriteInput {
+  width: 156px;
+  float: right;
+}
+/*专业信息著录界面的样式*/
+.profButtonView{
+  margin-top: 20px;
+}
+/*专业信息著录含有单位的样式*/
+.profWriteUnit{
+  padding-top: 5px;
+  padding-left: 5px;
+}
+/*显示特性专业表格时界面样式css*/
+.mainSpecialView{
+  margin-bottom: 30px;
+}
+/*专业信息著录框的样式*/
+.writeInput {
+  width: 284px;
+  float: right;
+}
+/*专业信息操作按钮靠右显示*/
+.profButtonFloat{
+  float: right;
+}
+/*档案著录界面档号卡片提示样式*/
+.tips {
+  float: right;
+  text-align: center;
+}
+
+/*著录界面的页面字体大小*/
+.WriteLayoutFont{
+  font-size: 14px;
+}
+/*著录框的label，字段名大小*/
+.formClass /deep/ .ivu-form-item-label{
+  text-align: left;
+  font-size: 14px;
+}
+/*著录框的字体大小*/
+.formClass /deep/ .ivu-input{
+  font-size: 14px;
 }
 
 .FormItemClass {

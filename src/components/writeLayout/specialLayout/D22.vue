@@ -1,18 +1,26 @@
 <template>
   <Row>
-    <Col>
-      <Form class="formClass" :model="D22Info" :rules="rules" ref="D22form">
-        <Row>
-          <Col>
+    <Col span="20" offset="1">
+      <Form class="formClass" :model="D22Info" :rules="rules" ref="D22form" :label-width="labelWidth">
+        <Row class="WriteLayoutFont" :gutter="16">
+          <Col span="8">
             <Row>
-              <Col span="8">
+              <Col span="16">
                 <FormItem class="FormItemClass" label="规划批面积（总用地面积）" prop="totalArea">
-                  <Input placeholder="..." v-model="D22Info.totalArea" class="writeInput"/>
+                  <Input placeholder="..." v-model="D22Info.totalArea" class="profWriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
+              <Col span="6" class="profWriteUnit">
+                （平方米/m²）
+              </Col>
+            </Row>
+          </Col>
+
+          <Col span="8">
+            <Row>
+              <Col span="16">
                 <FormItem class="FormItemClass" label="拟征地现状土地类别">
-                  <Input placeholder="..." v-model="D22Info.areaClass" class="writeInput"/>
+                  <Input placeholder="..." v-model="D22Info.areaClass" class="profWriteInput"/>
                 </FormItem>
               </Col>
             </Row>
@@ -22,7 +30,7 @@
     </Col>
 
     <!-- 用地性质详细著录 -->
-    <Col>
+    <Col span="20" offset="1">
       <RouterView ref="D22UAInfo" name="D22UseAreaInfo" :isUpdate="updateInfo"
                   @saveUseAreaInfoData="saveD22UAI"></RouterView>
     </Col>
@@ -38,6 +46,7 @@
     props: ['isUpdate'],
     data() {
       return {
+        labelWidth: 100,
         rules: {
           totalArea: [
             {validator: isDecimalNotMust, trigger: 'blur'}
@@ -66,7 +75,7 @@
         }
       },
       saveArch() {
-        this.$refs.D22form.validate((valid) => {    //todo 更新检测
+        this.$refs.D22form.validate((valid) => {
           if (valid) {
             //传给专业信息界面能按保存按钮
             this.axios.post('/api/profETC/addD22', this.D22Info, ArchRequestConfig);
@@ -90,10 +99,10 @@
           }
         })
       },
-      saveD22UAI (data) {
+      saveD22UAI(data) {
         this.UseAreaInfoData = data
       },
-      goback(){
+      goback() {
         this.$router.go(-3);
       }
     },
@@ -105,14 +114,6 @@
 </script>
 
 <style scoped>
-  .writeInput {
-    width: 280px;
-    float: right;
-  }
-
-  .FormItemClass {
-    margin-left: 10px;
-  }
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;

@@ -1,10 +1,16 @@
 <template>
-  <Row>
+  <Row class="WriteLayoutFont">
     <Col>
-      用地性质详细著录
-      <Button @click="saveMInfo">+</Button>
-      <Button @click="updateMInfo" v-if="isUpdate">√</Button>
-      <Button @click="cancelMInfo">-</Button>
+      <Row>
+        <Col span="12">
+          用地性质详细著录
+        </Col>
+        <Col span="12">
+          <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
+          <Button @click="updateMInfo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="saveMInfo" class="profButtonFloat">+</Button>
+        </Col>
+      </Row>
     </Col>
     <Col>
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
@@ -70,7 +76,7 @@
 
 <script>
   import {isIntegerNotMust} from '../../../js/validate'
-  import {CommonFunction,ArchRequestConfig} from '../../../js/global'
+  import {CommonFunction, ArchRequestConfig} from '../../../js/global'
 
   export default {
     name: "UseAreaInfo",
@@ -128,8 +134,8 @@
         UpdateModal: false
       }
     },
-    methods:{
-      loadUAI (data) {
+    methods: {
+      loadUAI(data) {
         if (this.isUpdate === true) {
           this.axios.get('/api/profETC/getUseAreaInfo', {params: {archId: this.archId, ArchInfo: data}}).then(
             res => {
@@ -157,11 +163,11 @@
           this.UseAreaInfo.typeArea = this.tempData[0].typeArea;
         }
       },
-      cancleUpdate () {
+      cancleUpdate() {
         this.$refs.updateForm.resetFields();
         this.tempData = []
       },
-      UpdateUAIData () {
+      UpdateUAIData() {
         let temp = {
           id: null,
           archId: '',
@@ -195,7 +201,7 @@
               if (check === true) {
                 let data = [];
                 data.push(temp);
-                this.axios.post('/api/profETC/update' + this.archType + 'UseAreaInfo', JSON.stringify(data),ArchRequestConfig).then(res => {
+                this.axios.post('/api/profETC/update' + this.archType + 'UseAreaInfo', JSON.stringify(data), ArchRequestConfig).then(res => {
                   this.axios.get('/api/profETC/getUseAreaInfo', {
                     params: {
                       archId: data[0].archId,
@@ -242,11 +248,11 @@
         })
       },
       updatePMI() {
-        this.axios.post('/api/profETC/add'+ this.archType +'UseAreaInfo', JSON.stringify(this.UpdateAddData),ArchRequestConfig).then(res => {
+        this.axios.post('/api/profETC/add' + this.archType + 'UseAreaInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
           this.UpdateAddData = []
           //todo,有错报错，没错提示并跳转
         });
-        this.axios.post('/api/profETC/delete'+ this.archType +'UseAreaInfo', JSON.stringify(this.UpdateDeleteData),ArchRequestConfig).then(res => {
+        this.axios.post('/api/profETC/delete' + this.archType + 'UseAreaInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig).then(res => {
           this.UpdateDeleteData = []
           //todo,有错报错，没错提示并跳转
         })
@@ -305,7 +311,7 @@
               this.UseAreaInfo.archId = '';
               this.formReset()
             }
-            else{
+            else {
               this.AddModal = false
             }
           }
@@ -381,10 +387,10 @@
       cancelAllData(selection) {
         this.tempData = []
       },
-      addcancle () {
+      addcancle() {
         this.$refs.addForm.resetFields()
       },
-      formReset () {
+      formReset() {
         this.UseAreaInfo.areaNature = '';
         this.UseAreaInfo.areaCode = '';
         this.UseAreaInfo.typeArea = '';

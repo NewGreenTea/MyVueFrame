@@ -1,10 +1,16 @@
 <template>
-  <Row>
+  <Row class="WriteLayoutFont">
     <Col>
-      验收建筑层数与面积
-      <Button @click="saveMInfo">+</Button>
-      <Button @click="updateMInfo" v-if="isUpdate">√</Button>
-      <Button @click="cancelMInfo">-</Button>
+      <Row>
+        <Col span="12">
+          验收建筑层数与面积
+        </Col>
+        <Col span="12">
+          <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
+          <Button @click="updateMInfo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="saveMInfo" class="profButtonFloat">+</Button>
+        </Col>
+      </Row>
     </Col>
     <Col>
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
@@ -121,7 +127,7 @@
 </template>
 
 <script>
-  import {isDecimalNotMust,isIntegerNotMust} from '../../../js/validate'
+  import {isDecimalNotMust, isIntegerNotMust} from '../../../js/validate'
   import {CommonFunction, ArchRequestConfig} from '../../../js/global'
 
   export default {
@@ -299,7 +305,7 @@
               if (check === true) {
                 let data = [];
                 data.push(temp);
-                this.axios.post('/api/profETC/updateD61NumAreaInfo', JSON.stringify(data),ArchRequestConfig).then(res => {
+                this.axios.post('/api/profETC/updateD61NumAreaInfo', JSON.stringify(data), ArchRequestConfig).then(res => {
                   this.axios.get('/api/profETC/getD61NumAreaInfo', {
                     params: {
                       archId: data[0].archId
@@ -333,11 +339,11 @@
         this.tempData = [];
       },
       updatePMI() {
-        this.axios.post('/api/profETC/addD61NumAreaInfo', JSON.stringify(this.UpdateAddData),ArchRequestConfig).then(res => {
+        this.axios.post('/api/profETC/addD61NumAreaInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
           this.UpdateAddData = []
           //todo,有错报错，没错提示并跳转
         });
-        this.axios.post('/api/profETC/deleteD61NumAreaInfo', JSON.stringify(this.UpdateDeleteData),ArchRequestConfig).then(res => {
+        this.axios.post('/api/profETC/deleteD61NumAreaInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig).then(res => {
           this.UpdateDeleteData = []
           //todo,有错报错，没错提示并跳转
         })
@@ -417,7 +423,7 @@
                 this.$emit('saveNumAreaInfoData', this.tableData)
               }
               this.AddModal = false
-            }else{
+            } else {
               this.AddModal = false
             }
           }
@@ -512,7 +518,7 @@
       cancelAllData(selection) {
         this.tempData = []
       },
-      formReset () {
+      formReset() {
         this.D61NumAreaInfo.projectName = '';
         this.D61NumAreaInfo.buildingNum = '';
         this.D61NumAreaInfo.overgroundFloor = '';
@@ -521,7 +527,7 @@
         this.D61NumAreaInfo.undergroundArea = '';
         this.D61NumAreaInfo.totalArea = '';
       },
-      addcancle () {
+      addcancle() {
         this.$refs.addForm.resetFields();
         this.formReset();
       },

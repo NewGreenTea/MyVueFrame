@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api' : {  // 本项目的所有请求url含有“/api”，进行匹配
-        target: 'http://192.168.13.58:8081',  // 接口的IP
+        target: 'http://192.168.13.78:8081',  // 接口的IP
         // secure : false,  //如果是https接口，需要配置这个参数
         changeOrigin : true,  // 如果请求接口跨域，需要配置
         pathRewrite : {  // 如果接口没有/api，可以重写路径

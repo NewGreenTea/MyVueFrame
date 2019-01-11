@@ -1,6 +1,10 @@
 <template>
-  <!-- 验收测量记录册 -->
-  <RouterView ref="MeaInfo" name="MeasureInfo" :isUpdate="updateInfo" @saveMeasureInfoData="saveD62MI"></RouterView>
+  <Row>
+    <Col span="20" offset="1">
+      <!-- 验收测量记录册 -->
+      <RouterView ref="MeaInfo" name="MeasureInfo" :isUpdate="updateInfo" @saveMeasureInfoData="saveD62MI"></RouterView>
+    </Col>
+  </Row>
 </template>
 
 <script>
@@ -20,7 +24,7 @@
     methods: {
       saveArch() {
         if (this.MeasureInfoData !== []) {
-          this.axios.post('/api/profETC/addD62MI', JSON.stringify(this.MeasureInfoData),ArchRequestConfig);
+          this.axios.post('/api/profETC/addD62MI', JSON.stringify(this.MeasureInfoData), ArchRequestConfig);
           this.$emit('RealSave');
         }
       },
@@ -28,10 +32,10 @@
         this.$refs.MeaInfo.updatePMI();
         this.$emit('RealUpdate');
       },
-      saveD62MI (data) {
+      saveD62MI(data) {
         this.MeasureInfoData = data
       },
-      goback(){
+      goback() {
         this.$router.go(-3);
       }
     },

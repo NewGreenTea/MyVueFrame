@@ -1,10 +1,16 @@
 <template>
-  <Row>
+  <Row class="WriteLayoutFont">
     <Col>
-      建设工程规划许可证号表
-      <Button @click="savePNo">+</Button>
-      <Button @click="updatePNo" v-if="isUpdate">√</Button>
-      <Button @click="cancelPNo">-</Button>
+      <Row>
+        <Col span="12">
+          建设工程规划许可证号表
+        </Col>
+        <Col span="12" class="profButtonFloat">
+          <Button @click="cancelPNo" class="profButtonFloat">-</Button>
+          <Button @click="updatePNo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="savePNo" class="profButtonFloat">+</Button>
+        </Col>
+      </Row>
     </Col>
     <Col>
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
@@ -78,6 +84,7 @@
           },
           {
             title: '序号',
+            width: 70,
             type: 'index'
           },
           {

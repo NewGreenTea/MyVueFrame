@@ -1,10 +1,16 @@
 <template>
-  <Row>
+  <Row class="WriteLayoutFont">
     <Col>
-      报建项目详细
-      <Button @click="saveMInfo">+</Button>
-      <Button @click="updateMInfo" v-if="isUpdate">√</Button>
-      <Button @click="cancelMInfo">-</Button>
+      <Row>
+        <Col span="15">
+          报建项目详细
+        </Col>
+        <Col span="4" offset="5">
+          <Button @click="saveMInfo">+</Button>
+          <Button @click="updateMInfo" v-if="isUpdate">√</Button>
+          <Button @click="cancelMInfo">-</Button>
+        </Col>
+      </Row>
     </Col>
     <Col>
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
@@ -115,7 +121,7 @@
 </template>
 
 <script>
-  import {isDecimalNotMust,isIntegerNotMust} from '../../../js/validate'
+  import {isDecimalNotMust, isIntegerNotMust} from '../../../js/validate'
   import {CommonFunction, ArchRequestConfig} from '../../../js/global'
 
   export default {
@@ -207,7 +213,7 @@
       }
     },
     methods: {
-      loadBPI () {
+      loadBPI() {
         if (this.isUpdate === true) {
           this.axios.get('/api/profETC/getD31BuildProjInfo', {params: {archId: this.archId}}).then(
             res => {
@@ -294,7 +300,7 @@
               if (check === true) {
                 let data = [];
                 data.push(temp);
-                this.axios.post('/api/profETC/updateD31BuildProjInfo', JSON.stringify(data),ArchRequestConfig).then(res => {
+                this.axios.post('/api/profETC/updateD31BuildProjInfo', JSON.stringify(data), ArchRequestConfig).then(res => {
                   this.axios.get('/api/profETC/getD31BuildProjInfo', {
                     params: {
                       archId: data[0].archId
@@ -328,7 +334,7 @@
               }
               this.UpdateModal = false
             }
-            else{
+            else {
               this.UpdateModal = false
             }
           }
@@ -347,11 +353,11 @@
         this.tempData = [];
       },
       updatePMI() {
-        this.axios.post('/api/profETC/addD31BuildProjInfo', JSON.stringify(this.UpdateAddData),ArchRequestConfig).then(res => {
+        this.axios.post('/api/profETC/addD31BuildProjInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
           this.UpdateAddData = []
           //todo,有错报错，没错提示并跳转
         });
-        this.axios.post('/api/profETC/deleteD31BuildProjInfo', JSON.stringify(this.UpdateDeleteData),ArchRequestConfig).then(res => {
+        this.axios.post('/api/profETC/deleteD31BuildProjInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig).then(res => {
           this.UpdateDeleteData = []
           //todo,有错报错，没错提示并跳转
         })
@@ -536,7 +542,7 @@
       cancelAllData(selection) {
         this.tempData = []
       },
-      formReset () {
+      formReset() {
         this.D31BuildProjInfo.projectName = '';
         this.D31BuildProjInfo.buildingNum = '';
         this.D31BuildProjInfo.overgroundFloor = '';

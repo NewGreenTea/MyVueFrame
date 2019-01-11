@@ -27,9 +27,11 @@
     </Row>
 
     <Row>
-      <Button v-if="operation" @click="saveArch">保存</Button>
-      <Button v-if="!operation" @click="updateArch">修改</Button>
-      <Button @click="goBack">返回</Button>
+      <Col span="2" offset="10">
+        <Button v-if="operation" @click="saveArch">保存</Button>
+        <Button v-if="!operation" @click="updateArch">修改</Button>
+        <Button @click="goBack">返回</Button>
+      </Col>
     </Row>
 
     <Modal width="1250px" v-model="AddModal" :loading="loading" draggable :closable="false" title="添加文件信息"
@@ -405,8 +407,8 @@
               if (this.UpdateAddData[i].fileNo === this.tempData[0].fileNo) {
                 this.UpdateAddData.splice(i, 1);
                 this.UpdateAddData.unshift(temp);
-                for(let j = 0; j < this.tableData.length; j++){  //2019/01/10更新，添加时，修改临时添加的数据后，不渲染表格数据问题
-                  if(this.tableData[j].fileNo === this.tempData[0].fileNo){
+                for (let j = 0; j < this.tableData.length; j++) {  //2019/01/10更新，添加时，修改临时添加的数据后，不渲染表格数据问题
+                  if (this.tableData[j].fileNo === this.tempData[0].fileNo) {
                     this.tableData.splice(j, 1);
                     this.tableData.unshift(temp);
                   }
@@ -538,7 +540,7 @@
             }
           }
           if (this.operation === true) {
-            this.tableData =this.UpdateAddData;
+            this.tableData = this.UpdateAddData;
           }
           this.tempData = []
         }
@@ -651,9 +653,5 @@
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;
-  }
-
-  .tips {
-    text-align: right;
   }
 </style>
