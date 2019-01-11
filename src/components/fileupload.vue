@@ -10,14 +10,24 @@
               v-if="show">
       <uploader-unsupport></uploader-unsupport>
       <uploader-drop style="background: white">
-        <p style="margin: 10px 0px;padding:5px;border: 1px #c64e53 dashed;">
-          提示：最多上传200个文件（单个文件大小不超过20mb），支持格式为jpg、png、pdf、gif、word文档、execl文档
-        </p>
+        <!--<p style="margin: 10px 0px;padding:5px;border: 1px #c64e53 dashed;">-->
+          <!---->
+        <!--</p>-->
         <div style="margin: 10px 0px;padding:5px;border: 1px #c64e53 dashed;border-radius: 5px;">
+          <span>
+            <Tooltip placement="right" max-width="200px" theme="light"  content="选择文件上传时，需要输入档号">
+              <Icon type="ios-help-circle-outline" size="30"/>
+            </Tooltip>
+          </span>
           <uploader-btn :attrs="attrs" class="uploadbutton" @click="clickFileUpload">选择文件</uploader-btn>
           <span>档号：<Input size="large" style="width: 300px;" placeholder="请输入需要替换文件的档号" v-model="archNoPage" @change="changeInputValue"/></span>
         </div>
         <div style="padding: 5px;border: 1px #c64e53 dashed;">
+          <span>
+            <Tooltip placement="right" max-width="200px" theme="light"  content="单次上传限制文件总大小为4000MB以下（单个文件大小不超过20MB）">
+              <Icon type="ios-help-circle-outline" size="30"/>
+            </Tooltip>
+          </span>
           <uploader-btn :directory="true" class="uploadbutton">选择文件夹</uploader-btn>
           <Button type="primary" @click="allUpload">全部上传</Button>
           <Button type="warning" @click="allPause">全部暂停</Button>
@@ -26,6 +36,18 @@
       </uploader-drop>
       <uploader-list ref="uploadList"></uploader-list>
     </uploader>
+    <Modal v-model="alldelete" width="360">
+      <p slot="header" style="color:#f60;text-align:center">
+        <Icon type="ios-information-circle"></Icon>
+        <span>删除确认</span>
+      </p>
+      <div style="text-align:center">
+        <p>确认要清空待上传的文件/文件夹吗？</p>
+      </div>
+      <div slot="footer">
+        <Button type="error" size="large" long @click="alldeleteok">删除</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -35,6 +57,7 @@
     name: 'fileupload',
     data () {
       return {
+        alldelete:false,
         archNoPage:'',
         options: {
           target: '/api/upload/vueUpload', // 请求的目标URL
@@ -62,9 +85,19 @@
       clickFileUpload(){
 
       },
-      clear () { // 清空文件列表
+      alldeleteok(){// 清空文件列表
         const uploaderInstance = this.$refs.myupload.uploader
         uploaderInstance.cancel()
+        this.alldelete=false;
+      },
+      clear () {
+        const uploaderInstance = this.$refs.myupload.$children[2] // 获得uploader下的filelist
+        const filesLength = uploaderInstance.$children.length // 获得uploader下的filelist的长度
+        if(filesLength==0){
+          this.$Message.warning("没有可以删除的文件")
+          return false;
+        }
+        this.alldelete=true
       },
       beforeUpload (file) { // 添加文件触发事件（上传之前，做检验用）
         const uploaderInstance = this.$refs.myupload.uploader
@@ -80,6 +113,10 @@
       allUpload: function () { // 全部上传
         const uploaderInstance = this.$refs.myupload.$children[2] // 获得uploader下的filelist
         const filesLength = uploaderInstance.$children.length // 获得uploader下的filelist的长度
+        if(filesLength==0){
+          this.$Message.warning("当前没有待上传的文件/文件夹")
+          return false;
+        }
         for (let i = 0; i < filesLength; i++) {
           uploaderInstance.$children[i].resume()
         }
@@ -135,7 +172,6 @@
     box-shadow: 0 0 10px #888888;
   }
   .uploader-example .uploader-list {
-    /*max-height: 440px;*/
     overflow: auto;
     overflow-x: hidden;
     overflow-y: auto;

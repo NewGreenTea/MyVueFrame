@@ -4,16 +4,26 @@
     <div>案卷封面打印：</div>
     <div class="fmdydiv">
       <span>档号：</span>
-      <span>*<Input v-model="f_value_s" placeholder="起始档号 必填" style="width: 300px" /> ---- </span>
-      <span><Input v-model="f_value_e" placeholder="结束档号 选填" style="width: 300px"/></span>
-      <span><Button type="primary" :loading="floading" size="large" shape="circle" @click="fm_print()">打印预览</Button></span>
+      <span>*<Input size="large" v-model="f_value_s" placeholder="起始档号 必填" style="width: 300px" /> ---- </span>
+      <span><Input size="large" v-model="f_value_e" placeholder="结束档号 选填" style="width: 300px"/></span>
+      <span><Button type="primary" :loading="floading" size="large" @click="fm_print()">打印预览</Button></span>
+      <span>
+        <Tooltip placement="right" max-width="200px" theme="light"  content="使用范围查询时，结束档号的逻辑顺序需要在起始档号之后,逻辑顺序为A-Z,0-9">
+          <Icon type="ios-help-circle-outline" size="30"/>
+        </Tooltip>
+      </span>
     </div>
     <div>卷内目录打印：</div>
     <div class="jnmldiv">
       <span>档号：</span>
-      <span>*<Input v-model="j_value_s" placeholder="起始档号 必填" style="width: 300px" /> ---- </span>
-      <span><Input v-model="j_value_e" placeholder="结束档号 选填" style="width: 300px"/></span>
-      <span><Button type="primary" :loading="jloading" size="large" shape="circle" @click="jnml_print()">打印预览</Button></span>
+      <span>*<Input size="large" v-model="j_value_s" placeholder="起始档号 必填" style="width: 300px" /> ---- </span>
+      <span><Input size="large" v-model="j_value_e" placeholder="结束档号 选填" style="width: 300px"/></span>
+      <span><Button type="primary" :loading="jloading" size="large" @click="jnml_print()">打印预览</Button></span>
+      <span>
+        <Tooltip placement="right" max-width="200px" theme="light"  content="使用范围查询时，结束档号的逻辑顺序需要在起始档号之后,逻辑顺序为A-Z,0-9">
+          <Icon type="ios-help-circle-outline" size="30"/>
+        </Tooltip>
+      </span>
     </div>
   </div>
 </template>
@@ -51,11 +61,11 @@
           data: param
         }).then(res=>{
           this.floading=false;
-          if(res.data!='' && res.data!=null ){
+          if(res.data=='' && res.data==null || res.data=='nullData' ){
+            this.$Message.warning("没有搜索到数据:(");
+          }else {
             let printwindow=window.open(res.data);
             printwindow.print();
-          }else {
-            this.$Message.error("数据错误,请检查后重试");
           }
         }).catch(error => {
           this.floading=false;
@@ -77,11 +87,11 @@
           data: params
         }).then(res=>{
           this.jloading=false;
-          if(res.data!='' && res.data!=null ){
+          if(res.data=='' || res.data==null || res.data=='nullData' ){
+            this.$Message.warning("没有搜索到数据:(");
+          }else {
             let printwindow=window.open(res.data);
             printwindow.print();
-          }else {
-            this.$Message.error("数据错误,请检查后重试");
           }
         }).catch(error => {
           this.jloading=false;

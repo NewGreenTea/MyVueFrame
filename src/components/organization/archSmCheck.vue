@@ -213,6 +213,8 @@
             this.WriterArchData = res.data.data.list;
             this.totalCount = res.data.data.total;
           })
+          this.tempData=[];
+          this.ids=[];
         },
         //页数改变
         pageSizeChange: function(index){
@@ -227,6 +229,8 @@
             this.WriterArchData = res.data.data.list;
             this.totalCount = res.data.data.total;
           })
+          this.tempData=[];
+          this.ids=[];
         },
         //批量质检通过
         smpass : function() {
@@ -247,6 +251,7 @@
               this.$Message.success("操作成功");
             }
           )
+          this.tempData=[];
           this.ids=[];
         },
         //批量质检不通过按钮

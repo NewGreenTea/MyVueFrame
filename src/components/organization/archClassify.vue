@@ -6,7 +6,7 @@
         <Row type="flex"><!-- 搜索条件表单：第一行 -->
           <Col span="4">
             <FormItem>
-              <Button v-on:click="doArchClassify()"  type="primary">组卷</Button>
+              <Button v-on:click="doArchClassify()" size="large"  type="primary">组卷</Button>
             </FormItem>
           </Col>
           <Col span="6">
@@ -143,6 +143,7 @@
           this.WriterArchData = res.data.data.list;
           this.totalCount = res.data.data.total;
         })
+        this.tempData=[];
       },
       //页数改变
       pageSizeChange: function(index){
@@ -157,6 +158,7 @@
           this.WriterArchData = res.data.data.list;
           this.totalCount = res.data.data.total;
         })
+        this.tempData=[];
       },
       //组卷
       doArchClassify : function() {
@@ -174,21 +176,33 @@
           }
         }).then(res => {
           this.$Spin.hide();
-          if(res.data.code==2 || res.data.code==4){
-            this.$Message.warning({
-              content:res.data.msg,
-              duration: 10,
-              closable: true
-            });
-          }else if(res.data.code==0){
-            this.$Message.success(res.data.msg);
-            this.writeLayout();
+          let successNum=this.ids.length-res.data.length;
+          let errorList='总操作数量：'+this.ids.length+' 条'+'\n';
+          errorList+='成功：'+successNum+' 条'+'\n';
+          errorList+='失败：'+res.data.length+' 条'+'\n';
+          if(res.data.length>0){
+            errorList+='失败原因如下：'+'\n';
+            for (let i=0;i<res.data.length;i++){
+              errorList+=(i+1)+'.'+res.data[i]+'\n'
+            }
           }
+          this.ids=[];
+          this.tempData=[];
+          this.$Notice.open({
+            title: '档案组卷信息汇总  '+dateFormate(new Date()),
+            desc: '',
+            duration: 0,
+            render: h => {
+              return h('pre', errorList)
+            }
+          });
+          this.writeLayout();
         }).catch(error => {
           this.$Spin.hide();
-          console.log(error);
+          this.ids=[];
+          this.tempData=[];
+          console.log(error)
         })
-        this.ids=[];
       },
       // 选择单条记录
       selectData(selection, row) {
@@ -297,4 +311,25 @@
   .demo-spin-icon-load{
     animation: ani-demo-spin 1s linear infinite;
   }
+  pre{
+    line-height:15px;
+    max-height: 600px;
+    overflow: auto;
+  }
+  /*滚动条样式*/
+  ::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 4px;
+    height: 16px;
+  }
+  ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    -webkit-box-shadow: inset 0 0 6px rgba(79, 79, 79, 0.32);
+    border-radius: 10px;
+    background-color: #2baee9;
+  }
+  ::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(79, 79, 79, 0.32);
+    background-color: #faeaff;
+  }
+
 </style>
