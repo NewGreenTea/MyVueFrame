@@ -3,7 +3,7 @@
     <div :class="loadData">
       <Row>
         <!-- 加载档案数据待著录条件框 -->
-        <Col style="margin-left: 20px;margin-right: 20px">
+        <Col span="20" offset="2">
           <Form>
             <Row>
               <Col span="2">
@@ -12,9 +12,9 @@
                 </FormItem>
               </Col>
               <!--<Col span="4">-->
-                <!--<FormItem>-->
-                  <!--<Input placeholder="档号等"/>-->
-                <!--</FormItem>-->
+              <!--<FormItem>-->
+              <!--<Input placeholder="档号等"/>-->
+              <!--</FormItem>-->
               <!--</Col>-->
               <Col span="4">
                 <FormItem>
@@ -39,30 +39,38 @@
           </Form>
         </Col>
         <!-- 加载档案数据待著录表格 -->
-        <Col>
+        <Col span="20" offset="2">
           <Table border :columns="needToDoColumns" :data="needToDoData"></Table>
           <Page :current="needToDoPage" :total="needToDoCount" :page-size="needToDoPageSize" show-elevator show-total
                 show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="needToDoPSO"/>
         </Col>
+      </Row>
 
+      <Row style="margin-top: 20px">
         <!-- 选择类别 -->
-        <Col>选择著录类别</Col>
-        <Col span="2">&nbsp;</Col>
-        <Col v-for="type in archOneTypes" :key="type.index" span="4">
-          <Button size="large" long @click="showTwoTypes(type)">{{type}}</Button>
+        <Col span="2"><span class="archTypeText">选择著录类别：</span></Col>
+        <Col span="20">
+          <Row :gutter="16">
+            <Col v-for="type in archOneTypes" :key="type.index" span="4">
+              <Button size="large" long @click="showTwoTypes(type)">{{type}}</Button>
+            </Col>
+          </Row>
         </Col>
-        <Col span="2">&nbsp;</Col>
       </Row>
       <Row v-if="showTwoType" style="margin-top: 30px">
-        <!--<Col span="1">&nbsp;</Col>-->
-        <Col v-for="type in archTwoTypes" :key="type.index" span="8">
-          <Button size="large" long style="text-align: left" @click="writeLayout(type)">{{type.className}}</Button>
+        <Col span="2"><span class="archTypeText">选择详细类别：</span></Col>
+        <Col span="20">
+          <Row :gutter="16">
+            <Col v-for="type in archTwoTypes" :key="type.index" span="8" style="margin-top: 7px;margin-bottom: 7px">
+              <Button size="large" long style="text-align: left" @click="writeLayout(type)">{{type.className}}</Button>
+            </Col>
+          </Row>
         </Col>
       </Row>
 
       <Row v-if="showArchData" style="margin-top: 20px;">
         <!-- 加载档案数据表格 -->
-        <Col style="margin-left: 20px;margin-right: 20px">
+        <Col span="20" offset="2">
           <Table border :columns="columns" :data="tableData"></Table>
           <!--todo 还没完全做好，待完善 2018/12/6-->
           <Page :current="currentPage" :total="totalCount" :page-size="pageSize" show-elevator show-total show-sizer
@@ -120,7 +128,10 @@
           },
           {
             title: '序号',
-            type: 'index'
+            width: 70,
+            render: (h, params) => {
+              return h('span', params.index + (this.currentPage - 1) * this.pageSize + 1);
+            }
           },
           {
             title: '立案号',
@@ -145,10 +156,11 @@
           {
             title: '基本信息',
             render: (h, params) => {
-              return h('div',[
-                h('Button', {
+              return h('div', [
+                  h('Button', {
                     props: {
-                      type: 'primary', size: 'small'
+                      type: 'primary',
+                      size: 'small'
                     },
                     style: {
                       marginRight: '5px'
@@ -325,44 +337,47 @@
         needToDoColumns: [
           {
             title: '序号',
-            type: 'index'
+            width: 70,
+            render: (h, params) => {
+              return h('span', params.index + (this.needToDoPage - 1) * this.needToDoPageSize + 1);
+            }
           },
           {
             title: '档号',
             render: (h, params) => {
-              return h('p',params.row.archVO.archNo)
+              return h('p', params.row.archVO.archNo)
             }
           },
           {
             title: '档号状态',
             render: (h, params) => {
-              return h('p',statueTwoDes(params.row.archVO.twoStatue))
+              return h('p', statueTwoDes(params.row.archVO.twoStatue))
             }
           },
           {
             title: '操作状态',
             render: (h, params) => {
               //判断档案著录进行到哪一步，是否完成著录
-              if(params.row.baseCode === 0 && params.row.profCode === 0 && params.row.fileCode === 0){
-                return h('p','待著录')
+              if (params.row.baseCode === 0 && params.row.profCode === 0 && params.row.fileCode === 0) {
+                return h('p', '待著录')
               }
-              else{
-                if(params.row.baseCode !== 0 && params.row.profCode === 0 && params.row.fileCode === 0){
+              else {
+                if (params.row.baseCode !== 0 && params.row.profCode === 0 && params.row.fileCode === 0) {
                   return h('p', '专业信息和文件信息未著录')
-                }else if(params.row.baseCode === 0 && params.row.profCode !== 0 && params.row.fileCode === 0){
+                } else if (params.row.baseCode === 0 && params.row.profCode !== 0 && params.row.fileCode === 0) {
                   return h('p', '基本信息和文件信息未著录')
-                }else if(params.row.baseCode === 0 && params.row.profCode === 0 && params.row.fileCode !== 0){
+                } else if (params.row.baseCode === 0 && params.row.profCode === 0 && params.row.fileCode !== 0) {
                   return h('p', '基本信息和专业信息未著录')
-                }else if(params.row.baseCode !== 0 && params.row.profCode !== 0 && params.row.fileCode === 0){
+                } else if (params.row.baseCode !== 0 && params.row.profCode !== 0 && params.row.fileCode === 0) {
                   return h('p', '文件信息未著录')
-                }else if(params.row.baseCode !== 0 && params.row.profCode === 0 && params.row.fileCode !== 0){
+                } else if (params.row.baseCode !== 0 && params.row.profCode === 0 && params.row.fileCode !== 0) {
                   return h('p', '专业信息未著录')
-                }else if(params.row.baseCode === 0 && params.row.profCode !== 0 && params.row.fileCode !== 0){
+                } else if (params.row.baseCode === 0 && params.row.profCode !== 0 && params.row.fileCode !== 0) {
                   return h('p', '基本信息未著录')
-                }else{
-                  if(params.row.archVO.twoStatue === 3){
-                    return h('p','')
-                  }else{
+                } else {
+                  if (params.row.archVO.twoStatue === 3) {
+                    return h('p', '')
+                  } else {
                     return h('button', {
                       props: {
                         type: 'primary', size: 'small'
@@ -374,13 +389,13 @@
                         click: () => {
                           // 修改档案状态，变为已著录/待质检的状态
                           this.axios.post('/api/loadArch/writeComplete', this.qs.stringify({archID: params.row.archId}))
-                            .then(res =>{
+                            .then(res => {
                               this.loadGroupArch()
                             })
                         }
                       }
-                    },'确认完成');
-                    return h('p',params.row.archVO.twoStatue)
+                    }, '确认完成');
+                    return h('p', params.row.archVO.twoStatue)
                   }
                 }
               }
@@ -391,7 +406,7 @@
         needToDoPage: 1,
         needToDoCount: 0,
         needToDoPageSize: 5,
-        needToDoPSO: [1,2,3,4,5,6,8,10],
+        needToDoPSO: [1, 2, 3, 4, 5, 6, 8, 10],
         //用户信息id
         userID: this.$store.state.userID,
         //查询档案二级状态码
@@ -400,16 +415,17 @@
     },
     methods: {
       //加载工作组负责的待著录档案数据
-      loadGroupArch(){
-        if(this.userID === ''){
+      loadGroupArch() {
+        if (this.userID === '') {
           this.userID = window.localStorage.getItem('userid')
         }
-        this.axios.get('/api/loadArch/getGroupArch',{
-          params:{
+        this.axios.get('/api/loadArch/getGroupArch', {
+          params: {
             'userID': this.userID,
             'archStatue': 1,
             'page': this.needToDoPage,
-            'pageSize':this.needToDoPageSize}
+            'pageSize': this.needToDoPageSize
+          }
         }).then(res => {
             this.needToDoData = res.data.data.list;
             this.needToDoCount = res.data.data.total
@@ -478,42 +494,45 @@
         // }
       },
       //搜索条件中的状态条件
-      oneSelect(value){
-        this.archStatueCode=statueTwoCode(value);
+      oneSelect(value) {
+        this.archStatueCode = statueTwoCode(value);
       },
       //搜索条件中的点击搜索按钮
-      searchArch(){
+      searchArch() {
         this.axios.get('/api/loadArch/getGroupArch', {
-          params:{
+          params: {
             'archStatue': this.archStatueCode,
             'page': this.needToDoPage,
-            'pageSize':this.needToDoPageSize}
+            'pageSize': this.needToDoPageSize
+          }
         }).then(res => {
           this.needToDoData = res.data.data.list;
           this.needToDoCount = res.data.data.total;
         })
       },
       //切换页码
-      destPage(index){
+      destPage(index) {
         this.needToDoPage = index;
         this.axios.get('/api/loadArch/getGroupArch', {
-          params:{
+          params: {
             'archStatue': this.archStatueCode,
             'page': this.needToDoPage,
-            'pageSize':this.needToDoPageSize}
+            'pageSize': this.needToDoPageSize
+          }
         }).then(res => {
           this.needToDoData = res.data.data.list;
           this.needToDoCount = res.data.data.total
         })
       },
       //切换配置页
-      changePageSize(index){
+      changePageSize(index) {
         this.needToDoPageSize = index;
         this.axios.get('/api/loadArch/getGroupArch', {
-          params:{
+          params: {
             'archStatue': this.archStatueCode,
             'page': this.needToDoPage,
-            'pageSize':this.needToDoPageSize}
+            'pageSize': this.needToDoPageSize
+          }
         }).then(res => {
           this.needToDoData = res.data.data.list;
           this.needToDoCount = res.data.data.total
@@ -533,8 +552,8 @@
       statueName = '待著录'
     } else if (statue === 3) {
       statueName = '已著录'
-    } else if (statue === 6){
-        statueName = '不通过'
+    } else if (statue === 6) {
+      statueName = '不通过'
     }
     return statueName
   }
@@ -546,7 +565,7 @@
       statueName = 1
     } else if (statue === '已著录') {
       statueName = 3
-    } else if (statue === '不通过'){
+    } else if (statue === '不通过') {
       statueName = 6
     }
     return statueName
@@ -561,13 +580,20 @@
 </script>
 
 <style scoped>
+  /*专业信息著录界面的类型文字显示*/
+  .archTypeText {
+    float: right;
+    font-size: 14px;
+    padding-top: 7px;
+    padding-right: 15px;
+  }
+
+  /*专业信息著录界面与选择类别界面的显示与隐藏*/
   .view {
-    /*visibility: visible;*/
     display: block
   }
 
   .hidd {
-    /*visibility: hidden;*/
     display: none
   }
 </style>

@@ -1,18 +1,18 @@
 <template>
   <div>
     <!-- 任务界面 -->
-    <Row>
+    <Row style="margin-bottom: 20px">
       <Col span="4">
         <!-- 任务显示按钮 -->
         <Row>
           <Col offset="2">
-            <Button @click="showBatchAssignment" style="width: 150px">批次任务</Button>
+            <Button @click="showBatchAssignment" style="width: 150px" :class="{'buttonSelect': butOnSelect.activeIndex === 1}">批次任务</Button>
           </Col>
           <Col offset="2">
-            <Button @click="showHisAssignment" style="width: 150px">历史批次任务</Button>
+            <Button @click="showHisAssignment" style="width: 150px" :class="{'buttonSelect': butOnSelect.activeIndex === 2}">历史批次任务</Button>
           </Col>
           <Col offset="2">
-            <Button @click="showDistAssignment" style="width: 150px">已分配任务</Button>
+            <Button @click="showDistAssignment" style="width: 150px" :class="{'buttonSelect': butOnSelect.activeIndex === 3}">已分配任务</Button>
           </Col>
         </Row>
       </Col>
@@ -57,7 +57,7 @@
       <!-- 分配界面：主体左边：选择工作组 -->
       <Col span="3" offset="1">
         <Row v-if="hackReset">
-          <Col span="24">可用著录组：</Col>
+          <Col span="24" class="WriteLayoutFont">可用著录组：</Col>
           <Col span="24">
             <RadioGroup size="large" vertical @on-change="selectWG" ref="radio" v-if="WorkGroup.length">
               <Radio :label="writer.id" :value="writer.id" style="font-size: 20px" v-for="writer in WorkGroup"
@@ -177,7 +177,10 @@
         AssignmentColumn: [
           {
             title: '序号',
-            type: 'index'
+            width: 60,
+            render: (h, params) => {
+              return h('span', params.index + (this.assCurrentPage- 1) * this.assPageSize + 1);
+            }
           },
           {
             title: '任务id',
@@ -241,7 +244,10 @@
         AssignmentHisColumn: [
           {
             title: '序号',
-            type: 'index'
+            width: 60,
+            render: (h, params) => {
+              return h('span', params.index + (this.assCurrentPage- 1) * this.assPageSize + 1);
+            }
           },
           {
             title: '任务id',
@@ -299,7 +305,10 @@
         AssignmentDisColumn: [
           {
             title: '序号',
-            type: 'index'
+            width: 60,
+            render: (h, params) => {
+              return h('span', params.index + (this.assCurrentPage- 1) * this.assPageSize + 1);
+            }
           },
           {
             title: '任务id',
@@ -365,7 +374,10 @@
           },
           {
             title: '序号',
-            type: 'index'
+            width: 70,
+            render: (h, params) => {
+              return h('span', params.index + (this.currentPage- 1) * this.pageSize + 1);
+            }
           },
           {
             title: '任务id',
@@ -394,12 +406,14 @@
           },
           {
             title: '分配人',
+            width: 110,
             render: (h, params) => {
               return h('p', params.row.distributor)
             }
           },
           {
             title: '负责组',
+            width: 110,
             render: (h, params) => {
               return h('p', params.row.writeGroup)
             }
@@ -468,6 +482,7 @@
         showDAColumn: [
           {
             title: '序号',
+            width: 60,
             type: 'index'
           },
           {
@@ -520,6 +535,10 @@
         InputClear: true,
         //加载动画
         spinShow: false,
+        //点击任务按钮变色
+        butOnSelect: {
+          activeIndex: 0
+        }
       }
     },
     methods: {
@@ -544,11 +563,13 @@
       //加载档案批次任务
       showBatchAssignment() {
         if (this.showATData === true) {
-          this.showATData = false
+          this.showATData = false;
+          this.butOnSelect.activeIndex = 0;
         } else {
           this.showHTData = false;
           this.showDTData = false;
           this.showATData = true;
+          this.butOnSelect.activeIndex = 1;
           this.assCurrentPage = 1;
           this.assPageUrl = '/api/importArch/checkAssignment';
           this.assUrlParams = {
@@ -565,11 +586,13 @@
       //查询历史批次任务
       showHisAssignment() {
         if (this.showHTData === true) {
-          this.showHTData = false
+          this.showHTData = false;
+          this.butOnSelect.activeIndex = 0;
         } else {
           this.showATData = false;
           this.showDTData = false;
           this.showHTData = true;
+          this.butOnSelect.activeIndex = 2;
           this.assCurrentPage = 1;
           this.assPageUrl = '/api/importArch/checkAssignment';
           this.assUrlParams = {
@@ -586,12 +609,13 @@
       //查看分配的任务
       showDistAssignment() {
         if (this.showDTData === true) {
-          this.showDTData = false
+          this.showDTData = false;
+          this.butOnSelect.activeIndex = 0;
         } else {
           this.showATData = false;
           this.showHTData = false;
           this.showDTData = true;
-
+          this.butOnSelect.activeIndex = 3;
           this.assCurrentPage = 1;
           this.assPageUrl = '/api/importArch/checkDistAssignment';
           this.assUrlParams = {
@@ -707,6 +731,7 @@
       },
       //返回所有档案未分配数据
       returnAll() {
+        this.pageUrl = '/api/importArch/archStatue';
         this.loadDistributeArchData();
         this.searchData = false
       },
@@ -717,14 +742,18 @@
         let param;
         if (this.searchData === true) {
           param=this.qs.stringify(this.urlParams, {indices: false});
+          this.spinShow = true;
           this.axios.post(this.pageUrl, param).then(res => {
             this.DistributeArchData = res.data.data.list;
-            this.archDataCount = res.data.data.total
+            this.archDataCount = res.data.data.total;
+            this.spinShow = false;
           });
         }else{
+          this.spinShow = true;
           this.axios.get(this.pageUrl, {params: this.urlParams}).then(res => {
             this.DistributeArchData = res.data.data.list;
-            this.archDataCount = res.data.data.total
+            this.archDataCount = res.data.data.total;
+            this.spinShow = false;
           });
         }
       },
@@ -734,15 +763,19 @@
         this.urlParams.pageSize = index;
         let param;
         if (this.searchData === true) {
-          param=this.qs.stringify(this.urlParams, {indices: false});
-          this.axios.get(this.pageUrl, param).then(res => {
+          param=this.qs.stringify(this.urlParams);
+          this.spinShow = true;
+          this.axios.post(this.pageUrl, param).then(res => {
             this.DistributeArchData = res.data.data.list;
-            this.archDataCount = res.data.data.total
+            this.archDataCount = res.data.data.total;
+            this.spinShow = false;
           });
         }else{
+          this.spinShow = true;
           this.axios.get(this.pageUrl, {params: this.urlParams}).then(res => {
             this.DistributeArchData = res.data.data.list;
-            this.archDataCount = res.data.data.total
+            this.archDataCount = res.data.data.total;
+            this.spinShow = false;
           });
         }
       },
@@ -869,5 +902,7 @@
 </script>
 
 <style scoped>
-
+.buttonSelect{
+  background-color: deepskyblue;
+}
 </style>

@@ -678,7 +678,7 @@
     <!--文件信息表格-->
     <Row v-if="file">
       <Col span="22" offset="1">
-        <Table border :columns="columns" :data="tableData" :height="tableHeight"></Table>
+        <Table border :columns="columns" :data="tableData" :height="tableHeight" style="margin-top: 40px"></Table>
       </Col>
     </Row>
   </div>
@@ -692,7 +692,7 @@
     data() {
       return {
         //基本
-        base: false,
+        base: true,
         baseArch: {
           id: '',
           archId: '',
@@ -1024,6 +1024,7 @@
         columns: [
           {
             title: '序号',
+            width: 60,
             key: 'fileIndex'
           },
           {
@@ -1070,7 +1071,7 @@
           maxRows: 15
         },
         butOnSelect: {
-          activeIndex: 0
+          activeIndex: 1
         }
       }
     },

@@ -1,38 +1,46 @@
 <template>
   <div>
     <div :class="loadData">
-    <Row>
-      <!-- 加载档案数据待质检表格 -->
-      <Col>
-        <Table border :columns="needToDoColumns" :data="needToDoData"></Table>
-        <Page :current="needToDoPage" :total="needToDoCount" :page-size="needToDoPageSize" show-elevator show-total
-              show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="needToDoPSO"/>
-      </Col>
-
       <Row>
-        <!-- 选择类别 -->
-        <Col>选择著录质检类别</Col>
-        <Col span="2">&nbsp;</Col>
-        <Col v-for="type in archOneTypes" :key="type.index" span="4">
-          <Button size="large" long @click="showTwoTypes(type)">{{type}}</Button>
+        <!-- 加载档案数据待质检表格 -->
+        <Col span="20" offset="2">
+          <Table border :columns="needToDoColumns" :data="needToDoData"></Table>
+          <Page :current="needToDoPage" :total="needToDoCount" :page-size="needToDoPageSize" show-elevator show-total
+                show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="needToDoPSO"/>
         </Col>
-        <Col span="2">&nbsp;</Col>
       </Row>
+
+      <!-- 选择一级类别 -->
+      <Row style="margin-top: 20px">
+        <Col span="2"><span class="archTypeText">选择著录质检类别</span></Col>
+        <Col span="20">
+          <Row :gutter="16">
+            <Col v-for="type in archOneTypes" :key="type.index" span="4">
+              <Button size="large" long @click="showTwoTypes(type)">{{type}}</Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+
+      <!-- 选择二级类别 -->
       <Row v-if="showTwoType" style="margin-top: 30px">
-        <Col v-for="type in archTwoTypes" :key="type.index" span="8">
-          <Button size="large" long style="text-align: left" @click="writeLayout(type)">{{type.className}}</Button>
+        <Col span="20" offset="2">
+          <Row :gutter="16">
+            <Col v-for="type in archTwoTypes" :key="type.index" span="8" style="margin-top: 7px;margin-bottom: 7px">
+              <Button size="large" long style="text-align: left" @click="writeLayout(type)">{{type.className}}</Button>
+            </Col>
+          </Row>
         </Col>
       </Row>
 
       <!-- 加载档案数据表格 -->
       <Row v-if="showArchData" style="margin-top: 20px;">
-        <Col style="margin-left: 20px;margin-right: 20px">
+        <Col span="20" offset="2">
           <Table border :columns="columns" :data="tableData"></Table>
           <Page :current="currentPage" :total="totalCount" :page-size="pageSize" show-elevator show-total show-sizer
                 :page-size-opts="pageSizeOpt"/>
         </Col>
       </Row>
-    </Row>
     </div>
 
     <!-- 质检档案信息的路由界面 -->
@@ -209,9 +217,9 @@
         }).then(res => {
           this.archTypeID = type.id;
           this.archTypeName = type.className;
-          if(res.data.data.list.length === 0){
+          if (res.data.data.list.length === 0) {
             this.tableData = [];
-          }else{
+          } else {
             this.tableData = res.data.data.list;
           }
           this.totalCount = res.data.data.total
@@ -288,6 +296,14 @@
 </script>
 
 <style scoped>
+  /*专业信息著录界面的类型文字显示*/
+  .archTypeText {
+    float: right;
+    font-size: 14px;
+    padding-top: 7px;
+    padding-right: 15px;
+  }
+
   .view {
     display: block
   }
