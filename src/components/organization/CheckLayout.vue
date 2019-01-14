@@ -1080,7 +1080,6 @@
       //加载档案所有信息
       loadWriteCheck() {
         this.resetData();
-        alert('参数问题' + this.$route.params.archId);
         this.axios.get('/api/Arch/ArchID', {
           params: {
             'archId': this.$route.params.archId,
