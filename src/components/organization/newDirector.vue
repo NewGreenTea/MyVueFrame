@@ -227,11 +227,14 @@
                       this.pageUrl = '/api/importArch/archStatue';
                       this.currentPage = 1;
                       this.urlParams = {'batchID': params.row.batchId, 'pageNum': null, 'pageSize': this.pageSize};
+                      this.spinShow = true;
                       this.axios.get(this.pageUrl, {params: this.urlParams})
                         .then(res => {
+                          this.$Message.info('已加载到分配面板上');
                           this.DistributeArchData = res.data.data.list;
                           this.archDataCount = res.data.data.total;
                           this.searchData=false;
+                          this.spinShow = false;
                         })
                     }
                   }
@@ -288,11 +291,14 @@
                         this.pageUrl = '/api/importArch/archStatue';
                         this.currentPage = 1;
                         this.urlParams = {'batchID': params.row.batchId, 'pageNum': null, 'pageSize': this.pageSize};
+                        this.spinShow = true;
                         this.axios.get(this.pageUrl, {params: this.urlParams})
                           .then(res => {
+                            this.$Message.info('已加载到分配面板上');
                             this.DistributeArchData = res.data.data.list;
                             this.archDataCount = res.data.data.total;
                             this.searchData=false;
+                            this.spinShow = false;
                           })
                       }
                     }
