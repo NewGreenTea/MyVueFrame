@@ -1070,6 +1070,7 @@
           minRows: 5,
           maxRows: 15
         },
+        //按钮变色控制参数
         butOnSelect: {
           activeIndex: 1
         }
@@ -1079,6 +1080,7 @@
       //加载档案所有信息
       loadWriteCheck() {
         this.resetData();
+        alert('参数问题' + this.$route.params.archId);
         this.axios.get('/api/Arch/ArchID', {
           params: {
             'archId': this.$route.params.archId,
@@ -1096,27 +1098,56 @@
             this.tableData = res.data.data.list[0].fileInfoVO;
             //个性
             if (this.$route.params.archType === 'C61') {
-              this.C61Info = res.data.data.list[0].c61SpecInfoVO;
+              //同下 --2019/01/14
+              if(res.data.data.list[0].c61SpecInfoVO !== null){
+                this.C61Info = res.data.data.list[0].c61SpecInfoVO;
+              }else{
+                this.C61Info.archId = this.$route.params.archId
+              }
             }
             if (this.$route.params.archType === 'C62') {
-              this.C62Info = res.data.data.list[0].c62SpecInfoVO;
+              //同下 --2019/01/14
+              if(res.data.data.list[0].c62SpecInfoVO !== null){
+                this.C62Info = res.data.data.list[0].c62SpecInfoVO;
+              }else{
+                this.C62Info.archId = this.$route.params.archId
+              }
             }
             if (this.$route.params.archType === 'C63') {
-              this.C63Info = res.data.data.list[0].c63SpecInfoVO;
+              //同下 --2019/01/14
+              if(res.data.data.list[0].c63SpecInfoVO !== null){
+                this.C63Info = res.data.data.list[0].c63SpecInfoVO;
+              }else{
+                this.C63Info.archId = this.$route.params.archId
+              }
             }
             if (this.$route.params.archType === 'D21') {
               this.showD212 = true;
-              this.D21Info = res.data.data.list[0].d21SpecInfoVO;
+              if(res.data.data.list[0].d21SpecInfoVO !== null){
+                this.D21Info = res.data.data.list[0].d21SpecInfoVO;
+              }else{
+                this.D21Info.archId = this.$route.params.archId
+              }
               this.UseAreaInfoData = res.data.data.list[0].d21UseAreaVO;
             }
             if (this.$route.params.archType === 'D22') {
               this.showD212 = true;
-              this.D22Info = res.data.data.list[0].d22SpecInfoVO;
+              //专业信息特性信息的archId不能为‘’（空字符串）  --2019/01/14
+              if(res.data.data.list[0].d22SpecInfoVO !== null){
+                this.D22Info = res.data.data.list[0].d22SpecInfoVO;
+              }else{
+                this.D22Info.archId = this.$route.params.archId
+              }
               this.UseAreaInfoData = res.data.data.list[0].d22UseAreaVO;
             }
             if (this.$route.params.archType === 'D31') {
               this.showD31 = true;
-              this.D31Info = res.data.data.list[0].d31SpecInfoVO;
+              //专业信息特性信息的archId不能为‘’（空字符串）  --2019/01/14
+              if(res.data.data.list[0].d31SpecInfoVO !== null){
+                this.D31Info = res.data.data.list[0].d31SpecInfoVO;
+              }else{
+                this.D31Info.archId = this.$route.params.archId
+              }
               this.D31BuildProjData = res.data.data.list[0].d31BuildProjInfoList;
               this.D31PubBuildData = res.data.data.list[0].d31PubBuildInfoList
             }
