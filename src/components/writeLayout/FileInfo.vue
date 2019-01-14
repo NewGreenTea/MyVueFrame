@@ -1,5 +1,5 @@
 <template>
-  <div class="checkWriteCss">
+  <div class="WriteLayoutFont">
     <Row>
       <Col span="3">
         <Card class="tips" style="margin-right: 30px">
@@ -84,8 +84,8 @@
                   </Col>
                   <Col span="8">
                     <FormItem class="FormItemClass" label="日期" prop="fileDate">
-                      <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="fileWriteInput"
-                                  @on-change="fileArch.date=$event" v-model="fileArch.fileDate"></DatePicker>
+                      <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="fileWriteInput" type="date"
+                                  @on-change="fileArch.fileDate=$event" v-model="fileArch.fileDate"></DatePicker>
                     </FormItem>
                   </Col>
                 </Row>
@@ -164,8 +164,8 @@
                   </Col>
                   <Col span="8">
                     <FormItem class="FormItemClass" label="日期" prop="fileDate">
-                      <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="fileWriteInput"
-                                  @on-change="fileArch.date=$event" v-model="fileArch.fileDate"></DatePicker>
+                      <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="fileWriteInput" type="date"
+                                  @on-change="fileArch.fileDate=$event" v-model="fileArch.fileDate"></DatePicker>
                     </FormItem>
                   </Col>
                 </Row>
@@ -383,7 +383,7 @@
       saveArch() {
         this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), config).then(res => {
           alert('保存完毕');
-          this.loadFileArch();
+          this.goBack()
         });
       },
       //点击弹窗的修改按钮
@@ -569,6 +569,7 @@
         this.fileArch.fileTitle = row.fileTitle;
         this.fileArch.fileType = row.fileType;
         this.fileArch.fileDate = row.fileDate;
+        this.fileArch.fileDate = new Date();
         this.fileArch.pageNo = row.pageNo;
         this.fileArch.remark = row.remark;
         let temp = {
@@ -643,6 +644,13 @@
     mounted() {
       this.loadFileArch()
     }
+  }
+  // 时间格式转换
+  // 对日期的格式进行转换（‘Tue Nov 06 2018 00:00:00 GMT+0800’=》‘yyyy-MM-dd’）
+  function dateFormate (date) {
+    let datadate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() +
+      ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+    return datadate
   }
 </script>
 

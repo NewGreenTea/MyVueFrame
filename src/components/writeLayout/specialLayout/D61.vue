@@ -39,6 +39,7 @@
 
       },
       saveArch() {
+        this.$emit('RealSave');
         if (this.MeasureInfoData !== []) {
           this.axios.post('/api/profETC/addD61MI', JSON.stringify(this.MeasureInfoData), ArchRequestConfig);
         }
