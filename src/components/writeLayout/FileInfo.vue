@@ -569,7 +569,6 @@
         this.fileArch.fileTitle = row.fileTitle;
         this.fileArch.fileType = row.fileType;
         this.fileArch.fileDate = row.fileDate;
-        this.fileArch.fileDate = new Date();
         this.fileArch.pageNo = row.pageNo;
         this.fileArch.remark = row.remark;
         let temp = {
