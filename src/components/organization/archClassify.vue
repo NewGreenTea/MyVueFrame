@@ -1,45 +1,47 @@
 <template>
   <Row>
-    <!-- 筛选条件表格 -->
-    <Col span="22" offset="1">
-      <Form><!-- 搜索条件表单 -->
-        <Row type="flex"><!-- 搜索条件表单：第一行 -->
-          <Col span="4">
-            <FormItem>
-              <Button v-on:click="doArchClassify()" size="large"  type="primary">组卷</Button>
-            </FormItem>
-          </Col>
-          <Col span="6">
-            <FormItem>
-              <Input search enter-button placeholder="请输入档号，发文号进行搜索" v-model="keyword"
-                     @keyup.enter.native="handleSerach()"/>
-            </FormItem>
-          </Col>
-          <Col span="4">
-            <FormItem>
-              <Button type="primary" @click="handleSerach">搜索</Button>
-            </FormItem>
-          </Col>
-
-        </Row>
+    <Row>
+    <!-- 搜索 -->
+    <Col span="22" offset="1" >
+      <Form inline :label-width="80" label-position="left">
+        <FormItem label="档案状态：">
+          <Select v-model="statusdata" placeholder="待组卷" @on-change="writeLayout()" style="width:200px">
+            <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem>
+          <Input search enter-button placeholder="请输入档号，发文号进行搜索" style="width: 400px" v-model="keyword"
+                 @keyup.enter.native="handleSerach()" @on-search="handleSerach()"/>
+        </FormItem>
       </Form>
     </Col>
+    </Row>
+
+    <!--按钮-->
+    <Row style="margin: 0px 0px 10px">
+      <Col span="22" offset="1">
+        <Button v-on:click="doArchClassify()" size="large"  type="primary">档案组卷</Button>
+      </Col>
+    </Row>
+
     <!-- 加载档案数据表格 -->
-    <Col span="22" offset="1" align="center">
-      <Table ref="table" border :columns="WAColumn" :data="WriterArchData"
-             @on-select-all="selectAllData"
-             @on-select="selectData"
-             @on-select-cancel="cancelData"
-             @on-select-all-cancel="cancelAllData"
-             v-if="WriterArchData != null" height="600"></Table>
-      <Page :total="totalCount"
-            :current="currentPage"
-            :page-size="pageSize"
-            :page-size-opts="pso"
-            @on-change="pageChange"
-            @on-page-size-change="pageSizeChange"
-            show-elevator show-total show-sizer/>
-    </Col>
+    <Row>
+      <Col span="22" offset="1" align="center">
+        <Table ref="table" border :columns="WAColumn" :data="WriterArchData"
+               @on-select-all="selectAllData"
+               @on-select="selectData"
+               @on-select-cancel="cancelData"
+               @on-select-all-cancel="cancelAllData"
+               v-if="WriterArchData != null" height="600"></Table>
+        <Page :total="totalCount"
+              :current="currentPage"
+              :page-size="pageSize"
+              :page-size-opts="pso"
+              @on-change="pageChange"
+              @on-page-size-change="pageSizeChange"
+              show-elevator show-total show-sizer/>
+      </Col>
+    </Row>
   </Row>
 </template>
 
@@ -48,9 +50,23 @@
     name: 'archData',
     data () {
       return {
-        keyword: '', // 搜索关键词（档号，创建人，批次等）
+        statusdata:'',
+        statusList:[
+          {
+            value:'1',
+            label:'待组卷'
+          },
+          {
+            value:'2',
+            label:'已组卷'
+          },
+          {
+            value:'3',
+            label:'全部'
+          }
+        ],
+        keyword: '', // 搜索关键词（档号，发文号）
         tempData: [], //档案临时存储
-        ids:[],//档案id临时储存
         WriterArchData: [], // 档案数据临时集合
         pageSize: 10, // 分页插件：每页显示总数
         pso: [10, 20, 30, 50, 100], // 分页显示条数
@@ -67,10 +83,6 @@
           {
             title: '序号',
             type: 'index'
-          },
-          {
-            title: '批次',
-            key: 'batchId'
           },
           {
             title: '档号',
@@ -100,10 +112,10 @@
               return h('div', statue)
             }
           },
-          // {
-          //   title: '创建人',
-          //   key: 'importer'
-          // },
+          {
+            title: '创建人',
+            key: 'importerId'
+          },
           {
             title: '导入日期',
             key: 'importDate',
@@ -123,7 +135,8 @@
           params: {
             'pageNum': this.currentPage,
             'pageSize': this.pageSize,
-            'archpageno': this.keyword
+            'archpageno': this.keyword,
+            'statusdata': this.statusdata
           }
         }).then(res => {
           this.WriterArchData = res.data.data.list;
@@ -137,7 +150,8 @@
           params: {
             'pageNum': index,
             'pageSize': this.pageSize,
-            'archpageno': this.keyword
+            'archpageno': this.keyword,
+            'statusdata': this.statusdata
           }
         }).then(res => {
           this.WriterArchData = res.data.data.list;
@@ -152,7 +166,8 @@
           params: {
             'pageNum': this.currentPage,
             'pageSize': index,
-            'archpageno': this.keyword
+            'archpageno': this.keyword,
+            'statusdata': this.statusdata
           }
         }).then(res => {
           this.WriterArchData = res.data.data.list;
@@ -167,17 +182,14 @@
           return false;
         }
         this.showing();
-        for (let i=0; i<this.tempData.length; i++){
-          this.ids.push(this.tempData[i].archId)
-        }
         this.axios.get('/api/arch/doArchClassify', {
           params: {
-            'ids': this.ids.toString()
+            'ids': this.tempData.toString()
           }
         }).then(res => {
           this.$Spin.hide();
-          let successNum=this.ids.length-res.data.length;
-          let errorList='总操作数量：'+this.ids.length+' 条'+'\n';
+          let successNum=this.tempData.length-res.data.length;
+          let errorList='总操作数量：'+this.tempData.length+' 条'+'\n';
           errorList+='成功：'+successNum+' 条'+'\n';
           errorList+='失败：'+res.data.length+' 条'+'\n';
           if(res.data.length>0){
@@ -186,7 +198,6 @@
               errorList+=(i+1)+'.'+res.data[i]+'\n'
             }
           }
-          this.ids=[];
           this.tempData=[];
           this.$Notice.open({
             title: '档案组卷信息汇总  '+dateFormate(new Date()),
@@ -199,25 +210,24 @@
           this.writeLayout();
         }).catch(error => {
           this.$Spin.hide();
-          this.ids=[];
           this.tempData=[];
           console.log(error)
         })
       },
       // 选择单条记录
       selectData(selection, row) {
-        this.tempData.push(row)
+        this.tempData.push(row.archId)
       },
       // 选择所有记录
       selectAllData(selection) {
         for (let i = 0; i < selection.length; i++) {
-          this.tempData.push(selection[i])
+          this.tempData.push(selection[i].archId)
         }
       },
       //取消某个记录
       cancelData(selection, row) {
         for (let i = 0; i < this.tempData.length; i++) {
-          if (this.tempData[i].mapNo === row.mapNo) {
+          if (this.tempData[i] === row.archId) {
             this.tempData.splice(i, 1)
           }
         }

@@ -1,44 +1,31 @@
 <template>
   <Row>
-    <!-- 筛选条件表格 -->
-    <Col span="22" offset="1">
-      <Form><!-- 搜索条件表单 -->
-        <Row type="flex"><!-- 搜索条件表单：第一行 -->
-          <Col span="4">
-            <FormItem>
-              <Button v-on:click="smpass()"  type="success">扫描质检通过</Button>
-              <Button v-on:click="smfail()"  type="error">扫描质检不通过</Button>
-            </FormItem>
-            <Modal
-              v-model="checkmodal"
-              :title=archno
-              @on-ok="inputok"
-              @on-cancel="inputcancel">
-              <Input v-model="bzinput" type="textarea" :autosize="{minRows: 4,maxRows: 5}" placeholder="请输入备注信息..." />
-            </Modal>
-            <Modal
-              v-model="checkmodals"
-              title="批量操作，质检不通过"
-              @on-ok="inputoks"
-              @on-cancel="inputcancels">
-              <Input v-model="bzinput" type="textarea" :autosize="{minRows: 4,maxRows: 5}" placeholder="请输入备注信息..." />
-            </Modal>
-          </Col>
-          <Col span="6">
-            <FormItem>
-              <Input search enter-button placeholder="请输入档号，发文号进行搜索" v-model="keyword"
-                     @keyup.enter.native="handleSerach()"/>
-            </FormItem>
-          </Col>
-          <Col span="4">
-            <FormItem>
-              <Button type="primary" @click="handleSerach">搜索</Button>
-            </FormItem>
-          </Col>
+    <!-- 搜索 -->
+    <Row>
+      <Col span="22" offset="1">
+        <Form>
+          <Row>
+            <Col span="6">
+              <FormItem>
+                <Input search enter-button placeholder="请输入档号，发文号进行搜索" v-model="keyword"
+                       @keyup.enter.native="handleSerach()" @on-search="handleSerach()"/>
+              </FormItem>
+            </Col>
+          </Row>
+        </Form>
+      </Col>
+    </Row>
 
-        </Row>
-      </Form>
-    </Col>
+    <!--按钮-->
+    <Row style="margin: 0px 0px 10px">
+      <Col span="1" offset="1">
+        <Button v-on:click="smpass()" size="large"  type="success">扫描质检通过</Button>
+      </Col>
+      <Col span="15" offset="1">
+        <Button v-on:click="smfail()" size="large"  type="error">扫描质检不通过</Button>
+      </Col>
+    </Row>
+
     <!-- 加载档案数据表格 -->
     <Col span="22" offset="1" align="center">
       <Table ref="table" border :columns="WAColumn" :data="WriterArchData"
@@ -55,6 +42,23 @@
             @on-page-size-change="pageSizeChange"
             show-elevator show-total show-sizer/>
     </Col>
+
+    <!--隐藏窗口-->
+    <Modal
+      v-model="checkmodal"
+      :title=archno
+      @on-ok="inputok"
+      @on-cancel="inputcancel">
+      <Input v-model="bzinput" type="textarea" :autosize="{minRows: 4,maxRows: 5}" placeholder="请输入备注信息..." />
+    </Modal>
+    <Modal
+      v-model="checkmodals"
+      title="批量操作，质检不通过"
+      @on-ok="inputoks"
+      @on-cancel="inputcancels">
+      <Input v-model="bzinput" type="textarea" :autosize="{minRows: 4,maxRows: 5}" placeholder="请输入备注信息..." />
+    </Modal>
+
   </Row>
 </template>
 
@@ -71,7 +75,6 @@
           archno:'',
           keyword: '', // 搜索关键词（档号，创建人，批次等）
           tempData: [], //档案ID临时存储
-          ids:[],//档案id临时储存
           WriterArchData: [], // 档案数据临时集合
           pageSize: 10, // 分页插件：每页显示总数
           pso: [10, 20, 30, 50, 100], // 分页显示条数
@@ -89,10 +92,6 @@
               title: '序号',
               type: 'index',
               width: 70
-            },
-            {
-              title: '批次',
-              key: 'batchId'
             },
             {
               title: '档号',
@@ -124,7 +123,7 @@
             },
             {
               title: '创建人',
-              key: 'importer'
+              key: 'importerId'
             },
             {
               title: '导入日期',
@@ -214,7 +213,6 @@
             this.totalCount = res.data.data.total;
           })
           this.tempData=[];
-          this.ids=[];
         },
         //页数改变
         pageSizeChange: function(index){
@@ -230,40 +228,6 @@
             this.totalCount = res.data.data.total;
           })
           this.tempData=[];
-          this.ids=[];
-        },
-        //批量质检通过
-        smpass : function() {
-          if(this.tempData.length==0){
-            this.$Message.warning("请选择需要操作的记录");
-            return false;
-          }
-          for (let i=0; i<this.tempData.length; i++){
-            this.ids.push(this.tempData[i].archId)
-          }
-          let param = new URLSearchParams()
-          param.append('ids', this.ids)
-          axios({
-            method: 'post',
-            url: '/api/arch/smcheckpass',
-            data: param
-          }).then(res=>{
-              this.$Message.success("操作成功");
-            }
-          )
-          this.tempData=[];
-          this.ids=[];
-        },
-        //批量质检不通过按钮
-        smfail : function() {
-          if(this.tempData.length==0){
-            this.$Message.warning("请选择需要操作的记录");
-            return false;
-          }
-          for (let i=0; i<this.tempData.length; i++){
-            this.ids.push(this.tempData[i].archId)
-          }
-          this.checkmodals=true;
         },
         //不通过备注
         inputok : function(){
@@ -282,14 +246,40 @@
           this.bzid='';
           this.bzinput='';
         },
+        //批量质检通过按钮
+        smpass : function() {
+          if(this.tempData.length==0){
+            this.$Message.warning("请选择需要操作的记录");
+            return false;
+          }
+          let param = new URLSearchParams()
+          param.append('ids', this.tempData)
+          axios({
+            method: 'post',
+            url: '/api/arch/smcheckpass',
+            data: param
+          }).then(res=>{
+              this.$Message.success("操作成功");
+              this.writeLayout();
+          })
+          this.tempData=[];
+        },
         inputcancel : function(){
           this.bzid='';
           this.bzinput='';
         },
+        //批量质检不通过按钮
+        smfail : function() {
+          if(this.tempData.length==0){
+            this.$Message.warning("请选择需要操作的记录");
+            return false;
+          }
+          this.checkmodals=true;
+        },
         //批量不通过备注
         inputoks : function(){
           let param = new URLSearchParams();
-          param.append('ids', this.ids);
+          param.append('ids', this.tempData);
           param.append('bz', this.bzinput);
           axios({
             method: 'post',
@@ -301,26 +291,24 @@
             }
           )
           this.bzinput='';
-          this.ids=[];
         },
         inputcancels : function(){
           this.bzinput='';
-          this.ids=[];
         },
         // 选择单条记录
         selectData(selection, row) {
-          this.tempData.push(row)
+          this.tempData.push(row.archId)
         },
         // 选择所有记录
         selectAllData(selection) {
           for (let i = 0; i < selection.length; i++) {
-            this.tempData.push(selection[i])
+            this.tempData.push(selection[i].archId)
           }
         },
         //取消某个记录
         cancelData(selection, row) {
           for (let i = 0; i < this.tempData.length; i++) {
-            if (this.tempData[i].mapNo === row.mapNo) {
+            if (this.tempData[i] === row.archId) {
               this.tempData.splice(i, 1)
             }
           }
@@ -331,6 +319,7 @@
         },
         //搜索
         handleSerach(){
+          this.currentPage = 1;
           this.writeLayout();
         },
         //显示加载动画

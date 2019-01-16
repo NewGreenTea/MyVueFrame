@@ -10,9 +10,6 @@
               v-if="show">
       <uploader-unsupport></uploader-unsupport>
       <uploader-drop style="background: white">
-        <!--<p style="margin: 10px 0px;padding:5px;border: 1px #c64e53 dashed;">-->
-          <!---->
-        <!--</p>-->
         <div style="margin: 10px 0px;padding:5px;border: 1px #c64e53 dashed;border-radius: 5px;">
           <span>
             <Tooltip placement="right" max-width="200px" theme="light"  content="选择文件上传时，需要输入档号">
@@ -36,6 +33,8 @@
       </uploader-drop>
       <uploader-list ref="uploadList"></uploader-list>
     </uploader>
+
+    <!--隐藏窗口-->
     <Modal v-model="alldelete" width="360">
       <p slot="header" style="color:#f60;text-align:center">
         <Icon type="ios-information-circle"></Icon>
@@ -48,6 +47,7 @@
         <Button type="error" size="large" long @click="alldeleteok">删除</Button>
       </div>
     </Modal>
+
   </div>
 </template>
 
@@ -134,9 +134,9 @@
       fileError(rootFile, file, message, chunk){  //上传失败
         let resmsg=JSON.parse(chunk.xhr.response).msg
         this.$Message.warning({
-          content:resmsg,
-          duration: 20,
-          closable: true
+          content:resmsg
+          // duration: 3,
+          // closable: true
         });
       },
       finishUpload(e){
