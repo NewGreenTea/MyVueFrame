@@ -123,7 +123,7 @@
             },
             {
               title: '创建人',
-              key: 'importerId'
+              key: 'importername'
             },
             {
               title: '导入日期',
@@ -157,7 +157,7 @@
                             data: param
                           }).then(res=>{
                               this.$Message.success("操作成功");
-                              this.writeLayout();
+                              this.handleSerach();
                             }
                           )
                         }
@@ -187,14 +187,16 @@
       },
       methods: {
         //获取列表数据
-        writeLayout : function() {
-          this.axios.get('/api/arch/getsmcheckArchInfo', {
-            params: {
-              'pageNum': this.currentPage,
-              'pageSize': this.pageSize,
-              'archpageno': this.keyword
-            }
-          }).then(res => {
+        writeLayout(currentPage,pageSize) {
+          let param = new URLSearchParams();
+          param.append('pageNum', currentPage);
+          param.append('pageSize', pageSize);
+          param.append('searchItem', this.keyword);
+          axios({
+            method: 'post',
+            url: '/api/arch/getsmcheckArchInfo',
+            data: param
+          }).then(res=>{
             this.WriterArchData = res.data.data.list;
             this.totalCount = res.data.data.total;
           })
@@ -202,31 +204,13 @@
         //页码改变
         pageChange: function(index){
           this.currentPage=index
-          this.axios.get('/api/arch/getsmcheckArchInfo', {
-            params: {
-              'pageNum': index,
-              'pageSize': this.pageSize,
-              'archpageno': this.keyword
-            }
-          }).then(res => {
-            this.WriterArchData = res.data.data.list;
-            this.totalCount = res.data.data.total;
-          })
+          this.writeLayout(this.currentPage,this.pageSize);
           this.tempData=[];
         },
         //页数改变
         pageSizeChange: function(index){
           this.pageSize = index
-          this.axios.get('/api/arch/getsmcheckArchInfo', {
-            params: {
-              'pageNum': this.currentPage,
-              'pageSize': index,
-              'archpageno': this.keyword
-            }
-          }).then(res => {
-            this.WriterArchData = res.data.data.list;
-            this.totalCount = res.data.data.total;
-          })
+          this.writeLayout(this.currentPage, this.pageSize);
           this.tempData=[];
         },
         //不通过备注
@@ -240,7 +224,7 @@
             data: param
           }).then(res=>{
               this.$Message.success("操作成功");
-              this.writeLayout();
+              this.handleSerach();
             }
           )
           this.bzid='';
@@ -260,7 +244,7 @@
             data: param
           }).then(res=>{
               this.$Message.success("操作成功");
-              this.writeLayout();
+              this.handleSerach();
           })
           this.tempData=[];
         },
@@ -287,7 +271,7 @@
             data: param
           }).then(res=>{
               this.$Message.success("操作成功");
-              this.writeLayout();
+              this.handleSerach();
             }
           )
           this.bzinput='';
@@ -320,7 +304,7 @@
         //搜索
         handleSerach(){
           this.currentPage = 1;
-          this.writeLayout();
+          this.writeLayout(this.currentPage,this.pageSize);
         },
         //显示加载动画
         showing(){
@@ -341,7 +325,7 @@
         }
       },
       mounted : function () {
-        this.writeLayout();
+        this.writeLayout(this.currentPage,this.pageSize)
       }
     }
 

@@ -5,7 +5,7 @@
     <Col span="22" offset="1" >
       <Form inline :label-width="80" label-position="left">
         <FormItem label="档案状态：">
-          <Select v-model="statusdata" placeholder="待组卷" @on-change="writeLayout()" style="width:200px">
+          <Select v-model="statusdata" placeholder="待组卷" @on-change="handleSerach()" style="width:200px">
             <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </FormItem>
@@ -46,22 +46,23 @@
 </template>
 
 <script>
+  import axios from 'axios';
   export default {
     name: 'archData',
     data () {
       return {
-        statusdata:'',
+        statusdata:8,
         statusList:[
           {
-            value:'1',
+            value:'8',
             label:'待组卷'
           },
           {
-            value:'2',
-            label:'已组卷'
+            value:'9',
+            label:'组卷完成'
           },
           {
-            value:'3',
+            value:'10',
             label:'全部'
           }
         ],
@@ -114,7 +115,7 @@
           },
           {
             title: '创建人',
-            key: 'importerId'
+            key: 'importername'
           },
           {
             title: '导入日期',
@@ -130,15 +131,17 @@
     },
     methods: {
       //获取列表数据
-      writeLayout : function() {
-        this.axios.get('/api/arch/getClassifyArchInfo', {
-          params: {
-            'pageNum': this.currentPage,
-            'pageSize': this.pageSize,
-            'archpageno': this.keyword,
-            'statusdata': this.statusdata
-          }
-        }).then(res => {
+      writeLayout (currentPage,pageSize) {
+        let param = new URLSearchParams();
+        param.append('pageNum', currentPage);
+        param.append('pageSize', pageSize);
+        param.append('searchItem', this.keyword);
+        param.append('twoStatue', this.statusdata);
+        axios({
+          method: 'post',
+          url: '/api/arch/getClassifyArchInfo',
+          data: param
+        }).then(res=>{
           this.WriterArchData = res.data.data.list;
           this.totalCount = res.data.data.total;
         })
@@ -146,33 +149,13 @@
       //页码改变
       pageChange: function(index){
         this.currentPage=index
-        this.axios.get('/api/arch/getClassifyArchInfo', {
-          params: {
-            'pageNum': index,
-            'pageSize': this.pageSize,
-            'archpageno': this.keyword,
-            'statusdata': this.statusdata
-          }
-        }).then(res => {
-          this.WriterArchData = res.data.data.list;
-          this.totalCount = res.data.data.total;
-        })
+        this.writeLayout(this.currentPage,this.pageSize);
         this.tempData=[];
       },
       //页数改变
       pageSizeChange: function(index){
         this.pageSize = index
-        this.axios.get('/api/arch/getClassifyArchInfo', {
-          params: {
-            'pageNum': this.currentPage,
-            'pageSize': index,
-            'archpageno': this.keyword,
-            'statusdata': this.statusdata
-          }
-        }).then(res => {
-          this.WriterArchData = res.data.data.list;
-          this.totalCount = res.data.data.total;
-        })
+        this.writeLayout(this.currentPage, this.pageSize);
         this.tempData=[];
       },
       //组卷
@@ -207,7 +190,7 @@
               return h('pre', errorList)
             }
           });
-          this.writeLayout();
+          this.handleSerach();
         }).catch(error => {
           this.$Spin.hide();
           this.tempData=[];
@@ -238,7 +221,8 @@
       },
       //搜索
       handleSerach(){
-        this.writeLayout();
+        this.currentPage = 1;
+        this.writeLayout(this.currentPage,this.pageSize);
       },
       //显示加载动画
       showing(){
@@ -259,7 +243,7 @@
       }
     },
     mounted : function () {
-      this.writeLayout();
+      this.writeLayout(this.currentPage,this.pageSize)
     }
   }
 

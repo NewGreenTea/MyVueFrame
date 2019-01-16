@@ -307,7 +307,6 @@
       },
       //取消所有记录
       cancelAllData(selection) {
-        debugger;
         this.tempData = []
       },
       //批量转化时间
