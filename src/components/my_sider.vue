@@ -64,6 +64,9 @@
           <router-link to="/index/viewcont/postManagement"><p @click="postManagement">职位管理</p></router-link>
         </MenuItem>
         <!--<MenuItem name="4-5">模板管理</MenuItem>-->
+        <MenuItem name="4-5">
+          <router-link to="/index/viewcont/archNoTool"><p @click="archNoManagement">档号管理</p></router-link>
+        </MenuItem>
       </Submenu>
       <Submenu name="5">
         <template slot="title">
@@ -272,6 +275,17 @@
           this.$emit('showIndexCont', 'postManagement')
         } else {
           this.$emit('showIndexCont', 'postManagement'); // 子向父组件传值
+          this.$store.dispatch('AddTabView', temp)
+        }
+      },
+      //档号管理（设置）
+      archNoManagement(){
+        let path = this.getTabViewPath;
+        let temp = {name: 'archNoManagement', path: '/index/viewcont/archNoTool', desName: '档号管理'};
+        if (recopy(path, 'archNoManagement', '/index/viewcont/archNoTool')) {
+          this.$emit('showIndexCont', 'archNoManagement')
+        } else {
+          this.$emit('showIndexCont', 'archNoManagement'); // 子向父组件传值
           this.$store.dispatch('AddTabView', temp)
         }
       }

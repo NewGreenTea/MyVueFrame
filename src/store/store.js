@@ -71,6 +71,10 @@ export default new Vuex.Store({
         }
       }
     },
+    //退出时清空Vuex的标签栏
+    reSetTabView(state){
+      state.visitViewPath = []
+    },
     // ------------------------------------------------------
     fileAdd (state, num) { // 上传文件数量增加
       state.fileNum = state.fileNum + num
@@ -113,6 +117,10 @@ export default new Vuex.Store({
     },
     VisitCurrentPath (context, name) { // 定位标签页
       context.commit('visitCurrentPath', name)
+    },
+    //退出时清空Vuex的标签栏
+    ReSetTabView (context){
+      context.commit('reSetTabView')
     },
     // ------------------------------------------
     FileAdd (context, num) {

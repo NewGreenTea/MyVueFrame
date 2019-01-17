@@ -37,6 +37,7 @@ export default ({
       this.axios.get('/api/logout').then(res => {
         this.$store.dispatch('ClearUserID');
         this.$store.dispatch('ClearUserName');
+        this.$store.dispatch('ReSetTabView');
         this.$router.push('/')
       })
     }

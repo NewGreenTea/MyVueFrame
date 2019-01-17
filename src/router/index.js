@@ -46,7 +46,7 @@ import testTable from './../components/test/testTable' // 测试用
 //import testForm from './../components/test/testFormVailator' // 测试用
 import archManagement from './../components/systemManagement/archData'
 import classtype from './../components/test/classtype'
-import archTool from './../components/organization/archNoTool'
+import archTool from '../components/organization/archNoTool'
 import archClassify from './../components/organization/archClassify'
 import userManagement from '../components/systemManagement/userManagement'
 import departmentManagement from '../components/systemManagement/departmentManagement'
@@ -141,21 +141,14 @@ export default new Router({
               Assignment: Assignment
             }
           },
-          { // 库房管理员
+          { // 导入清单
             path: 'archAdmin',
             name: 'archAdmin',
             components: {
               archAdmin: archAdmin
-            },
-            children: [{
-              path: 'archNoTool',
-              name: 'archNoTool',
-              components: {
-                ArchTool: archTool
-              }
-            }]
+            }
           },
-          { // 主管
+          { // 分配
             path: 'director',
             name: 'director',
             components: {
@@ -279,6 +272,13 @@ export default new Router({
             name: 'classtype',
             components: {
               classtype: classtype
+            }
+          },
+          {//档案档号管理
+            path: 'archNoTool',
+            name: 'archNoManagement',
+            components: {
+              archNoManagement: archTool
             }
           }
         ]
