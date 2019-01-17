@@ -7,7 +7,7 @@
           <Row>
             <Col span="6">
               <FormItem>
-                <Input search enter-button placeholder="请输入档号，发文号进行搜索" v-model="keyword"
+                <Input search enter-button placeholder="请输入档号，发文号进行搜索" v-model="keyword" style="width: 400px"
                        @keyup.enter.native="handleSerach()" @on-search="handleSerach()"/>
               </FormItem>
             </Col>

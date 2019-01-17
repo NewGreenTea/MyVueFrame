@@ -1,12 +1,14 @@
 <template>
   <div>
-    <uploader :options="options" class="uploader-example" ref="myupload" :autoStart="autoParam"
+    <uploader :options="options" class="uploader-example" ref="myupload"
+              :autoStart="autoParam"
               :file-status-text="StatusText"
               @file-added="beforeUpload"
               @file-progress="uploading"
               @file-success="fileSuccess"
               @file-error="fileError"
-              v-on:finish="finishUpload"
+              @complete="finishUpload"
+              @fileComplete="onefinish"
               v-if="show">
       <uploader-unsupport></uploader-unsupport>
       <uploader-drop style="background: white">
@@ -17,7 +19,7 @@
             </Tooltip>
           </span>
           <uploader-btn :attrs="attrs" class="uploadbutton" @click="clickFileUpload">选择文件</uploader-btn>
-          <span>档号：<Input size="large" style="width: 300px;" placeholder="请输入需要替换文件的档号" v-model="archNoPage" @change="changeInputValue"/></span>
+          <span>档号：<Input size="large" style="width: 300px;" placeholder="请输入需要替换文件的档号" v-model="archNoPage" @on-change="changeInputValue"/></span>
         </div>
         <div style="padding: 5px;border: 1px #c64e53 dashed;">
           <span>
@@ -59,6 +61,7 @@
       return {
         alldelete:false,
         archNoPage:'',
+        errorList:[],
         options: {
           target: '/api/upload/vueUpload', // 请求的目标URL
           chunkSize: 1024 * 1024 * 50, // 每个上传的数据块的大小（以字节为单位）默认值：1*1024*1024
@@ -91,30 +94,29 @@
         this.alldelete=false;
       },
       clear () {
-        const uploaderInstance = this.$refs.myupload.$children[2] // 获得uploader下的filelist
-        const filesLength = uploaderInstance.$children.length // 获得uploader下的filelist的长度
+        let filesLength = this.$refs.myupload.uploader.files.length
         if(filesLength==0){
           this.$Message.warning("没有可以删除的文件")
           return false;
         }
         this.alldelete=true
       },
-      beforeUpload (file) { // 添加文件触发事件（上传之前，做检验用）
-        const uploaderInstance = this.$refs.myupload.uploader
+      beforeUpload (file) { // 添加文件的时候，设置档号
+        const uploaderInstance = this.$refs.myupload.uploader;
         uploaderInstance.opts.query={archNo : this.archNoPage};
       },
-      changeInputValue(){
-        const uploaderInstance = this.$refs.myupload.uploader
+      changeInputValue(){   // 文本框改变的时候，设置档号
+        const uploaderInstance = this.$refs.myupload.uploader;
         uploaderInstance.opts.query={archNo : this.archNoPage};
       },
       uploading (file) { // 上传中的事件
 
       },
       allUpload: function () { // 全部上传
-        const uploaderInstance = this.$refs.myupload.$children[2] // 获得uploader下的filelist
-        const filesLength = uploaderInstance.$children.length // 获得uploader下的filelist的长度
+        const uploaderInstance = this.$refs.myupload.$children[2]; // 获得uploader下的filelist
+        const filesLength = uploaderInstance.$children.length; // 获得uploader下的filelist的长度
         if(filesLength==0){
-          this.$Message.warning("当前没有待上传的文件/文件夹")
+          this.$Message.warning("当前没有待上传的文件/文件夹");
           return false;
         }
         for (let i = 0; i < filesLength; i++) {
@@ -122,8 +124,8 @@
         }
       },
       allPause () { // 全部暂停
-        const uploaderInstance = this.$refs.myupload.$children[2] // 获得uploader下的filelist
-        const filesLength = uploaderInstance.$children.length // 获得uploader下的filelist的长度
+        const uploaderInstance = this.$refs.myupload.$children[2]; // 获得uploader下的filelist
+        const filesLength = uploaderInstance.$children.length; // 获得uploader下的filelist的长度
         for (let i = 0; i < filesLength; i++) {
           uploaderInstance.$children[i].pause()
         }
@@ -132,19 +134,49 @@
 
       },
       fileError(rootFile, file, message, chunk){  //上传失败
-        let resmsg=JSON.parse(chunk.xhr.response).msg
-        this.$Message.warning({
-          content:resmsg
-          // duration: 3,
-          // closable: true
-        });
+        let resmsg=JSON.parse(chunk.xhr.response).msg;
+        this.errorList.push(resmsg);
       },
-      finishUpload(e){
-        let res=JSON.parse(e);
-        console.log(res);
+      finishUpload(){
+        // let total = this.$refs.myupload.uploader.files.length;
+        // let successnum = total - this.errorList.length;
+        // let errorList='总操作数量：'+total+' 条'+'\n';
+        // errorList+='成功：'+successnum+' 条'+'\n';
+        if(this.errorList.length>0){
+          let errorList='共计：'+this.errorList.length+' 份文件上传失败'+'\n';
+          errorList+='失败原因如下：'+'\n';
+          for (let i=0;i<this.errorList.length;i++){
+            errorList+=(i+1)+'.'+this.errorList[i]+'\n'
+          }
+          this.$Notice.open({
+            title: '上传失败信息汇总   '+dateFormate(new Date()),
+            desc: '',
+            duration: 0,
+            render: h => {
+              return h('pre', errorList)
+            }
+          });
+        }
+        this.errorList=[];
+        this.$refs.myupload.$children[2].$children=[];
+      },
+      onefinish(){
+        alert("????")
       }
+
     }
 
+  }
+
+  // 时间格式转换
+  // 对日期的格式进行转换（‘Tue Nov 06 2018 00:00:00 GMT+0800’=》‘yyyy-MM-dd’）
+  function dateFormate (date) {
+    if (date.getTime() === new Date('Thu Jan 01 1970 08:00:00 GMT+0800 (中国标准时间)').getTime()) {
+      return ''
+    }
+    let datadate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() +
+      ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+    return datadate
   }
 </script>
 

@@ -182,6 +182,7 @@
             }
           }
           this.tempData=[];
+          this.$refs.table.selectAll(false);
           this.$Notice.open({
             title: '档案组卷信息汇总  '+dateFormate(new Date()),
             desc: '',
@@ -194,6 +195,7 @@
         }).catch(error => {
           this.$Spin.hide();
           this.tempData=[];
+          this.$refs.table.selectAll(false);
           console.log(error)
         })
       },
@@ -304,26 +306,6 @@
 <style>
   .demo-spin-icon-load{
     animation: ani-demo-spin 1s linear infinite;
-  }
-  pre{
-    line-height:15px;
-    max-height: 600px;
-    overflow: auto;
-  }
-  /*滚动条样式*/
-  ::-webkit-scrollbar {/*滚动条整体样式*/
-    width: 4px;
-    height: 16px;
-  }
-  ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-    -webkit-box-shadow: inset 0 0 6px rgba(79, 79, 79, 0.32);
-    border-radius: 10px;
-    background-color: #2baee9;
-  }
-  ::-webkit-scrollbar-track {/*滚动条里面轨道*/
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(79, 79, 79, 0.32);
-    background-color: #faeaff;
   }
 
 </style>

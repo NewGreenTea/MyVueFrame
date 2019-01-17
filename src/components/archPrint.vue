@@ -34,6 +34,13 @@
                                 @on-change="dateFormat" v-model="searchDate" style="width: 300px"></DatePicker>
                   </FormItem>
                 </div>
+               <div>
+                 <FormItem label="档案一级状态：">
+                   <Select v-model="tstatusdata" placeholder="全部" @on-change="search" style="width:200px">
+                     <Option v-for="item in tstatusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                   </Select>
+                 </FormItem>
+               </div>
              </div>
             </Panel>
           </Collapse>
@@ -142,7 +149,7 @@
         pageSize: 10,
         pso: [10, 20, 30, 50, 100],
         /*搜索表单*/
-        //状态下拉选框
+        //二级状态下拉选框
         statusdata:10,
         statusList:[
           {
@@ -167,7 +174,7 @@
           },
           {
             value:'4',
-            label:'待扫描检中'
+            label:'待扫描质检'
           },
           {
             value:'5',
@@ -190,6 +197,30 @@
             label:'组卷完成'
           }
         ],
+        //一级状态下拉选框
+        tstatusdata:10,
+        tstatusList:[
+          {
+            value:'10',
+            label:'全部'
+          },
+          {
+            value:'0',
+            label:'整理（入库中）'
+          },
+          {
+            value:'1',
+            label:'在库'
+          },
+          {
+            value:'2',
+            label:'借阅中'
+          },
+          {
+            value:'3',
+            label:'出库'
+          }
+        ],
         keyword: '',
         searchDate:[],
         searchLah:'',
@@ -210,6 +241,7 @@
         param.append('importername', this.searchCjr);
         param.append('searchDate', this.searchDate);
         param.append('twoStatue', this.statusdata);
+        param.append('oneStatue',this.tstatusdata);
         axios({
           method: 'post',
           url: '/api/arch/getprintArchInfo',
@@ -260,6 +292,7 @@
           console.log(error);
         })
         this.tempData=[];
+        this.$refs.table.selectAll(false);
       },
       jnml_print(){
         if(this.tempData.length<=0){
@@ -286,6 +319,7 @@
           console.log(error);
         })
         this.tempData=[];
+        this.$refs.table.selectAll(false);
       },
       // 选择单条记录
       selectData(selection, row) {
