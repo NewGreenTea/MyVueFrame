@@ -4,11 +4,11 @@
       <Row>
         <!-- 加载档案数据待著录条件框 -->
         <Col span="20" offset="2">
-          <Form>
+          <Form class="conditionFormFront">
             <Row>
               <Col span="2">
                 <FormItem>
-                  <Button type="success">筛选条件</Button>
+                  <h2>筛选条件:</h2>
                 </FormItem>
               </Col>
               <!--<Col span="4">-->
@@ -19,7 +19,7 @@
               <Col span="4">
                 <FormItem>
                   <Row>
-                    <Col span="7" offset="5">
+                    <Col span="10" offset="2">
                       档案状态：
                     </Col>
                     <Col span="12">
@@ -39,7 +39,7 @@
           </Form>
         </Col>
         <!-- 加载档案数据待著录表格 -->
-        <Col span="20" offset="2">
+        <Col span="20" offset="2" class="TableFontCss">
           <Table border :columns="needToDoColumns" :data="needToDoData"></Table>
           <Page :current="needToDoPage" :total="needToDoCount" :page-size="needToDoPageSize" show-elevator show-total
                 show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="needToDoPSO"/>
@@ -70,7 +70,7 @@
 
       <Row v-if="showArchData" style="margin-top: 20px;">
         <!-- 加载档案数据表格 -->
-        <Col span="20" offset="2">
+        <Col span="20" offset="2" class="TableFontCss">
           <Table border :columns="columns" :data="tableData"></Table>
           <!--todo 还没完全做好，待完善 2018/12/6-->
           <Page :current="currentPage" :total="totalCount" :page-size="pageSize" show-elevator show-total show-sizer
@@ -147,6 +147,7 @@
           },
           {
             title: '档案状态',
+            width: 140,
             key: 'twoStatue',
             render: (h, params) => {
               let statue = statueTwoDes(params.row.twoStatue);
@@ -155,6 +156,7 @@
           },
           {
             title: '基本信息',
+            width: 100,
             render: (h, params) => {
               return h('div', [
                   h('Button', {
@@ -187,6 +189,7 @@
                                     dispatchDocNo: params.row.dispatchDocNo,
                                     archTypeID: this.archTypeID,
                                     archTypeName: this.archTypeName,
+                                    archInputDate: params.row.inputDate,
                                     operation: true
                                   }
                                 })
@@ -218,6 +221,7 @@
           },
           {
             title: '专业信息',
+            width: 100,
             render: (h, params) => {
               return h('div', [
                 h('Button',
@@ -275,6 +279,7 @@
           },
           {
             title: '文件信息',
+            width: 100,
             render: (h, params) => {
               return h('div', [
                 h('Button',
@@ -595,5 +600,17 @@
 
   .hidd {
     display: none
+  }
+  /*表格字体大小*/
+  .TableFontCss >>> .ivu-table{
+    font-size: 14px;
+  }
+
+  /*条件显示样式*/
+  .conditionFormFront >>> .ivu-form-item-content{
+    font-size: 15px;
+  }
+  .conditionFormFront >>> .ivu-input{
+    font-size: 14px;
   }
 </style>

@@ -8,8 +8,8 @@
         <Button @click="goBack">返回</Button>
       </Col>
       <Col span="6" offset="6">
-        <Button @click="successCheck" type="info">质检通过</Button>
-        <Button @click="failCheck" type="info">质检不通过</Button>
+        <Button @click="successCheck" type="success">质检通过</Button>
+        <Button @click="failCheck" type="error">质检不通过</Button>
       </Col>
     </Row>
 
@@ -25,7 +25,7 @@
     </Modal>
 
     <!-- 基本信息 -->
-    <Row v-if="base">
+    <Row v-if="base" class="displayClass">
       <Col span="20" offset="1">
         <Form class="formClass" :model="baseArch" ref="BaseInfoForm">
           <Row>
@@ -172,7 +172,7 @@
     </Row>
 
     <!-- 专业信息 -->
-    <Row v-if="prof">
+    <Row v-if="prof" class="displayClass">
       <!-- 专业基本 -->
       <Col span="20" offset="1">
         <Form class="formClass" :model="profArch">
@@ -676,8 +676,8 @@
 
     <!-- 文件信息 -->
     <!--文件信息表格-->
-    <Row v-if="file">
-      <Col span="22" offset="1">
+    <Row v-if="file" class="displayClass">
+      <Col span="22" offset="1" class="TableFontCss">
         <Table border :columns="columns" :data="tableData" :height="tableHeight" style="margin-top: 40px"></Table>
       </Col>
     </Row>
@@ -1037,7 +1037,14 @@
           },
           {
             title: '文件题名',
-            key: 'fileTitle'
+            render: (h, params) => {
+              return h('Tooltip', {
+                props: {
+                  'content': params.row.fileTitle,
+                  'max-width': 300
+                }
+              }, params.row.fileTitle.length > 23?params.row.fileTitle.substring(0,23)+'...':params.row.fileTitle)
+            }
           },
           {
             title: '页号',
@@ -1287,6 +1294,9 @@
 </script>
 
 <style scoped>
+  .displayClass{
+    margin-top: 20px;
+  }
   /*选中按钮改变的颜色*/
   .buttonSelect {
     background-color: deepskyblue;
@@ -1301,5 +1311,9 @@
   }
   .checkWriteCss{
     font-size: 20px;
+  }
+  /*表格字体大小*/
+  .TableFontCss >>> .ivu-table{
+    font-size: 14px;
   }
 </style>

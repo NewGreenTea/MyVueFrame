@@ -6,31 +6,37 @@
         <!-- 任务显示按钮 -->
         <Row>
           <Col offset="2">
-            <Button @click="showBatchAssignment" style="width: 150px" :class="{'buttonSelect': butOnSelect.activeIndex === 1}">批次任务</Button>
+            <Button @click="showBatchAssignment" style="width: 150px;font-size: 15px;"
+                    :class="{'buttonSelect': butOnSelect.activeIndex === 1}">批次任务
+            </Button>
           </Col>
           <Col offset="2">
-            <Button @click="showHisAssignment" style="width: 150px" :class="{'buttonSelect': butOnSelect.activeIndex === 2}">历史批次任务</Button>
+            <Button @click="showHisAssignment" style="width: 150px;font-size: 15px;"
+                    :class="{'buttonSelect': butOnSelect.activeIndex === 2}">历史批次任务
+            </Button>
           </Col>
           <Col offset="2">
-            <Button @click="showDistAssignment" style="width: 150px" :class="{'buttonSelect': butOnSelect.activeIndex === 3}">已分配任务</Button>
+            <Button @click="showDistAssignment" style="width: 150px;font-size: 15px;"
+                    :class="{'buttonSelect': butOnSelect.activeIndex === 3}">已分配任务
+            </Button>
           </Col>
         </Row>
       </Col>
 
       <!-- 批次任务 -->
-      <Col span="19" v-if="showATData">
+      <Col span="19" v-if="showATData" class="TableFontCss">
         <Table border :columns="AssignmentColumn" :data="AssignmentData"></Table>
         <Page :current="assCurrentPage" :total="assDataCount" :page-size="assPageSize" show-elevator show-total
               show-sizer @on-change="destPage1" @on-page-size-change="changePageSize1" :page-size-opts="assPSO"/>
       </Col>
       <!-- 历史批次任务 -->
-      <Col span="19" v-if="showHTData">
+      <Col span="19" v-if="showHTData" class="TableFontCss">
         <Table border :columns="AssignmentHisColumn" :data="AssignmentHisData"></Table>
         <Page :current="assCurrentPage" :total="assDataCount" :page-size="assPageSize" show-elevator show-total
               show-sizer @on-change="destPage1" @on-page-size-change="changePageSize1" :page-size-opts="assPSO"/>
       </Col>
       <!-- 已分配任务 -->
-      <Col span="19" v-if="showDTData">
+      <Col span="19" v-if="showDTData" class="TableFontCss">
         <Table border :columns="AssignmentDisColumn" :data="AssignmentDisData"></Table>
         <Page :current="assCurrentPage" :total="assDataCount" :page-size="assPageSize" show-elevator show-total
               show-sizer @on-change="destPage1" @on-page-size-change="changePageSize1" :page-size-opts="assPSO"/>
@@ -76,18 +82,18 @@
         <Row>
           <!-- 分配界面：主体右边：（上半部分）筛选条件 -->
           <Col>
-            <Form ref="searchForm">
+            <Form ref="searchForm" class="conditionFormFront">
               <Row>
                 <Col span="2">
                   <FormItem>
-                    <Button type="success">筛选条件</Button>
+                    <h2>筛选条件:</h2>
                   </FormItem>
                 </Col>
                 <!-- 筛选条件：档案状态 -->
                 <Col span="4">
                   <FormItem>
                     <Row>
-                      <Col span="8" offset="4">
+                      <Col span="10" offset="2">
                         档案状态：
                       </Col>
                       <Col span="12">
@@ -104,10 +110,10 @@
                     <Row>
                       <Col>
                         <Row>
-                          <Col span="7" offset="2">
+                          <Col span="9" offset="2">
                             任务开始时间：
                           </Col>
-                          <Col span="15">
+                          <Col span="12">
                             <DatePicker type="daterange" placement="bottom-end" placeholder="Select date"
                                         format="yyyy-MM-dd"
                                         style="width: 200px" :value="keyDate" @on-change="keyDate=$event"></DatePicker>
@@ -121,10 +127,10 @@
                 <Col span="5">
                   <FormItem>
                     <Row>
-                      <Col span="5" offset="2">
+                      <Col span="7" offset="4">
                         关键字：
                       </Col>
-                      <Col span="17">
+                      <Col span="13">
                         <Input placeholder="档号" v-model="keyword" :clearable="InputClear"/>
                       </Col>
                     </Row>
@@ -134,9 +140,9 @@
                 <Col span="3">
                   <Row>
                     <Col span="2" offset="5">
-                  <FormItem>
-                    <Button type="primary" @click="searchNotDistri">搜索</Button>
-                  </FormItem>
+                      <FormItem>
+                        <Button type="primary" @click="searchNotDistri">搜索</Button>
+                      </FormItem>
                     </Col>
                   </Row>
                 </Col>
@@ -151,7 +157,7 @@
           </Col>
 
           <!-- 分配界面：主体右边：（下半部分）档案数据分配表格 -->
-          <Col span="24" class="tableLoading">
+          <Col span="24" class="tableLoading TableFontCss">
             <Table ref="table" :height="tableHeight" border :columns="ArchTableColumn" :data="DistributeArchData"
                    v-if="DistributeArchData != null" @on-select-all="selectAllData" @on-select="selectRowData"
                    @on-select-cancel="cancelRowData" @on-select-all-cancel="cancelAllData"></Table>
@@ -177,9 +183,9 @@
         AssignmentColumn: [
           {
             title: '序号',
-            width: 60,
+            width: 70,
             render: (h, params) => {
-              return h('span', params.index + (this.assCurrentPage- 1) * this.assPageSize + 1);
+              return h('span', params.index + (this.assCurrentPage - 1) * this.assPageSize + 1);
             }
           },
           {
@@ -233,7 +239,7 @@
                           this.$Message.info('已加载到分配面板上');
                           this.DistributeArchData = res.data.data.list;
                           this.archDataCount = res.data.data.total;
-                          this.searchData=false;
+                          this.searchData = false;
                           this.spinShow = false;
                         })
                     }
@@ -247,9 +253,9 @@
         AssignmentHisColumn: [
           {
             title: '序号',
-            width: 60,
+            width: 70,
             render: (h, params) => {
-              return h('span', params.index + (this.assCurrentPage- 1) * this.assPageSize + 1);
+              return h('span', params.index + (this.assCurrentPage - 1) * this.assPageSize + 1);
             }
           },
           {
@@ -297,7 +303,7 @@
                             this.$Message.info('已加载到分配面板上');
                             this.DistributeArchData = res.data.data.list;
                             this.archDataCount = res.data.data.total;
-                            this.searchData=false;
+                            this.searchData = false;
                             this.spinShow = false;
                           })
                       }
@@ -311,9 +317,9 @@
         AssignmentDisColumn: [
           {
             title: '序号',
-            width: 60,
+            width: 70,
             render: (h, params) => {
-              return h('span', params.index + (this.assCurrentPage- 1) * this.assPageSize + 1);
+              return h('span', params.index + (this.assCurrentPage - 1) * this.assPageSize + 1);
             }
           },
           {
@@ -382,11 +388,12 @@
             title: '序号',
             width: 70,
             render: (h, params) => {
-              return h('span', params.index + (this.currentPage- 1) * this.pageSize + 1);
+              return h('span', params.index + (this.currentPage - 1) * this.pageSize + 1);
             }
           },
           {
             title: '任务id',
+            width: 80,
             render: (h, params) => {
               return h('p', params.row.batchVO.batchId)
             }
@@ -406,6 +413,7 @@
           },
           {
             title: '库房管理员',
+            width: 120,
             render: (h, params) => {
               return h('p', params.row.importerName)
             }
@@ -685,7 +693,11 @@
             writeGroupID: this.taskWG,
             ids: temp
           })).then(res => {
-            this.$Message.success(res.data.msg);
+            if (res.data.code === 0) {
+              this.$Message.success('分配完成！');
+            } else {
+              this.$Message.error('分配失败！')
+            }
             this.hackReset = false;
             this.$nextTick(() => {
               this.hackReset = true;
@@ -704,7 +716,7 @@
       },
       //根据条件查询未分配的档案
       searchNotDistri() {
-        if(this.keyDate!== '' || this.archStatues !== '' || this.keyword !== '') {
+        if (this.keyDate !== '' || this.archStatues !== '' || this.keyword !== '') {
           this.pageUrl = '/api/importArch/archSearch';
           this.urlParams = {
             keyDate: this.keyDate,
@@ -727,7 +739,7 @@
               this.spinShow = false;
             })
 
-        }else{
+        } else {
           this.$Message.error('筛选条件没有正确选择！')
         }
       },
@@ -747,14 +759,14 @@
         this.urlParams.pageNum = index;
         let param;
         if (this.searchData === true) {
-          param=this.qs.stringify(this.urlParams, {indices: false});
+          param = this.qs.stringify(this.urlParams, {indices: false});
           this.spinShow = true;
           this.axios.post(this.pageUrl, param).then(res => {
             this.DistributeArchData = res.data.data.list;
             this.archDataCount = res.data.data.total;
             this.spinShow = false;
           });
-        }else{
+        } else {
           this.spinShow = true;
           this.axios.get(this.pageUrl, {params: this.urlParams}).then(res => {
             this.DistributeArchData = res.data.data.list;
@@ -769,14 +781,14 @@
         this.urlParams.pageSize = index;
         let param;
         if (this.searchData === true) {
-          param=this.qs.stringify(this.urlParams);
+          param = this.qs.stringify(this.urlParams);
           this.spinShow = true;
           this.axios.post(this.pageUrl, param).then(res => {
             this.DistributeArchData = res.data.data.list;
             this.archDataCount = res.data.data.total;
             this.spinShow = false;
           });
-        }else{
+        } else {
           this.spinShow = true;
           this.axios.get(this.pageUrl, {params: this.urlParams}).then(res => {
             this.DistributeArchData = res.data.data.list;
@@ -812,7 +824,7 @@
         this.axios.get(this.assPageUrl, {params: this.assUrlParams}).then(res => {
           if (this.assPageUrl === '/api/importArch/checkDistAssignment') {
             this.AssignmentDisData = res.data.data.list;
-          }else if (this.assUrlParams.batchStatue === 1) {
+          } else if (this.assUrlParams.batchStatue === 1) {
             this.AssignmentHisData = res.data.data.list;
           } else if (this.assUrlParams.batchStatue === 0) {
             this.AssignmentData = res.data.data.list;
@@ -836,7 +848,7 @@
       }
     },
     mounted() {
-      this.loadDistributeArchData();
+      //this.loadDistributeArchData();
       this.loadWorkGroup()
     }
   }
@@ -908,7 +920,19 @@
 </script>
 
 <style scoped>
-.buttonSelect{
-  background-color: deepskyblue;
-}
+  .buttonSelect {
+    background-color: deepskyblue;
+  }
+
+  /*表格字体大小*/
+  .TableFontCss >>> .ivu-table {
+    font-size: 14px;
+  }
+  /*条件显示样式*/
+  .conditionFormFront >>> .ivu-form-item-content{
+    font-size: 15px;
+  }
+  .conditionFormFront >>> .ivu-input{
+    font-size: 14px;
+  }
 </style>

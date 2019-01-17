@@ -3,7 +3,7 @@
     <div :class="loadData">
       <Row>
         <!-- 加载档案数据待质检表格 -->
-        <Col span="20" offset="2">
+        <Col span="20" offset="2" class="TableFontCss">
           <Table border :columns="needToDoColumns" :data="needToDoData"></Table>
           <Page :current="needToDoPage" :total="needToDoCount" :page-size="needToDoPageSize" show-elevator show-total
                 show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="needToDoPSO"/>
@@ -35,7 +35,7 @@
 
       <!-- 加载档案数据表格 -->
       <Row v-if="showArchData" style="margin-top: 20px;">
-        <Col span="20" offset="2">
+        <Col span="20" offset="2" class="TableFontCss">
           <Table border :columns="columns" :data="tableData"></Table>
           <Page :current="currentPage" :total="totalCount" :page-size="pageSize" show-elevator show-total show-sizer
                 :page-size-opts="pageSizeOpt"/>
@@ -310,5 +310,10 @@
 
   .hidd {
     display: none
+  }
+
+  /*表格字体大小*/
+  .TableFontCss >>> .ivu-table{
+    font-size: 14px;
   }
 </style>
