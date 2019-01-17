@@ -12,7 +12,7 @@
         </Col>
       </Row>
     </Col>
-    <Col>
+    <Col class="TableFontCss">
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
@@ -25,18 +25,29 @@
           <Col>
             <Row>
               <Col span="8">
-                <FormItem class="FormItemClass" label="用地性质">
-                  <Input placeholder="..." v-model="UseAreaInfo.areaNature" class="writeInput"/>
+                <p class="profSpecTableCss">用地性质</p>
+              </Col>
+              <Col span="8">
+                <p class="profSpecTableCss">用地代码</p>
+              </Col>
+              <Col span="8">
+                <p class="profSpecTableCss">分类用地面积</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col span="8">
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="UseAreaInfo.areaNature" class="D212WriteInput"/>
                 </FormItem>
               </Col>
               <Col span="8">
-                <FormItem class="FormItemClass" label="用地代码">
-                  <Input placeholder="..." v-model="UseAreaInfo.areaCode" class="writeInput"/>
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="UseAreaInfo.areaCode" class="D212WriteInput"/>
                 </FormItem>
               </Col>
               <Col span="8">
-                <FormItem class="FormItemClass" label="分类用地面积" prop="typeArea">
-                  <Input placeholder="..." v-model="UseAreaInfo.typeArea" class="writeInput"/>
+                <FormItem class="FormItemClass" prop="typeArea">
+                  <Input placeholder="..." v-model="UseAreaInfo.typeArea" class="D212WriteInput"/>
                 </FormItem>
               </Col>
             </Row>
@@ -52,18 +63,29 @@
           <Col>
             <Row>
               <Col span="8">
-                <FormItem class="FormItemClass" label="用地性质">
-                  <Input placeholder="..." v-model="UseAreaInfo.areaNature" class="writeInput"/>
+                <p class="profSpecTableCss">用地性质</p>
+              </Col>
+              <Col span="8">
+                <p class="profSpecTableCss">用地代码</p>
+              </Col>
+              <Col span="8">
+                <p class="profSpecTableCss">分类用地面积</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col span="8">
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="UseAreaInfo.areaNature" class="D212WriteInput"/>
                 </FormItem>
               </Col>
               <Col span="8">
-                <FormItem class="FormItemClass" label="用地代码">
-                  <Input placeholder="..." v-model="UseAreaInfo.areaCode" class="writeInput"/>
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="UseAreaInfo.areaCode" class="D212WriteInput"/>
                 </FormItem>
               </Col>
               <Col span="8">
-                <FormItem class="FormItemClass" label="分类用地面积" prop="typeArea">
-                  <Input placeholder="..." v-model="UseAreaInfo.typeArea" class="writeInput"/>
+                <FormItem class="FormItemClass" prop="typeArea">
+                  <Input placeholder="..." v-model="UseAreaInfo.typeArea" class="D212WriteInput"/>
                 </FormItem>
               </Col>
             </Row>
@@ -403,8 +425,16 @@
 </script>
 
 <style scoped>
+  .D212WriteInput{
+    width: 280px;
+    float: right;
+  }
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;
+  }
+  /*表格字体大小*/
+  .TableFontCss >>> .ivu-table{
+    font-size: 14px;
   }
 </style>

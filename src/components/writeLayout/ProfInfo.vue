@@ -31,34 +31,57 @@
         <Row>
           <Col span="20" offset="1">
             <Form class="formClass" :model="buildingAddressInfo" :rules="rules" :label-width="labelWidth">
-              <Row :gutter="16">
-                <Col span="8">
-                  <FormItem label="区" class="FormItemClass">
-                    <Input placeholder="..." v-model="buildingAddressInfo.area" class="writeInput"/>
+              <Row>
+                <Col span="2">
+                  <p class="buildingAddressCss">建设地址</p>
+                </Col>
+                <Col span="4" class="formSpec">
+                  <FormItem>
+                    <Row>
+                      <Col span="21">
+                        <Input placeholder="..." v-model="buildingAddressInfo.area" class="profSpecCss"/>
+                      </Col>
+                      <Col span="3">
+                        <p class="buildingAddressCss2">区</p>
+                      </Col>
+                    </Row>
                   </FormItem>
                 </Col>
-                <Col span="8">
-                  <FormItem label="路" class="FormItemClass">
-                    <Input placeholder="..." v-model="buildingAddressInfo.road" class="writeInput"/>
+                <Col span="4" class="formSpec">
+                  <FormItem>
+                    <Row>
+                      <Col span="21">
+                        <Input placeholder="..." v-model="buildingAddressInfo.road" class="profSpecCss"/>
+                      </Col>
+                      <Col span="3">
+                        <p class="buildingAddressCss2">路</p>
+                      </Col>
+                    </Row>
                   </FormItem>
                 </Col>
-                <Col span="8">
-                  <FormItem label="街" class="FormItemClass">
-                    <Input placeholder="..." v-model="buildingAddressInfo.street" class="writeInput"/>
+                <Col span="4" class="formSpec">
+                  <FormItem>
+                    <Row>
+                      <Col span="21">
+                        <Input placeholder="..." v-model="buildingAddressInfo.street" class="profSpecCss"/>
+                      </Col>
+                      <Col span="3">
+                        <p class="buildingAddressCss2">街</p>
+                      </Col>
+                    </Row>
                   </FormItem>
                 </Col>
-                <Col span="8">
-                  <Row>
-                    <Col span="22">
-                      <FormItem label="号" class="FormItemClass" prop="no">
-                        <Input placeholder="..." v-model="buildingAddressInfo.no"
-                               style="width: 252px;float: right;"/>
-                      </FormItem>
-                    </Col>
-                    <Col span="2" style="padding-top: 5px;padding-left: 5px;font-size: 14px">
-                      号
-                    </Col>
-                  </Row>
+                <Col span="4" class="formSpec">
+                  <FormItem prop="no">
+                    <Row>
+                      <Col span="21">
+                        <Input placeholder="..." v-model="buildingAddressInfo.no" class="profSpecCss"/>
+                      </Col>
+                      <Col span="3">
+                        <p class="buildingAddressCss2">号</p>
+                      </Col>
+                    </Row>
+                  </FormItem>
                 </Col>
               </Row>
             </Form>
@@ -88,11 +111,13 @@
               </Col>
               <Col span="9">
                 <!--局历史审批文件编号表-->
-                <router-view ref="PAHN" name="AreaHisNo" @saveAreaHisNoData="saveAHND" :isUpdate="updateInfo"></router-view>
+                <router-view ref="PAHN" name="AreaHisNo" @saveAreaHisNoData="saveAHND"
+                             :isUpdate="updateInfo"></router-view>
               </Col>
               <Col span="9">
                 <!--建设工程规划许可证号表-->
-                <router-view ref="PPN" name="ProjectNo" @saveProjectNoData="savePND" :isUpdate="updateInfo"></router-view>
+                <router-view ref="PPN" name="ProjectNo" @saveProjectNoData="savePND"
+                             :isUpdate="updateInfo"></router-view>
               </Col>
             </Row>
           </Col>
@@ -176,9 +201,9 @@
             }
           })
             .then(res => {
-              this.profArch = res.data.data
-            }
-          );
+                this.profArch = res.data.data
+              }
+            );
           this.axios.get('/api/loadArch/getProfInfo', {
             params: {
               archId: this.profArch.archId,
@@ -186,9 +211,9 @@
             }
           })
             .then(res => {
-              this.buildingAddressInfo = res.data.data;
-            }
-          );
+                this.buildingAddressInfo = res.data.data;
+              }
+            );
           this.updateInfo = true
         }
       },
@@ -348,9 +373,23 @@
 </script>
 
 <style scoped>
-  .FormItemClass {
-    margin-left: 10px;
+  /*专业信息建设地址样式*/
+  .profSpecCss {
+    width: 160px;
   }
+  .buildingAddressCss{
+    font-size: 14px;
+    padding-top: 5px;
+    padding-left: 10px;
+  }
+  .buildingAddressCss2{
+    font-size: 14px;
+
+  }
+  .formSpec /deep/ .ivu-form-item-content{
+    margin-left: 0px !important;
+  }
+
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;

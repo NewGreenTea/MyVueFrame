@@ -10,7 +10,7 @@
                   <Input placeholder="..." v-model="D22Info.totalArea" class="profWriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6" class="profWriteUnit">
+              <Col span="7" class="profWriteUnit">
                 （平方米/m²）
               </Col>
             </Row>

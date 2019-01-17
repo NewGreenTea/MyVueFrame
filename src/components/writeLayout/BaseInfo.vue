@@ -25,7 +25,9 @@
                 </Col>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="案卷类别">
-                    <Input placeholder="..." v-model="baseArch.archType" class="colorBack baseWriteInput" disabled/>
+                    <Tooltip :content="baseArch.archType" max-width="300" class="baseWriteInput">
+                      <Input placeholder="..." v-model="baseArch.archType" class="colorBack baseWriteInput" disabled/>
+                    </Tooltip>
                   </FormItem>
                 </Col>
               </Row>
@@ -55,7 +57,7 @@
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="进管日期" prop="inputDate">
+                  <FormItem class="FormItemClass" label="进馆日期" prop="inputDate">
                     <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="baseWriteInput"
                                 @on-change="baseArch.inputDate=$event" v-model="baseArch.inputDate"></DatePicker>
                   </FormItem>
@@ -72,26 +74,27 @@
             <Col>
               <Row>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="文种类别" prop="dispatchNoType">
+                  <FormItem class="FormItemClass" prop="dispatchNoType" label="发文号: ">
                     <Input placeholder="发文号：文种类别" v-model="baseArch.dispatchNoType" class="baseWriteInput"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="年份" prop="dispatchNoYear">
+                  <FormItem class="FormItemClass dispatchCss" prop="dispatchNoYear" label="[">
                     <Input placeholder="发文号：年份" v-model="baseArch.dispatchNoYear" class="baseWriteInput"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <Row>
                     <Col span="22">
-                      <FormItem class="FormItemClass" label="流水号" prop="dispatchNoNum">
-                        <Input placeholder="发文号：流水号" v-model="baseArch.dispatchNoNum" style="width: 265px;float: right;"/>
+                      <FormItem class="FormItemClass dispatchCss" prop="dispatchNoNum" label="]">
+                        <Input placeholder="发文号：流水号" v-model="baseArch.dispatchNoNum" class="baseWriteInputSpec"/>
                       </FormItem>
                     </Col>
-                    <Col span="2" style="padding-top: 5px;padding-left: 5px">
+                    <Col span="2" class="profWriteUnit">
                       号
                     </Col>
                   </Row>
+
                 </Col>
               </Row>
             </Col>
@@ -179,7 +182,7 @@
           archTitle: '',
           company: '',
           date: '',
-          inputDate: '',
+          inputDate: this.$route.params.archInputDate,
           archPage: '',
           dispatchNoType: this.getDispatchNoType(this.$route.params.dispatchDocNo),
           dispatchNoYear: this.getDispatchNoYear(this.$route.params.dispatchDocNo),
@@ -201,10 +204,10 @@
             {validator: notNull, trigger: 'blur'}
           ],
           date: [
-            {validator: notNull, trigger: 'blur'}
+            {validator: notNull, trigger: 'change'}
           ],
           inputDate: [
-            {validator: notNull, trigger: 'blur'}
+            {validator: notNull, trigger: 'change'}
           ],
           dispatchNoType: [
             {validator: notNull, trigger: ['blur', 'change']}
@@ -301,8 +304,15 @@
 </script>
 
 <style scoped>
-  .FormItemClass {
-    margin-left: 10px;
+  /*发文号特殊样式*/
+  .baseWriteInputSpec {
+    width: 265px;
+    float: right;
+  }
+
+  .dispatchCss /deep/ .ivu-form-item-label {
+    padding-left: 30px;
+    font-size: 14px;
   }
 
   /*禁用的颜色高亮为黑色*/

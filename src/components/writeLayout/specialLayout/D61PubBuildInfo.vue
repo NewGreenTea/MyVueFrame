@@ -12,7 +12,7 @@
         </Col>
       </Row>
     </Col>
-    <Col>
+    <Col class="TableFontCss">
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
@@ -24,24 +24,39 @@
         <Row>
           <Col>
             <Row>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="项目名称">
-                  <Input placeholder="..." v-model="D61PubBuildInfo.projectName" class="writeInput"/>
+              <Col span="6">
+                <p class="profSpecTableCss">项目名称</p>
+              </Col>
+              <Col span="6">
+                <p class="profSpecTableCss">独立用地面积</p>
+              </Col>
+              <Col span="6">
+                <p class="profSpecTableCss">建筑面积</p>
+              </Col>
+              <Col span="6">
+                <p class="profSpecTableCss">位置</p>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col span="6">
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="D61PubBuildInfo.projectName" class="D61WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="独立用地面积" prop="independentArea">
-                  <Input placeholder="..." v-model="D61PubBuildInfo.independentArea" class="writeInput"/>
+              <Col span="6">
+                <FormItem class="FormItemClass" prop="independentArea">
+                  <Input placeholder="..." v-model="D61PubBuildInfo.independentArea" class="D61WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="建筑面积" prop="buildArea">
-                  <Input placeholder="..." v-model="D61PubBuildInfo.buildArea" class="writeInput"/>
+              <Col span="6">
+                <FormItem class="FormItemClass" prop="buildArea">
+                  <Input placeholder="..." v-model="D61PubBuildInfo.buildArea" class="D61WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="位置">
-                  <Input placeholder="..." v-model="D61PubBuildInfo.position" class="writeInput"/>
+              <Col span="6">
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="D61PubBuildInfo.position" class="D61WriteInput"/>
                 </FormItem>
               </Col>
             </Row>
@@ -56,24 +71,39 @@
         <Row>
           <Col>
             <Row>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="项目名称">
-                  <Input placeholder="..." v-model="D61PubBuildInfo.projectName" class="writeInput"/>
+              <Col span="6">
+                <p class="profSpecTableCss">项目名称</p>
+              </Col>
+              <Col span="6">
+                <p class="profSpecTableCss">独立用地面积</p>
+              </Col>
+              <Col span="6">
+                <p class="profSpecTableCss">建筑面积</p>
+              </Col>
+              <Col span="6">
+                <p class="profSpecTableCss">位置</p>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col span="6">
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="D61PubBuildInfo.projectName" class="D61WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="独立用地面积" prop="independentArea">
-                  <Input placeholder="..." v-model="D61PubBuildInfo.independentArea" class="writeInput"/>
+              <Col span="6">
+                <FormItem class="FormItemClass" prop="independentArea">
+                  <Input placeholder="..." v-model="D61PubBuildInfo.independentArea" class="D61WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="建筑面积" prop="buildArea">
-                  <Input placeholder="..." v-model="D61PubBuildInfo.buildArea" class="writeInput"/>
+              <Col span="6">
+                <FormItem class="FormItemClass" prop="buildArea">
+                  <Input placeholder="..." v-model="D61PubBuildInfo.buildArea" class="D61WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="位置">
-                  <Input placeholder="..." v-model="D61PubBuildInfo.position" class="writeInput"/>
+              <Col span="6">
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="D61PubBuildInfo.position" class="D61WriteInput"/>
                 </FormItem>
               </Col>
             </Row>
@@ -441,8 +471,16 @@
 </script>
 
 <style scoped>
+  .D61WriteInput{
+    width: 200px;
+    float: right;
+  }
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;
+  }
+  /*表格字体大小*/
+  .TableFontCss >>> .ivu-table{
+    font-size: 14px;
   }
 </style>

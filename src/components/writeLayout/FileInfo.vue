@@ -12,13 +12,14 @@
       <Col span="20">
         <Row>
           <Col>
+            <Button @click="allDeleteFileInfo" class="profButtonFloat">全删</Button>
             <Button @click="cancelFileInfo" class="profButtonFloat">-</Button>
             <Button @click="updateFileInfo" class="profButtonFloat">√</Button>
             <Button @click="saveFileInfo" class="profButtonFloat">+</Button>
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col class="TableFontCss">
             <Table border :columns="columns" :data="tableData" :height="tableHeight"
                    @on-row-dblclick="updateRowData"
                    @on-select-all="selectAllData" @on-select="selectData"
@@ -50,7 +51,7 @@
                     </FormItem>
                   </Col>
                   <Col span="8">
-                    <FormItem class="FormItemClass" label="文件编号" prop="fileNo">
+                    <FormItem class="FormItemClass" label="文件编号">
                       <Input placeholder="..." v-model="fileArch.fileNo" class="colorBack fileWriteInput"/>
                     </FormItem>
                   </Col>
@@ -200,11 +201,7 @@
 
 <script>
   import {isInteger, notNull, isNum} from '../../js/validate'
-  import {CommonFunction} from "../../js/global";
-  //档案数据对象的传输配置
-  const config = {
-    headers: {'Content-Type': 'application/json'}
-  };
+  import {CommonFunction, ArchRequestConfig} from "../../js/global";
 
   export default {
     name: "FileInfo",
@@ -228,10 +225,6 @@
           {
             title: '文件编号',
             key: 'fileNo'
-          },
-          {
-            title: '档号',
-            key: 'archNo'
           },
           {
             title: '文件题名',
@@ -271,8 +264,8 @@
         tableData: [],
         //临时装表格选中的数据
         tempData: [],
-        //新增时添加数据
-        AddData: [],
+        //新增时文件级序号
+        addFileIndex: 1,
         //修改时新增的数据
         UpdateAddData: [],
         //修改时要删除真实存在的数据
@@ -299,7 +292,7 @@
             {validator: notNull, trigger: 'blur'}
           ],
           fileDate: [
-            {validator: notNull, trigger: 'blur'}
+            {validator: notNull, trigger: 'change'}
           ]
         },
         fileArch: {
@@ -325,11 +318,12 @@
       loadFileArch() {
         this.axios.get('/api/loadArch/getArchInfo', {params: {archId: this.archId, ArchInfo: 'FileInfo'}}).then(
           res => {
-            this.tableData = res.data.data
+            this.tableData = res.data.data;
+            this.addFileIndex = this.tableData.length + 1;
           }
         )
       },
-      //点击弹窗的添加按钮
+      //点击添加弹窗的添加按钮
       saveArchData() {
         let temp = {
           id: null,
@@ -355,16 +349,35 @@
         temp.remark = this.fileArch.remark;
         this.$refs.addForm.validate((valid) => {
           if (valid) {
-            if (this.operation === false) {
-              //把最后新加的放在第一位
-              this.UpdateAddData.unshift(temp);
-              this.tableData.unshift(temp);
-              this.tempData.push(temp)
+            if (this.operation === false) { //判断是否在修改著录还是新建著录
+              this.UpdateAddData.push(temp);
+              this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig)
+                .then(res => {
+                  if(res.data.code === 0){
+                    this.$Message.success('添加成功！');
+                    this.loadFileArch();
+                    this.addFileIndex +=1;
+                  }else{
+                    this.$Message.error('添加失败！');
+                  }
+                });
             }
             else {
-              this.UpdateAddData.unshift(temp);
-              this.tableData = this.UpdateAddData;
+              //添加一条文件级信息  --2019/01/14
+              this.UpdateAddData.push(temp);
+              this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig)
+                .then(res => {
+                  if(res.data.code === 0){
+                    this.$Message.success('添加成功！');
+                    this.loadFileArch();
+                    this.addFileIndex +=1;
+                  }else{
+                    this.$Message.error('添加失败！');
+                  }
+                });
             }
+            this.UpdateAddData = [];
+            this.tempData = [];
             this.reset();
             this.AddModal = false;
           }
@@ -379,10 +392,10 @@
           }
         });
       },
-      //点击保存按钮
+      //点击总保存按钮
       saveArch() {
-        this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), config).then(res => {
-          alert('保存完毕');
+        this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
+          this.$Message.success('保存完毕');
           this.goBack()
         });
       },
@@ -432,7 +445,7 @@
             if (check === true) {
               let data = [];
               data.push(temp);
-              this.axios.post('/api/fileInfo/update', JSON.stringify(data), config).then(res => {
+              this.axios.post('/api/fileInfo/update', JSON.stringify(data), ArchRequestConfig).then(res => {
                   this.axios.get('/api/loadArch/getArchInfo', {params: {archId: this.archId, ArchInfo: 'FileInfo'}})
                     .then(res => {
                       this.tableData = res.data.data;
@@ -473,8 +486,8 @@
       //总更新按钮
       updateArch() {
         this.axios.all([
-            this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), config),
-            this.axios.post('/api/fileInfo/delete', JSON.stringify(this.UpdateDeleteData), config)
+            this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
+            this.axios.post('/api/fileInfo/delete', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)
           ]
         ).then(res => {
           this.UpdateAddData = [];
@@ -484,14 +497,23 @@
       },
       //点击显示添加弹窗
       saveFileInfo() {
-        this.AddModal = true
+        //判断是否是勾选添加，简单点说明就是从中间插入
+        if(Object.keys(this.tempData).length > 1){
+          this.$Message.error('请勾选一条以下的数据！')
+        }else if(Object.keys(this.tempData).length === 1){
+          this.fileArch.fileIndex = this.tempData[0].fileIndex + 1;
+          this.AddModal = true;
+        }else{
+          this.fileArch.fileIndex = this.addFileIndex;
+          this.AddModal = true;
+        }
       },
       //点击显示修改弹窗
       updateFileInfo() {
         if (Object.keys(this.tempData).length === 0) { //判断有没勾选
-          alert('请钩选要修改的文件信息')
+          this.$Message.info('请钩选要修改的文件信息')
         } else if (Object.keys(this.tempData).length > 1) {
-          alert('请钩选一条要修改的文件信息')
+          this.$Message.info('请钩选一条要修改的文件信息')
         } else {
           this.UpdateModal = true;
           this.fileArch.id = this.tempData[0].id;
@@ -514,47 +536,36 @@
         this.reset();
         this.AddModal = false
       },
-      //删除所选文件记录数
+      //删除所选文件记录数（只能删除一条  --2019/01/14）
       cancelFileInfo() {
         if (Object.keys(this.tempData).length === 0) {
-          alert('请钩选要删除的文件')
+          this.$Message.info('请钩选要删除的文件')
+        } else if(Object.keys(this.tempData).length > 1){
+          this.$Message.info('请钩选一条要删除的文件')
         } else {
-          let index = [];
-          //删除的是‘准备添加’的数据
-          for (let i = 0; i < this.tempData.length; i++) {
-            //删除临时数据
-            for (let j = 0; j < this.UpdateAddData.length; j++) {
-              if (this.tempData[i].fileNo === this.UpdateAddData[j].fileNo) {
-                this.UpdateAddData.splice(j, 1);
-                index.push(i);
-                //从显示表格删除
-                for (let l = 0; l < this.tableData.length; l++) {
-                  if (this.tableData[l].fileNo === this.tempData[i].fileNo) {
-                    //显示表格中删去
-                    this.tableData.splice(l, 1)
-                  }
-                }
+          this.axios.post('/api/fileInfo/delete', JSON.stringify(this.tempData), ArchRequestConfig)
+            .then(res => {
+              if(res.data.code === 0){
+                this.$Message.success('删除成功！');
+                this.loadFileArch();
+              }else{
+                this.$Message.error('删除失败！');
               }
-            }
-          }
-          //从临时数据删去在‘准备添加’的数据
-          for (let i = 0; i < index.length; i++) {
-            this.tempData.splice(index[i], 1)
-          }
-          //添加显示表格中‘准备删除’的数据
-          for (let i = 0; i < this.tableData.length; i++) {
-            for (let j = 0; j < this.tempData.length; j++) {
-              if (this.tableData[i].fileNo === this.tempData[j].fileNo) {
-                this.UpdateDeleteData.push(this.tableData[i]);
-                this.tableData.splice(i, 1)
-              }
-            }
-          }
-          if (this.operation === true) {
-            this.tableData = this.UpdateAddData;
-          }
+            });
           this.tempData = []
         }
+      },
+      //删除全部文件级信息(--2019/01/14)
+      allDeleteFileInfo(){
+        this.axios.post('/api/fileInfo/delete', JSON.stringify(this.tableData), ArchRequestConfig)
+          .then(res => {
+            if(res.data.code === 0){
+              this.$Message.success('删除成功！');
+              this.loadFileArch();
+            }else{
+              this.$Message.success('删除失败！')
+            }
+          })
       },
       // 双击显示修改弹窗
       updateRowData(row, index) {
@@ -568,6 +579,7 @@
         this.fileArch.liableId = row.liableId;
         this.fileArch.fileTitle = row.fileTitle;
         this.fileArch.fileType = row.fileType;
+        alert('row.fileDate---' + row.fileDate);
         this.fileArch.fileDate = row.fileDate;
         this.fileArch.pageNo = row.pageNo;
         this.fileArch.remark = row.remark;
@@ -644,13 +656,6 @@
       this.loadFileArch()
     }
   }
-  // 时间格式转换
-  // 对日期的格式进行转换（‘Tue Nov 06 2018 00:00:00 GMT+0800’=》‘yyyy-MM-dd’）
-  function dateFormate (date) {
-    let datadate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() +
-      ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
-    return datadate
-  }
 </script>
 
 <style scoped>
@@ -662,5 +667,10 @@
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;
+  }
+
+  /*表格字体大小*/
+  .TableFontCss >>> .ivu-table{
+    font-size: 14px;
   }
 </style>

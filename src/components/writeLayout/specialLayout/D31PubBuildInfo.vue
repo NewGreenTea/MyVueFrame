@@ -12,7 +12,7 @@
         </Col>
       </Row>
     </Col>
-    <Col>
+    <Col class="TableFontCss">
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
@@ -24,27 +24,38 @@
         <Row>
           <Col>
             <Row>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="功能名称">
-                  <Input placeholder="..." v-model="D31PubBuildInfo.functionName" class="writeInput"/>
-                </FormItem>
+              <Col span="6">
+                <p class="profSpecTableCss">功能名称</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="设计面积" prop="designArea">
-                  <Input placeholder="..." v-model="D31PubBuildInfo.designArea" class="writeInput"/>
-                </FormItem>
+              <Col span="6">
+                <p class="profSpecTableCss">设计面积</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="规划面积" prop="planArea">
-                  <Input placeholder="..." v-model="D31PubBuildInfo.planArea" class="writeInput"/>
-                </FormItem>
+              <Col span="6">
+                <p class="profSpecTableCss">规划面积</p>
+              </Col>
+              <Col span="6">
+                <p class="profSpecTableCss">备注</p>
               </Col>
             </Row>
-
             <Row>
-              <Col>
-                <FormItem class="FormItemClass" label="备注">
-                  <Input placeholder="..." v-model="D31PubBuildInfo.etc" style="width: 88%;float: right"/>
+              <Col span="6">
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="D31PubBuildInfo.functionName" class="D31WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem class="FormItemClass" prop="designArea">
+                  <Input placeholder="..." v-model="D31PubBuildInfo.designArea" class="D31WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem class="FormItemClass" prop="planArea">
+                  <Input placeholder="..." v-model="D31PubBuildInfo.planArea" class="D31WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="D31PubBuildInfo.etc" class="D31WriteInput"/>
                 </FormItem>
               </Col>
             </Row>
@@ -59,27 +70,38 @@
         <Row>
           <Col>
             <Row>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="功能名称">
-                  <Input placeholder="..." v-model="D31PubBuildInfo.functionName" class="writeInput"/>
-                </FormItem>
+              <Col span="6">
+                <p class="profSpecTableCss">功能名称</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="设计面积" prop="designArea">
-                  <Input placeholder="..." v-model="D31PubBuildInfo.designArea" class="writeInput"/>
-                </FormItem>
+              <Col span="6">
+                <p class="profSpecTableCss">设计面积</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="规划面积" prop="planArea">
-                  <Input placeholder="..." v-model="D31PubBuildInfo.planArea" class="writeInput"/>
-                </FormItem>
+              <Col span="6">
+                <p class="profSpecTableCss">规划面积</p>
+              </Col>
+              <Col span="6">
+                <p class="profSpecTableCss">备注</p>
               </Col>
             </Row>
-
             <Row>
-              <Col>
-                <FormItem class="FormItemClass" label="备注">
-                  <Input placeholder="..." v-model="D31PubBuildInfo.etc" style="width: 88%;float: right"/>
+              <Col span="6">
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="D31PubBuildInfo.functionName" class="D31WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem class="FormItemClass" prop="designArea">
+                  <Input placeholder="..." v-model="D31PubBuildInfo.designArea" class="D31WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem class="FormItemClass" prop="planArea">
+                  <Input placeholder="..." v-model="D31PubBuildInfo.planArea" class="D31WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem class="FormItemClass">
+                  <Input placeholder="..." v-model="D31PubBuildInfo.etc" class="D31WriteInput"/>
                 </FormItem>
               </Col>
             </Row>
@@ -444,8 +466,16 @@
 </script>
 
 <style scoped>
+  .D31WriteInput{
+    width: 220px;
+    float: right;
+  }
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;
+  }
+  /*表格字体大小*/
+  .TableFontCss >>> .ivu-table{
+    font-size: 14px;
   }
 </style>

@@ -12,7 +12,7 @@
         </Col>
       </Row>
     </Col>
-    <Col>
+    <Col class="TableFontCss">
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
@@ -24,45 +24,65 @@
         <Row>
           <Col>
             <Row>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="项目名称">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.projectName" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">项目名称</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="幢数" prop="buildingNum">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.buildingNum" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">幢数</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="地上层数" prop="overgroundFloor">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.overgroundFloor" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">地上层数</p>
               </Col>
-            </Row>
-
-            <Row>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="地下层数" prop="undergroundFloor">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.undergroundFloor" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">地下层数</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="地上面积" prop="overgroundArea">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.overgroundArea" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">地上面积</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="地下面积" prop="undergroundArea">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.undergroundArea" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">地下面积</p>
+              </Col>
+              <Col span="3">
+                <p class="profSpecTableCss">总建筑面积</p>
               </Col>
             </Row>
 
             <Row>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="总建筑面积" prop="totalArea">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.totalArea" class="writeInput"/>
+              <Col span="3">
+                <FormItem class="FormItemClass">
+                  <Tooltip :content="D61NumAreaInfo.projectName" max-width="100" class="D61WriteInput">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.projectName" class="D61WriteInput"/>
+                  </Tooltip>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass" prop="buildingNum">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.buildingNum" class="D61WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass"  prop="overgroundFloor">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.overgroundFloor" class="D61WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass" prop="undergroundFloor">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.undergroundFloor" class="D61WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass" prop="overgroundArea">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.overgroundArea" class="D61WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass" prop="undergroundArea">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.undergroundArea" class="D61WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass" prop="totalArea">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.totalArea" class="D61WriteInput"/>
                 </FormItem>
               </Col>
             </Row>
@@ -77,45 +97,65 @@
         <Row>
           <Col>
             <Row>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="项目名称">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.projectName" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">项目名称</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="幢数">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.buildingNum" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">幢数</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="地上层数">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.overgroundFloor" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">地上层数</p>
               </Col>
-            </Row>
-
-            <Row>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="地下层数">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.undergroundFloor" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">地下层数</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="地上面积">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.overgroundArea" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">地上面积</p>
               </Col>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="地下面积">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.undergroundArea" class="writeInput"/>
-                </FormItem>
+              <Col span="3">
+                <p class="profSpecTableCss">地下面积</p>
+              </Col>
+              <Col span="3">
+                <p class="profSpecTableCss">总建筑面积</p>
               </Col>
             </Row>
 
             <Row>
-              <Col span="8">
-                <FormItem class="FormItemClass" label="总建筑面积">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.totalArea" class="writeInput"/>
+              <Col span="3">
+                <FormItem class="FormItemClass">
+                  <Tooltip :content="D61NumAreaInfo.projectName" max-width="100" class="D61WriteInput">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.projectName" class="D61WriteInput"/>
+                  </Tooltip>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass" prop="buildingNum">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.buildingNum" class="D61WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass"  prop="overgroundFloor">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.overgroundFloor" class="D61WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass" prop="undergroundFloor">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.undergroundFloor" class="D61WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass" prop="overgroundArea">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.overgroundArea" class="D61WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass" prop="undergroundArea">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.undergroundArea" class="D61WriteInput"/>
+                </FormItem>
+              </Col>
+              <Col span="3">
+                <FormItem class="FormItemClass" prop="totalArea">
+                  <Input placeholder="..." v-model="D61NumAreaInfo.totalArea" class="D61WriteInput"/>
                 </FormItem>
               </Col>
             </Row>
@@ -539,8 +579,17 @@
 </script>
 
 <style scoped>
+  .D61WriteInput{
+    width: 100px;
+    float: right;
+  }
+
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;
+  }
+  /*表格字体大小*/
+  .TableFontCss >>> .ivu-table{
+    font-size: 14px;
   }
 </style>

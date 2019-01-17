@@ -12,39 +12,79 @@
         </Col>
       </Row>
     </Col>
-    <Col>
+    <Col class="TableFontCss">
       <Table border :columns="columns" :data="tableData" :height="tableHeight"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
     <Modal v-model="AddModal" :loading="loading" draggable :closable="false" title="添加建设工程规划许可证号"
-           @on-ok="addPNoData" @on-cancel="addcancle">
+           @on-ok="addPNoData" @on-cancel="addcancle" width="800px">
       <Form :model="projectNoInfo" ref="addForm" :rules="rules">
-        <FormItem label="文种类别">
-          <Input placeholder="..." v-model="projectNoInfo.projType" class="writeInput"/>
-        </FormItem>
-        <FormItem label="年份" prop="projYear" class="FormItemClass">
-          <Input placeholder="..." v-model="projectNoInfo.projYear" class="writeInput"/>
-        </FormItem>
-        <FormItem label="流水号" prop="projNum" class="FormItemClass">
-          <Input placeholder="..." v-model="projectNoInfo.projNum" class="writeInput"/>
-        </FormItem>
+        <Row>
+          <Col span="8">
+            <p class="profSpecTableCss">文种类别</p>
+          </Col>
+          <Col span="8">
+            <p class="profSpecTableCss">年份</p>
+          </Col>
+          <Col span="8">
+            <p class="profSpecTableCss">流水号</p>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col span="8">
+            <FormItem>
+              <Input placeholder="..." v-model="projectNoInfo.projType" class="fileWriteInput"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem prop="projYear" class="FormItemClass">
+              <Input placeholder="..." v-model="projectNoInfo.projYear" class="fileWriteInput"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem prop="projNum" class="FormItemClass">
+              <Input placeholder="..." v-model="projectNoInfo.projNum" class="fileWriteInput"/>
+            </FormItem>
+          </Col>
+        </Row>
       </Form>
     </Modal>
 
     <Modal v-model="UpdateModal" :loading="loading" draggable :closable="false" title="修改建设工程规划许可证号"
-           @on-ok="updatePNoData" @on-cancel="cancleUpdate">
+           @on-ok="updatePNoData" @on-cancel="cancleUpdate" width="800px">
       <Form :model="projectNoInfo" ref="updateForm" :rules="rules">
-        <FormItem label="文种类别">
-          <Input placeholder="..." v-model="projectNoInfo.projType" class="writeInput"/>
-        </FormItem>
-        <FormItem label="年份" prop="projYear" class="FormItemClass">
-          <Input placeholder="..." v-model="projectNoInfo.projYear" class="writeInput"/>
-        </FormItem>
-        <FormItem label="流水号" prop="projNum" class="FormItemClass">
-          <Input placeholder="..." v-model="projectNoInfo.projNum" class="writeInput"/>
-        </FormItem>
+        <Row>
+          <Col span="8">
+            <p class="profSpecTableCss">文种类别</p>
+          </Col>
+          <Col span="8">
+            <p class="profSpecTableCss">年份</p>
+          </Col>
+          <Col span="8">
+            <p class="profSpecTableCss">流水号</p>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col span="8">
+            <FormItem>
+              <Input placeholder="..." v-model="projectNoInfo.projType" class="fileWriteInput"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem prop="projYear" class="FormItemClass">
+              <Input placeholder="..." v-model="projectNoInfo.projYear" class="fileWriteInput"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem prop="projNum" class="FormItemClass">
+              <Input placeholder="..." v-model="projectNoInfo.projNum" class="fileWriteInput"/>
+            </FormItem>
+          </Col>
+        </Row>
       </Form>
     </Modal>
   </Row>
@@ -401,6 +441,10 @@
 </script>
 
 <style scoped>
+  /*表格字体大小*/
+  .TableFontCss >>> .ivu-table{
+    font-size: 14px;
+  }
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;
