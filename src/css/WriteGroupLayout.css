@@ -17,6 +17,11 @@
 .profButtonView{
   margin-top: 20px;
 }
+/*专业信息表格样式*/
+.profSpecTableCss{
+  font-size: 15px;
+  text-align: center;
+}
 /*专业信息著录含有单位的样式*/
 .profWriteUnit{
   padding-top: 5px;
@@ -43,18 +48,32 @@
 
 /*著录界面的页面字体大小*/
 .WriteLayoutFont{
-  font-size: 14px;
+  font-size: 15px;
 }
 /*著录框的label，字段名大小*/
 .formClass /deep/ .ivu-form-item-label{
   text-align: left;
-  font-size: 14px;
+  font-size: 15px;
 }
 /*著录框的字体大小*/
 .formClass /deep/ .ivu-input{
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .FormItemClass {
   margin-left: 10px;
+}
+
+/*档号管理界面样式*/
+.archToolCss{
+  font-size: 15px;
+  text-align: center;
+  padding-top: 5px;
+  /*字体变粗*/
+  font-weight: 700;
+}
+.archToolTableCss{
+  font-size: 15px;
+  font-weight: 700;
+  padding-left: 15px;
 }
