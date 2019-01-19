@@ -8,6 +8,7 @@
               @file-success="fileSuccess"
               @file-error="fileError"
               @complete="finishUpload"
+              @file-complete="fileComplete"
               v-if="show">
       <uploader-unsupport></uploader-unsupport>
       <uploader-drop style="background: white">
@@ -56,7 +57,7 @@
 </template>
 
 <script>
-
+  import axios from 'axios';
   export default {
     name: 'fileupload',
     data () {
@@ -145,18 +146,55 @@
           uploaderInstance.$children[i].pause()
         }
       },
-      fileSuccess(rootFile, file, message, chunk){  //上传成功
+      //单个文件上传成功
+      fileSuccess(rootFile, file, message, chunk){
+        if(rootFile.isFolder){
+          let filenum=file.parent.fileList.length;
+          let parentFile=file.parent.fileList
+          let archno=file.parent.name;
+          for(let i=0;i<filenum;i++){
+            if(file.name==parentFile[i].name && i==parentFile.length-1){
+              let param = new URLSearchParams();
+              param.append('archno', archno);
+              axios({
+                method: 'post',
+                url: '/api/upload/deleteUploadCache',
+                data: param
+              }).then(res=>{
 
+              })
+            }
+          }
+        }
       },
-      fileError(rootFile, file, message, chunk){  //上传失败
+      //单个文件上传失败
+      fileError(rootFile, file, message, chunk){
         let resmsg=JSON.parse(chunk.xhr.response).msg;
         this.errorList.push(resmsg);
+        if(rootFile.isFolder){
+          let filenum=file.parent.fileList.length;
+          let parentFile=file.parent.fileList
+          let archno=file.parent.name;
+          for(let i=0;i<filenum;i++){
+            if(file.name==parentFile[i].name && i==parentFile.length-1){
+              let param = new URLSearchParams();
+              param.append('archno', archno);
+              axios({
+                method: 'post',
+                url: '/api/upload/deleteUploadCache',
+                data: param
+              }).then(res=>{
+
+              })
+            }
+          }
+        }
+      },
+      fileComplete(rootFile){
+        //每一行上传完成
       },
       finishUpload(){
-        // let total = this.$refs.myupload.uploader.files.length;
-        // let successnum = total - this.errorList.length;
-        // let errorList='总操作数量：'+total+' 条'+'\n';
-        // errorList+='成功：'+successnum+' 条'+'\n';
+        /*显示错误信息*/
         if(this.errorList.length>0){
           let errorList='共计：'+this.errorList.length+' 份文件上传失败'+'\n';
           errorList+='失败原因如下：'+'\n';
