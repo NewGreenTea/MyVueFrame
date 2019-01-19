@@ -80,7 +80,7 @@
     </div>
 
     <!-- 完成著录后是否进入修改提示框 -->
-    <Modal v-model="showModal" :title="modalTitle" @on-ok="tips" @on-cancel="cancelTips">
+    <Modal v-model="showModal" :title="modalTitle" @on-ok="tips" @on-cancel="cancelTips" name="123">
       <div>
         是否进入为修改操作?
       </div>
@@ -88,14 +88,34 @@
 
     <!-- 著录档案信息的路由界面 -->
     <div v-if="showWriteData">
-      <router-view :name="viewName" @changeShowView="showView"></router-view>
+      <keep-alive>
+        <!--<router-view :name="viewName" @changeShowView="showView" v-if="$route.meta.keepAlive"></router-view>-->
+        <div v-if="viewName === 'BaseInfo'">
+          <BaseInfo @changeShowView="showView" :BaseParams="baseParams"></BaseInfo>
+        </div>
+      </keep-alive>
+      <keep-alive>
+      <div v-if="viewName === 'ProfInfo'">
+        <ProfInfo @changeShowView="showView" :ProfParams="profParams"></ProfInfo>
+      </div>
+      </keep-alive>
+      <keep-alive>
+      <div v-if="viewName === 'FileInfo'">
+        <FileInfo @changeShowView="showView" :FileParams="fileParams"></FileInfo>
+      </div>
+      </keep-alive>
     </div>
   </div>
 </template>
 
 <script>
+  import BaseInfo from "../writeLayout/BaseInfo";
+  import FileInfo from "../writeLayout/FileInfo";
+  import ProfInfo from "../writeLayout/ProfInfo";
+
   export default {
     name: 'writerGroup',
+    components: {ProfInfo, FileInfo, BaseInfo},
     data() {
       return {
         showTwoType: false, // 控制二级分类的显示
@@ -118,6 +138,10 @@
         pageSize: 10, // 分页插件：显示条数
         pageSizeOpt: [10, 20, 30, 40, 50, 100], // 分页插件：选择显示条数框
         twoStatues: ['待著录', '已著录', '不通过'], // 档案状态搜索
+        //向下基本，专业，文件传递的参数
+        baseParams: '',
+        profParams: '',
+        fileParams: '',
         // 显示表格的属性列
         columns: [
           {
@@ -169,7 +193,6 @@
                     },
                     on: {
                       click: () => {
-                        this.viewName = 'BaseInfo';
                         // 判断基本信息是否完成著录，是则“修改”，否则“添加”
                         this.axios.get('/api/baseInfo/existBaseInfo', {params: {archId: params.row.archId}})
                           .then(res => {
@@ -178,37 +201,32 @@
                                 view: false,
                                 hidd: true
                               };
+                              this.viewName = 'BaseInfo';
                               this.showWriteData = true;
-                              this.$router.push(
-                                {
-                                  name: this.viewName,
-                                  params: {
-                                    archId: params.row.archId, //传递一些重要参数给下一个界面
-                                    archNo: params.row.archNo,
-                                    registerNo: params.row.registerNo,
-                                    dispatchDocNo: params.row.dispatchDocNo,
-                                    archTypeID: this.archTypeID,
-                                    archTypeName: this.archTypeName,
-                                    archInputDate: params.row.inputDate,
-                                    operation: true
-                                  }
-                                })
+                              this.baseParams = {
+                                archId: params.row.archId, //传递一些重要参数给下一个界面
+                                archNo: params.row.archNo,
+                                registerNo: params.row.registerNo,
+                                dispatchDocNo: params.row.dispatchDocNo,
+                                archTypeID: this.archTypeID,
+                                archTypeName: this.archTypeName,
+                                archInputDate: params.row.inputDate,
+                                operation: true
+                              }
                             } else { //res.data.data === 1 的时候
                               this.showModal = true;
                               this.modalTitle = '基本信息已完成';
-                              this.pushConf =
-                                {
-                                  name: this.viewName,
-                                  params: {
-                                    archId: params.row.archId, //传递一些重要参数给下一个界面
-                                    archNo: params.row.archNo,
-                                    registerNo: params.row.registerNo,
-                                    dispatchDocNo: params.row.dispatchDocNo,
-                                    archTypeID: this.archTypeID,
-                                    archTypeName: this.archTypeName,
-                                    operation: false
-                                  }
-                                }
+                              this.viewName = 'BaseInfo';
+                              this.baseParams = {
+                                archId: params.row.archId, //传递一些重要参数给下一个界面
+                                archNo: params.row.archNo,
+                                registerNo: params.row.registerNo,
+                                dispatchDocNo: params.row.dispatchDocNo,
+                                archTypeID: this.archTypeID,
+                                archTypeName: this.archTypeName,
+                                archInputDate: params.row.inputDate,
+                                operation: false
+                              }
                             }
                           })
 
@@ -234,7 +252,6 @@
                     },
                     on: {
                       click: () => {
-                        this.viewName = 'ProfInfo';
                         // 判断专业信息是否完成著录，是则“修改”，否则“添加”
                         this.axios.get('/api/profInfo/existProfInfo', {params: {archId: params.row.archId}})
                           .then(res => {
@@ -243,32 +260,26 @@
                                 view: false,
                                 hidd: true
                               };
+                              this.viewName = 'ProfInfo';
                               this.showWriteData = true;
-                              this.$router.push(
-                                {
-                                  name: this.viewName,
-                                  params: {
-                                    archId: params.row.archId, //传递一些重要参数给下一个界面
-                                    archNo: params.row.archNo,
-                                    archTypeID: this.archTypeID,
-                                    archType: writeVueLayout(params.row.archNo),
-                                    operation: true
-                                  }
-                                })
+                              this.profParams = {
+                                archId: params.row.archId, //传递一些重要参数给下一个界面
+                                archNo: params.row.archNo,
+                                archTypeID: this.archTypeID,
+                                archType: writeVueLayout(params.row.archNo),
+                                operation: true
+                              }
                             } else { //res.data.data === 1 的时候
                               this.showModal = true;
+                              this.viewName = 'ProfInfo';
                               this.modalTitle = '专业信息已完成';
-                              this.pushConf =
-                                {
-                                  name: this.viewName,
-                                  params: {
-                                    archId: params.row.archId, //传递一些重要参数给下一个界面
-                                    archNo: params.row.archNo,
-                                    archTypeID: this.archTypeID,
-                                    archType: writeVueLayout(params.row.archNo),
-                                    operation: false
-                                  }
-                                }
+                              this.profParams = {
+                                archId: params.row.archId, //传递一些重要参数给下一个界面
+                                archNo: params.row.archNo,
+                                archTypeID: this.archTypeID,
+                                archType: writeVueLayout(params.row.archNo),
+                                operation: false
+                              }
                             }
                           })
                       }
@@ -292,7 +303,6 @@
                     },
                     on: {
                       click: () => {
-                        this.viewName = 'FileInfo';
                         // 判断文件信息是否完成著录，是则“修改”，否则“添加”
                         this.axios.get('/api/fileInfo/existFileInfo', {params: {archId: params.row.archId}})
                           .then(res => {
@@ -302,29 +312,41 @@
                                 hidd: true
                               };
                               this.showWriteData = true;
-                              this.$router.push(
-                                {
-                                  name: this.viewName,
-                                  params: {
-                                    archId: params.row.archId, //传递一些重要参数给下一个界面
-                                    archNo: params.row.archNo,
-                                    archTypeID: this.archTypeID,
-                                    operation: true
-                                  }
-                                })
+                              this.viewName = 'FileInfo';
+                              this.fileParams = {
+                                archId: params.row.archId, //传递一些重要参数给下一个界面
+                                archNo: params.row.archNo,
+                                archTypeID: this.archTypeID,
+                                operation: true
+                              }
+                              // this.$router.push({
+                              //     name: this.viewName,
+                              //     params: {
+                              //       archId: params.row.archId, //传递一些重要参数给下一个界面
+                              //       archNo: params.row.archNo,
+                              //       archTypeID: this.archTypeID,
+                              //       operation: true
+                              //     }
+                              //   })
                             } else {
                               this.showModal = true;
+                              this.viewName = 'FileInfo';
                               this.modalTitle = '文件信息已完成';
-                              this.pushConf =
-                                {
-                                  name: this.viewName,
-                                  params: {
-                                    archId: params.row.archId, //传递一些重要参数给下一个界面
-                                    archNo: params.row.archNo,
-                                    archTypeID: this.archTypeID,
-                                    operation: false
-                                  }
-                                }
+                              this.fileParams = {
+                                archId: params.row.archId, //传递一些重要参数给下一个界面
+                                archNo: params.row.archNo,
+                                archTypeID: this.archTypeID,
+                                operation: false
+                              }
+                              // this.pushConf = {
+                              //     name: this.viewName,
+                              //     params: {
+                              //       archId: params.row.archId, //传递一些重要参数给下一个界面
+                              //       archNo: params.row.archNo,
+                              //       archTypeID: this.archTypeID,
+                              //       operation: false
+                              //     }
+                              //   }
                             }
                           });
                       }
@@ -488,15 +510,11 @@
           hidd: true
         };
         this.showWriteData = true;
-        this.$router.push(this.pushConf)
+        // this.$router.push(this.pushConf)
       },
       // 取消进入修改界面
       cancelTips() {
-        // this.showWriteData = false
-        // this.loadData = {
-        //   view: true,
-        //   hidd: false
-        // }
+        this.viewName = ''
       },
       //搜索条件中的状态条件
       oneSelect(value) {
@@ -601,16 +619,18 @@
   .hidd {
     display: none
   }
+
   /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
+  .TableFontCss >>> .ivu-table {
     font-size: 14px;
   }
 
   /*条件显示样式*/
-  .conditionFormFront >>> .ivu-form-item-content{
+  .conditionFormFront >>> .ivu-form-item-content {
     font-size: 15px;
   }
-  .conditionFormFront >>> .ivu-input{
+
+  .conditionFormFront >>> .ivu-input {
     font-size: 14px;
   }
 </style>

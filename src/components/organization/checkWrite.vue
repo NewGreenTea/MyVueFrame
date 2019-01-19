@@ -45,7 +45,9 @@
 
     <!-- 质检档案信息的路由界面 -->
     <div v-if="showWriteData">
-      <router-view :name="viewName" @changeShowView="showView"></router-view>
+      <keep-alive>
+      <router-view :name="viewName" @changeShowView="showView" v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive>
     </div>
   </div>
 </template>

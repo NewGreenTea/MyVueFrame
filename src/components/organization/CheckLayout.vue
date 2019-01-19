@@ -621,7 +621,7 @@
       </Col>
 
       <!-- 个性专业表格信息 -->
-      <Col span="20" offset="1">
+      <Col span="20" offset="1" class="TableFontCss">
         <Row v-if="showD212">
           用地性质详细著录表
           <Table border :columns="UseAreaInfoColumns" :data="UseAreaInfoData" :height="tableHeight2"></Table>
@@ -654,19 +654,19 @@
       <Col span="20" offset="1">
         <Row :gutter="16">
           <!-- 专业：地图型号 -->
-          <Col span="8">
+          <Col span="8" class="TableFontCss">
             地图型号
             <Table border :columns="PMcolumns" :data="PMtableData" :height="tableHeight2"></Table>
           </Col>
 
           <!-- 专业：局历史审批文件编号 -->
-          <Col span="8">
+          <Col span="8" class="TableFontCss">
             局历史审批文件编号
             <Table border :columns="PAHcolumns" :data="PAHtableData" :height="tableHeight2"></Table>
           </Col>
 
           <!-- 专业：建设工程规划许可证号-->
-          <Col span="8">
+          <Col span="8" class="TableFontCss">
             建设工程规划许可证号
             <Table border :columns="PPNcolumns" :data="PPNtableData" :height="tableHeight2"></Table>
           </Col>
