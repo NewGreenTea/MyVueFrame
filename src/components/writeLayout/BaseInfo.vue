@@ -165,36 +165,37 @@
 
   export default {
     name: "BaseInfo",
+    props: ['BaseParams'],
     data() {
       return {
         ss: '100%',
-        archNo: this.$route.params.archNo,
+        archNo: this.BaseParams.archNo,
         pubProperty: ['主动公开', '依申请公开', '免于公开', '(不填)'],
-        operation: this.$route.params.operation,
+        operation: this.BaseParams.operation,
         keyDate: '',
         // 表单用一个基本信息档案类装字段
         baseArch: {
           id: '',
-          archId: this.$route.params.archId, // 读取出来
-          dispatchDocNo: this.$route.params.dispatchDocNo, // 读取出来
-          registerNo: this.$route.params.registerNo, // 读取出来
-          archNo: this.$route.params.archNo, // 读取出来
+          archId: this.BaseParams.archId, // 读取出来
+          dispatchDocNo: this.BaseParams.dispatchDocNo, // 读取出来
+          registerNo: this.BaseParams.registerNo, // 读取出来
+          archNo: this.BaseParams.archNo, // 读取出来
           archTitle: '',
           company: '',
           date: '',
-          inputDate: this.$route.params.archInputDate,
+          inputDate: this.BaseParams.archInputDate,
           archPage: '',
-          dispatchNoType: this.getDispatchNoType(this.$route.params.dispatchDocNo),
-          dispatchNoYear: this.getDispatchNoYear(this.$route.params.dispatchDocNo),
-          dispatchNoNum: this.getDispatchNoNum(this.$route.params.dispatchDocNo),
+          dispatchNoType: this.getDispatchNoType(this.BaseParams.dispatchDocNo),
+          dispatchNoYear: this.getDispatchNoYear(this.BaseParams.dispatchDocNo),
+          dispatchNoNum: this.getDispatchNoNum(this.BaseParams.dispatchDocNo),
           storageType: '永久',
           secretLv: '内部',
           operator: '',
           archAuditor: '',
           archfileCreator: '',
-          archType: this.$route.params.archTypeName,
+          archType: this.BaseParams.archTypeName,
           publicProperty: '',
-          classId: this.$route.params.archTypeID
+          classId: this.BaseParams.archTypeID
         },
         rules: {
           registerNo: [
@@ -257,13 +258,16 @@
       //更新档案
       updateArch() {
         this.axios.post('/api/baseInfo/update', this.baseArch, config).then(res => {
-            //todo,有错报错，没错提示并跳转
-            alert('修改完毕')
+            if(res.data.code === 0){
+              this.$Message.success('修改成功!')
+            }else{
+              this.$Message.error('修改失败!')
+            }
           }
         )
       },
       goBack() {
-        this.$router.go(-1);
+        //this.$router.go(-1);
         this.$emit('changeShowView')
       },
       getDispatchNoType(DispatchNo) {

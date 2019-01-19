@@ -7,13 +7,13 @@
         </Col>
         <Col span="12" class="profButtonFloat">
           <Button @click="cancelPNo" class="profButtonFloat">-</Button>
-          <Button @click="updatePNo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="updatePNo" v-if="specViewParams.isUpdate" class="profButtonFloat">√</Button>
           <Button @click="savePNo" class="profButtonFloat">+</Button>
         </Col>
       </Row>
     </Col>
     <Col class="TableFontCss">
-      <Table border :columns="columns" :data="tableData" :height="tableHeight"
+      <Table border :columns="columns" :data="tableData" :height="tableHeight" ref="PNTable"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
@@ -92,15 +92,11 @@
 
 <script>
   import {isIntegerNotMust} from '../../js/validate'
-  import {CommonFunction} from '../../js/global'
-  //档案数据对象的传输配置
-  const config={
-    headers: {'Content-Type': 'application/json'}
-  };
+  import {CommonFunction,ArchRequestConfig} from '../../js/global'
 
   export default {
     name: "ProjectNo",
-    props: ['isUpdate'],
+    props: ['specViewParams'],
     data() {
       return {
         //临时存储数据(给父组件)
@@ -158,7 +154,7 @@
           projNum: ''
         },
         //重要的archId
-        archId: this.$route.params.archId,
+        archId: this.specViewParams.archId,
         // 添加弹窗显示控制
         AddModal: false,
         UpdateModal: false
@@ -167,8 +163,13 @@
     methods: {
       //加载档案信息（修改时触发）
       loadPPN() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/loadArch/getProfInfo', {params: {archId: this.archId, ArchInfo: 'PN'}}).then(
+        if (this.specViewParams.isUpdate === true) {
+          this.axios.get('/api/loadArch/getProfInfo', {
+            params: {
+              archId: this.specViewParams.archId,
+              ArchInfo: 'PN'
+            }
+          }).then(
             res => {
               this.tableData = res.data.data;
             }
@@ -196,12 +197,13 @@
           this.projectNoInfo.projNum = this.tempData[0].projNum
         }
       },
-      addcancle () {
+      addcancle() {
         this.$refs.addForm.resetFields()
       },
       cancleUpdate() {
         this.$refs.updateForm.resetFields();
-        this.tempData = []
+        this.tempData = [];
+        this.$refs.PNTable.selectAll(false)
       },
       updatePNoData() {
         let temp = {
@@ -236,43 +238,43 @@
               if (check === true) {
                 let data = [];
                 data.push(temp);
-                this.axios.post('/api/profInfo/updateProjectNo', JSON.stringify(data),config).then(res => {
-                  this.axios.get('/api/loadArch/getProfInfo', {
-                    params: {
-                      archId: data[0].archId,
-                      ArchInfo: 'PN'
-                    }
-                  }).then(res => {
-                    this.tableData = res.data.data;
-                    //更新后，删掉‘准备删除’的数据
-                    let index = [];
-                    for(let i=0;i<this.UpdateDeleteData.length;i++){
-                      for(let j=0;j<this.tableData.length;j++){
-                        if(this.UpdateDeleteData[i].projType === this.tableData[j].projType
-                          && this.UpdateDeleteData[i].projYear === this.tableData[j].projYear
-                          && this.UpdateDeleteData[i].projNum === this.tableData[j].projNum){
-                          index.push(j)
+                this.axios.post('/api/profInfo/updateProjectNo', JSON.stringify(data), ArchRequestConfig).then(res => {
+                    this.axios.get('/api/loadArch/getProfInfo', {
+                      params: {
+                        archId: data[0].archId,
+                        ArchInfo: 'PN'
+                      }
+                    }).then(res => {
+                      this.tableData = res.data.data;
+                      //更新后，删掉‘准备删除’的数据
+                      let index = [];
+                      for (let i = 0; i < this.UpdateDeleteData.length; i++) {
+                        for (let j = 0; j < this.tableData.length; j++) {
+                          if (this.UpdateDeleteData[i].projType === this.tableData[j].projType
+                            && this.UpdateDeleteData[i].projYear === this.tableData[j].projYear
+                            && this.UpdateDeleteData[i].projNum === this.tableData[j].projNum) {
+                            index.push(j)
+                          }
                         }
                       }
-                    }
-                    for(let i=0;i<index.length;i++){
-                      this.tableData.splice(index[i],1)
-                    }
-                    //更新后，添加‘准备添加’的数据
-                    for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
-                      this.tableData.unshift(this.UpdateAddData[i])
-                    }
-                  });
-                  this.projectNoInfo.id = null;
-                  this.projectNoInfo.archId = '';
-                  this.formReset();
-                  this.tempData = []
-                }
+                      for (let i = 0; i < index.length; i++) {
+                        this.tableData.splice(index[i], 1)
+                      }
+                      //更新后，添加‘准备添加’的数据
+                      for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
+                        this.tableData.unshift(this.UpdateAddData[i])
+                      }
+                    });
+                    this.projectNoInfo.id = null;
+                    this.projectNoInfo.archId = '';
+                    this.formReset();
+                    this.tempData = []
+                  }
                 );
               }
               this.UpdateModal = false
             }
-          }else {
+          } else {
             setTimeout(() => {
               this.loading = false;
               this.$nextTick(() => {
@@ -282,16 +284,17 @@
           }
         });
       },
-      updatePPN () {
-        this.axios.post('/api/profInfo/addProjectNo', JSON.stringify(this.UpdateAddData),config).then(res => {
-          this.UpdateAddData = []
-        });
-        this.axios.post('/api/profInfo/deleteProjectNo', JSON.stringify(this.UpdateDeleteData),config).then(res => {
-          this.UpdateDeleteData = []
-        })
+      updatePPN() {
+        this.axios.all([this.axios.post('/api/profInfo/addProjectNo', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
+          this.axios.post('/api/profInfo/deleteProjectNo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
+          .then(this.axios.spread((res1, res2) => {
+            this.UpdateAddData = [];
+            this.UpdateDeleteData = [];
+            this.loadPPN();
+          }))
       },
       updateRowData(row, index) {
-        if (this.isUpdate === true) {
+        if (this.specViewParams.isUpdate === true) {
           let temp = {
             id: null,
             archId: '',
@@ -327,34 +330,34 @@
         temp.projYear = this.projectNoInfo.projYear;
         temp.projNum = this.projectNoInfo.projNum;
         this.$refs.addForm.validate((valid) => {
-            if (valid) {
-              if(!CommonFunction.isEmpty(temp.projType)
-                || !CommonFunction.isEmpty(temp.projYear)
-                || !CommonFunction.isEmpty(temp.projNum)){
-                if (this.isUpdate === true) {
-                  //把最后新加的放在第一位
-                  this.UpdateAddData.unshift(temp);
-                  this.tableData.unshift(temp)
-                }
-                else {
-                  this.projectNoData.unshift(temp);
-                  this.tableData = this.projectNoData;
-                  this.$emit('saveProjectNoData', this.tableData)
-                }
-                this.projectNoInfo.id = '';
-                this.projectNoInfo.archId = '';
-                this.formReset();
-                this.AddModal = false
+          if (valid) {
+            if (!CommonFunction.isEmpty(temp.projType)
+              || !CommonFunction.isEmpty(temp.projYear)
+              || !CommonFunction.isEmpty(temp.projNum)) {
+              if (this.specViewParams.isUpdate === true) {
+                //把最后新加的放在第一位
+                this.UpdateAddData.unshift(temp);
+                this.tableData.unshift(temp)
               }
+              else {
+                this.projectNoData.unshift(temp);
+                this.tableData = this.projectNoData;
+                this.$emit('saveProjectNoData', this.tableData)
+              }
+              this.projectNoInfo.id = '';
+              this.projectNoInfo.archId = '';
+              this.formReset();
+              this.AddModal = false
             }
-            else {
-              setTimeout(() => {
-                this.loading = false;
-                this.$nextTick(() => {
-                  this.loading = true;
-                });
-              }, 1000);
-            }
+          }
+          else {
+            setTimeout(() => {
+              this.loading = false;
+              this.$nextTick(() => {
+                this.loading = true;
+              });
+            }, 1000);
+          }
         })
       },
       cancelPNo() {
@@ -399,7 +402,7 @@
               }
             }
           }
-          if (this.isUpdate !== true) {
+          if (this.specViewParams.isUpdate !== true) {
             this.$emit('saveAreaHisNoData', this.tableData);
           }
           this.tempData = []
@@ -428,7 +431,7 @@
       cancelAllData(selection) {
         this.tempData = []
       },
-      formReset () {
+      formReset() {
         this.projectNoInfo.projType = '';
         this.projectNoInfo.projYear = '';
         this.projectNoInfo.projNum = '';
@@ -442,9 +445,10 @@
 
 <style scoped>
   /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
+  .TableFontCss >>> .ivu-table {
     font-size: 14px;
   }
+
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;

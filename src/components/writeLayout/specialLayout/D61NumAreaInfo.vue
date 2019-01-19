@@ -7,13 +7,13 @@
         </Col>
         <Col span="12">
           <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
-          <Button @click="updateMInfo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="updateMInfo" v-if="D6123SpecParams.isUpdate" class="profButtonFloat">√</Button>
           <Button @click="saveMInfo" class="profButtonFloat">+</Button>
         </Col>
       </Row>
     </Col>
     <Col class="TableFontCss">
-      <Table border :columns="columns" :data="tableData" :height="tableHeight"
+      <Table border :columns="columns" :data="tableData" :height="tableHeight" ref="D61Table"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
@@ -51,7 +51,7 @@
               <Col span="3">
                 <FormItem class="FormItemClass">
                   <Tooltip :content="D61NumAreaInfo.projectName" max-width="100" class="D61WriteInput">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.projectName" class="D61WriteInput"/>
+                    <Input placeholder="..." v-model="D61NumAreaInfo.projectName" class="D61WriteInput"/>
                   </Tooltip>
                 </FormItem>
               </Col>
@@ -61,7 +61,7 @@
                 </FormItem>
               </Col>
               <Col span="3">
-                <FormItem class="FormItemClass"  prop="overgroundFloor">
+                <FormItem class="FormItemClass" prop="overgroundFloor">
                   <Input placeholder="..." v-model="D61NumAreaInfo.overgroundFloor" class="D61WriteInput"/>
                 </FormItem>
               </Col>
@@ -124,7 +124,7 @@
               <Col span="3">
                 <FormItem class="FormItemClass">
                   <Tooltip :content="D61NumAreaInfo.projectName" max-width="100" class="D61WriteInput">
-                  <Input placeholder="..." v-model="D61NumAreaInfo.projectName" class="D61WriteInput"/>
+                    <Input placeholder="..." v-model="D61NumAreaInfo.projectName" class="D61WriteInput"/>
                   </Tooltip>
                 </FormItem>
               </Col>
@@ -134,7 +134,7 @@
                 </FormItem>
               </Col>
               <Col span="3">
-                <FormItem class="FormItemClass"  prop="overgroundFloor">
+                <FormItem class="FormItemClass" prop="overgroundFloor">
                   <Input placeholder="..." v-model="D61NumAreaInfo.overgroundFloor" class="D61WriteInput"/>
                 </FormItem>
               </Col>
@@ -172,14 +172,14 @@
 
   export default {
     name: "NumAreaInfo",
-    props: ['isUpdate'],
+    props: ['D6123SpecParams'],
     data() {
       return {
         NumAreaInfoData: [],
-        archId: this.$route.params.archId,
+        archId: this.D6123SpecParams.archId,
         D61NumAreaInfo: {
           id: null,
-          archId: this.$route.params.archId, // 读取出来
+          archId: this.D6123SpecParams.archId, // 读取出来
           projectName: '',
           buildingNum: '',
           overgroundFloor: '',
@@ -260,8 +260,8 @@
     },
     methods: {
       loadNAI() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/profETC/getD61NumAreaInfo', {params: {archId: this.archId}}).then(
+        if (this.D6123SpecParams.isUpdate === true) {
+          this.axios.get('/api/profETC/getD61NumAreaInfo', {params: {archId: this.D6123SpecParams.archId}}).then(
             res => {
               this.tableData = res.data.data
             })
@@ -294,7 +294,8 @@
       cancleUpdate() {
         this.$refs.updateForm.resetFields();
         this.formReset();
-        this.tempData = []
+        this.tempData = [];
+        this.$refs.D61Table.selectAll(false)
       },
       UpdateNMIData() {
         let temp = {
@@ -379,17 +380,16 @@
         this.tempData = [];
       },
       updatePMI() {
-        this.axios.post('/api/profETC/addD61NumAreaInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
-          this.UpdateAddData = []
+        this.axios.all([this.axios.post('/api/profETC/addD61NumAreaInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
+          this.axios.post('/api/profETC/deleteD61NumAreaInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)]).then(this.axios.spread((res1,res2) => {
+          this.UpdateAddData = [];
+          this.UpdateDeleteData = [];
           //todo,有错报错，没错提示并跳转
-        });
-        this.axios.post('/api/profETC/deleteD61NumAreaInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig).then(res => {
-          this.UpdateDeleteData = []
-          //todo,有错报错，没错提示并跳转
-        })
+          this.loadNAI()
+        }))
       },
       updateRowData(row, index) {
-        if (this.isUpdate === true) {
+        if (this.D6123SpecParams.isUpdate === true) {
           let temp = {
             id: null,
             archId: '',
@@ -453,7 +453,7 @@
               !CommonFunction.isEmpty(temp.overgroundArea) ||
               !CommonFunction.isEmpty(temp.undergroundArea) ||
               !CommonFunction.isEmpty(temp.totalArea)) {
-              if (this.isUpdate === true) {
+              if (this.D6123SpecParams.isUpdate === true) {
                 this.UpdateAddData.unshift(temp);
                 this.tableData.unshift(temp)
               }
@@ -528,7 +528,7 @@
               }
             }
           }
-          if (this.isUpdate !== true) {
+          if (this.D6123SpecParams.isUpdate !== true) {
             this.$emit('saveNumAreaInfoData', this.tableData);
           }
           this.tempData = []
@@ -579,7 +579,7 @@
 </script>
 
 <style scoped>
-  .D61WriteInput{
+  .D61WriteInput {
     width: 100px;
     float: right;
   }
@@ -588,8 +588,9 @@
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;
   }
+
   /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
+  .TableFontCss >>> .ivu-table {
     font-size: 14px;
   }
 </style>

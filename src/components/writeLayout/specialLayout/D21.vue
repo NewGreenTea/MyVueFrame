@@ -30,8 +30,10 @@
 
     <!-- 用地性质详细著录表 -->
     <Col span="20" offset="1">
-      <RouterView ref="D21UAInfo" name="D21UseAreaInfo" :isUpdate="updateInfo"
-                  @saveUseAreaInfoData="saveD21UAI"></RouterView>
+      <!--<RouterView ref="D21UAInfo" name="D21UseAreaInfo" :isUpdate="updateInfo"-->
+                  <!--@saveUseAreaInfoData="saveD21UAI"></RouterView>-->
+      <UseAreaInfo ref="D21UAInfo" name="D21UseAreaInfo" :D212SpecParams="D212SpecParams"
+                   @saveUseAreaInfoData="saveD21UAI"></UseAreaInfo>
     </Col>
   </Row>
 
@@ -40,28 +42,31 @@
 <script>
   import {isDecimalNotMust} from '../../../js/validate'
   import {ArchRequestConfig} from "../../../js/global";
+  import UseAreaInfo from "./UseAreaInfo";
 
   export default {
     name: 'D21',
-    props: ['isUpdate'],
+    components: {UseAreaInfo},
+    props: ['specViewParams'],
     data() {
       return {
         labelWidth: 100,
-        archType: this.$route.params.archType,
-        archId: this.$route.params.archId,
+        archType: this.specViewParams.archType,
+        archId: this.specViewParams.archId,
         D21Info: {
           id: null,
-          archId: this.$route.params.archId, // 读取出来
+          archId: this.specViewParams.archId, // 读取出来
           totalArea: '',
           areaClass: ''
         },
         UseAreaInfoData: [],
-        updateInfo: this.isUpdate,
+        updateInfo: this.specViewParams.isUpdate,
         rules: {
           totalArea: [
             {validator: isDecimalNotMust, trigger: 'blur'}
           ]
-        }
+        },
+        D212SpecParams: ''
       }
     },
     methods: {
@@ -77,22 +82,27 @@
       saveArch() {
         this.$refs.D21form.validate((valid) => {
           if (valid) {
-            this.axios.post('/api/profETC/addD21', this.D21Info, ArchRequestConfig);
-            if (this.UseAreaInfoData !== []) {
-              this.axios.post('/api/profETC/addD21UseAreaInfo', this.UseAreaInfoData, ArchRequestConfig);
-            }
-            this.$emit('RealSave');
+            this.axios.all([this.axios.post('/api/profETC/addD21', this.D21Info, ArchRequestConfig),this.axiosSaveD21UseArea()])
+              .then(this.axios.spread((res1,res2) => {
+                this.$emit('RealSave');
+              }))
           } else {
             this.$Message.error('著录数据有误！')
           }
         })
       },
+      axiosSaveD21UseArea(){
+        if (this.UseAreaInfoData !== []) {
+          this.axios.post('/api/profETC/addD21UseAreaInfo', this.UseAreaInfoData, ArchRequestConfig);
+        }
+      },
       updateArch() {
         this.$refs.D21form.validate((valid) => {
           if (valid) {
-            this.axios.post('/api/profETC/updateD21', this.D21Info, ArchRequestConfig);
-            this.$refs.D21UAInfo.updatePMI();
-            this.$emit('RealUpdate');
+            this.axios.all([this.axios.post('/api/profETC/updateD21', this.D21Info, ArchRequestConfig),this.$refs.D21UAInfo.updatePMI()])
+              .then(this.axios.spread((res1,res2) =>{
+                this.$emit('RealUpdate');
+              }))
           } else {
             this.$Message.error('修改数据有误！')
           }
@@ -101,16 +111,16 @@
       saveD21UAI(data) {
         this.UseAreaInfoData = data
       },
-      goback() {
-        this.$router.go(-3);
+      initD212Params() {
+        this.D212SpecParams = this.specViewParams
       }
     },
     mounted() {
-      this.$router.push({
-        name: 'ProfSpcCommon',
-        params: {archId: this.$route.params.archId, archType: this.archType}
-      });
+      // this.$router.push({name: 'ProfSpcCommon', params: {archId: this.$route.params.archId, archType: this.archType}});
       this.loadD21()
+    },
+    created() {
+      this.initD212Params();
     }
   }
 </script>

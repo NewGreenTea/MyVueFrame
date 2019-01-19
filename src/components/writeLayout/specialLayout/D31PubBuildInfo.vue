@@ -7,13 +7,13 @@
         </Col>
         <Col span="12">
           <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
-          <Button @click="updateMInfo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="updateMInfo" v-if="this.D31SpecParams.isUpdate" class="profButtonFloat">√</Button>
           <Button @click="saveMInfo" class="profButtonFloat">+</Button>
         </Col>
       </Row>
     </Col>
     <Col class="TableFontCss">
-      <Table border :columns="columns" :data="tableData" :height="tableHeight"
+      <Table border :columns="columns" :data="tableData" :height="tableHeight" ref="D31Table"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
@@ -118,14 +118,14 @@
 
   export default {
     name: "D31PubBuildInfo",
-    props: ['isUpdate'],
+    props: ['D31SpecParams'],
     data() {
       return {
         PubBuildInfoData: [],
-        archId: this.$route.params.archId,
+        archId: this.D31SpecParams.archId,
         D31PubBuildInfo: {
           id: null,
-          archId: this.$route.params.archId, // 读取出来
+          archId: this.D31SpecParams.archId, // 读取出来
           functionName: '',
           designArea: '',
           planArea: '',
@@ -179,8 +179,8 @@
     },
     methods: {
       loadBPI() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/profETC/getD31PubBuildInfo', {params: {archId: this.archId}}).then(
+        if (this.D31SpecParams.isUpdate === true) {
+          this.axios.get('/api/profETC/getD31PubBuildInfo', {params: {archId: this.D31SpecParams.archId}}).then(
             res => {
               this.tableData = res.data.data
             })
@@ -210,7 +210,8 @@
       cancleUpdate() {
         this.$refs.updateForm.resetFields();
         this.formReset();
-        this.tempData = []
+        this.tempData = [];
+        this.$refs.D31Table.selectAll(false)
       },
       addcancle() {
         this.$refs.addForm.resetFields();
@@ -301,17 +302,18 @@
         this.tempData = [];
       },
       updatePMI() {
-        this.axios.post('/api/profETC/addD31PubBuildInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
-          this.UpdateAddData = []
+        this.axios.all([
+        this.axios.post('/api/profETC/addD31PubBuildInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
+        this.axios.post('/api/profETC/deleteD31PubBuildInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
+          .then(this.axios.spread((res1,res2) => {
+          this.UpdateAddData = [];
+          this.UpdateDeleteData = [];
           //todo,有错报错，没错提示并跳转
-        });
-        this.axios.post('/api/profETC/deleteD31PubBuildInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig).then(res => {
-          this.UpdateDeleteData = []
-          //todo,有错报错，没错提示并跳转
-        })
+            this.loadBPI()
+        }))
       },
       updateRowData(row, index) {
-        if (this.isUpdate === true) {
+        if (this.D31SpecParams.isUpdate === true) {
           let temp = {
             id: null,
             archId: '',
@@ -356,7 +358,7 @@
             if (!CommonFunction.isEmpty(temp.functionName) ||
               !CommonFunction.isEmpty(temp.designArea) ||
               !CommonFunction.isEmpty(temp.planArea)) {
-              if (this.isUpdate === true) {
+              if (this.D31SpecParams.isUpdate === true) {
                 this.UpdateAddData.unshift(temp);
                 this.tableData.unshift(temp)
               }
@@ -425,7 +427,7 @@
             }
           }
 
-          if (this.isUpdate !== true) {
+          if (this.D31SpecParams.isUpdate !== true) {
             this.$emit('savePubBuildInfoData', this.tableData);
           }
           this.tempData = []

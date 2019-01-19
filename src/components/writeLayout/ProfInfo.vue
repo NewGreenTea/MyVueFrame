@@ -94,8 +94,30 @@
     <!-- 各类档案个性著录视图 -->
     <Row class="mainSpecialView">
       <Col span="21" offset="3">
-        <router-view ref="specialView" :name="archType" :isUpdate="updateInfo"
-                     @RealSave="realSave" @RealUpdate="realUpdate"></router-view>
+        <!--<router-view ref="specialView" :name="archType" :isUpdate="updateInfo"-->
+        <!--@RealSave="realSave" @RealUpdate="realUpdate"></router-view>-->
+        <C61 ref="specialView" :specViewParams="specialParams" v-if="archType === 'C61'"
+             @RealSave="realSave" @RealUpdate="realUpdate"></C61>
+        <C62 ref="specialView" :specViewParams="specialParams" v-if="archType === 'C62'"
+             @RealSave="realSave" @RealUpdate="realUpdate"></C62>
+        <C63 ref="specialView" :specViewParams="specialParams" v-if="archType === 'C63'"
+             @RealSave="realSave" @RealUpdate="realUpdate"></C63>
+        <D21 ref="specialView" :specViewParams="specialParams" v-if="archType === 'D21'"
+             @RealSave="realSave" @RealUpdate="realUpdate"></D21>
+        <D22 ref="specialView" :specViewParams="specialParams" v-if="archType === 'D22'"
+             @RealSave="realSave" @RealUpdate="realUpdate"></D22>
+        <D31 ref="specialView" :specViewParams="specialParams" v-if="archType === 'D31'"
+             @RealSave="realSave" @RealUpdate="realUpdate"></D31>
+        <D32 ref="specialView" :specViewParams="specialParams" v-if="archType === 'D32'"
+             @RealSave="realSave" @RealUpdate="realUpdate"></D32>
+        <D34 ref="specialView" :specViewParams="specialParams" v-if="archType === 'D34'"
+             @RealSave="realSave" @RealUpdate="realUpdate"></D34>
+        <D61 ref="specialView" :specViewParams="specialParams" v-if="archType === 'D61'"
+             @RealSave="realSave" @RealUpdate="realUpdate"></D61>
+        <D62 ref="specialView" :specViewParams="specialParams" v-if="archType === 'D62'"
+             @RealSave="realSave" @RealUpdate="realUpdate"></D62>
+        <D63 ref="specialView" :specViewParams="specialParams" v-if="archType === 'D63'"
+             @RealSave="realSave" @RealUpdate="realUpdate"></D63>
       </Col>
     </Row>
 
@@ -107,17 +129,23 @@
             <Row :gutter="16">
               <Col span="6">
                 <!--地图型号表-->
-                <router-view ref="PMI" name="MapInfo" @saveMapInfoData="saveMID" :isUpdate="updateInfo"></router-view>
+                <!--<router-view ref="PMI" name="MapInfo" @saveMapInfoData="saveMID" :isUpdate="updateInfo"></router-view>-->
+                <MapInfo ref="PMI" name="MapInfo" @saveMapInfoData="saveMID" :specViewParams="specialParams"
+                         v-if="showMapInfo"></MapInfo>
               </Col>
               <Col span="9">
                 <!--局历史审批文件编号表-->
-                <router-view ref="PAHN" name="AreaHisNo" @saveAreaHisNoData="saveAHND"
-                             :isUpdate="updateInfo"></router-view>
+                <!--<router-view ref="PAHN" name="AreaHisNo" @saveAreaHisNoData="saveAHND"-->
+                <!--:isUpdate="updateInfo"></router-view>-->
+                <AreaHisNo ref="PAHN" name="AreaHisNo" @saveAreaHisNoData="saveAHND" :specViewParams="specialParams"
+                           v-if="showAreaHisNo"></AreaHisNo>
               </Col>
               <Col span="9">
                 <!--建设工程规划许可证号表-->
-                <router-view ref="PPN" name="ProjectNo" @saveProjectNoData="savePND"
-                             :isUpdate="updateInfo"></router-view>
+                <!--<router-view ref="PPN" name="ProjectNo" @saveProjectNoData="savePND"-->
+                <!--:isUpdate="updateInfo"></router-view>-->
+                <ProjectNo ref="PPN" @saveProjectNoData="savePND" :specViewParams="specialParams"
+                           v-if="showProjectNo"></ProjectNo>
               </Col>
             </Row>
           </Col>
@@ -139,19 +167,31 @@
 
 <script>
   import {isIntegerNotMust} from '../../js/validate'
-  import {CommonFunction} from '../../js/global'
-  //档案数据对象的传输配置
-  const config = {
-    headers: {'Content-Type': 'application/json'}
-  };
+  import {CommonFunction,ArchRequestConfig} from '../../js/global'
+  import ProjectNo from "./ProjectNo";
+  import AreaHisNo from "./AreaHisNo";
+  import MapInfo from "./MapInfo";
+  import C61 from "./specialLayout/C61";
+  import C62 from "./specialLayout/C62";
+  import C63 from "./specialLayout/C63";
+  import D21 from './specialLayout/D21';
+  import D22 from './specialLayout/D22';
+  import D31 from './specialLayout/D31';
+  import D32 from './specialLayout/D32';
+  import D34 from './specialLayout/D34';
+  import D61 from './specialLayout/D61';
+  import D62 from './specialLayout/D62';
+  import D63 from './specialLayout/D63';
 
   export default {
     name: "ProfInfo",
+    components: {C61, C62, C63, D21, D22, D31, D32, D34, D61, D62, D63, MapInfo, AreaHisNo, ProjectNo},
+    props: ['ProfParams'],
     data() {
       return {
         labelWidth: 100,
         //档案分类
-        archType: this.$route.params.archType,
+        archType: this.ProfParams.archType,
         // 项目地点表数据
         buildingAddressData: [],
         // 地图型号表数据
@@ -161,23 +201,26 @@
         // 建设工程规划许可证号表数据
         projectNoData: [],
         // 判断是否添加还是修改
-        operation: this.$route.params.operation,
+        operation: this.ProfParams.operation,
         //传递给子组件是否为更新
         updateInfo: false,
-        archNo: this.$route.params.archNo,
+        //传递个性页面的参数
+        specialParams: '',
+        D6123specialParams: '',
+        archNo: this.ProfParams.archNo,
         // 档案专业信息必要信息
         profArch: {
           id: null,
-          archId: this.$route.params.archId, // 读取出来(456只是测试用)
-          archNo: this.$route.params.archNo, // 读取出来
+          archId: this.ProfParams.archId, // 读取出来(456只是测试用)
+          archNo: this.ProfParams.archNo, // 读取出来
           buildCompany: '',
           buildProject: '',
-          classId: this.$route.params.archTypeID
+          classId: this.ProfParams.archTypeID
         },
         // 表数据结构体
         buildingAddressInfo: {
           id: null,
-          archId: this.$route.params.archId,
+          archId: this.ProfParams.archId,
           area: '',
           road: '',
           street: '',
@@ -187,7 +230,11 @@
           no: [
             {validator: isIntegerNotMust, trigger: 'blur'}
           ]
-        }
+        },
+        //控制显示
+        showMapInfo: false,
+        showAreaHisNo: false,
+        showProjectNo: false
       }
     },
     methods: {
@@ -217,9 +264,21 @@
           this.updateInfo = true
         }
       },
+      //初始化传递参数
+      initSpecParams() {
+        if (this.ProfParams.operation === true) {  //这一部分可能要在writerGroup改动比较好！todo 2019/01/19
+          this.ProfParams.operation = false
+        } else {
+          this.ProfParams.operation = true
+        }
+        this.specialParams = {
+          archType: this.ProfParams.archType,
+          archId: this.ProfParams.archId,
+          isUpdate: this.ProfParams.operation
+        }
+      },
       // 保存档案信息
-      realSave() {
-        // 一份档案的专业信息存储
+      realSave() { // 特性档案的著录专业信息存储方法
         if (!CommonFunction.isEmpty(this.profArch.buildCompany) || !CommonFunction.isEmpty(this.profArch.buildProject)) {
           this.axios.post('/api/profInfo/addProfInfo', this.profArch, {
             //判断字段是否为null，是则转为空字符串
@@ -238,118 +297,47 @@
           });
         }
         if (this.mapInfoData !== []) {
-          this.axios.post('/api/profInfo/addMapInfo', JSON.stringify(this.mapInfoData), config);
+          this.axios.post('/api/profInfo/addMapInfo', JSON.stringify(this.mapInfoData), ArchRequestConfig);
         }
         if (this.areaHisNoData !== []) {
-          this.axios.post('/api/profInfo/addAreaHisNo', JSON.stringify(this.areaHisNoData), config);
+          this.axios.post('/api/profInfo/addAreaHisNo', JSON.stringify(this.areaHisNoData), ArchRequestConfig);
         }
         if (this.projectNoData !== []) {
-          this.axios.post('/api/profInfo/addProjectNo', JSON.stringify(this.projectNoData), config);
+          this.axios.post('/api/profInfo/addProjectNo', JSON.stringify(this.projectNoData), ArchRequestConfig);
         }
-        alert('保存完毕！');
-        this.$refs.specialView.goback();
+        this.$Message.success('保存成功！');
         this.$emit('changeShowView')
       },
-      saveArch() {
+      saveArch() { // 无特性档案的著录专业信息存储方法
+        console.log(this.$refs.specialView)
         // 判断档案有无特性著录项
-        if (this.$refs.specialView != null) {
-          this.$refs.specialView.saveArch();
+        if (this.$refs.specialView !== null && this.$refs.specialView !== undefined) {
+          this.$refs.specialView.saveArch();  //即调用realSave方法,但是里面包含个性信息保存操作
         }
         else {
-          // 一份档案的专业信息存储
-          if (!CommonFunction.isEmpty(this.profArch.buildCompany) || !CommonFunction.isEmpty(this.profArch.buildProject)) {
-            this.axios.post('/api/profInfo/addProfInfo', this.profArch, {
-              //判断字段是否为null，是则转为空字符串
-              transformRequest: [function (data) {
-                return CommonFunction.dataIsNull(data)
-              }]
-            });
-            alert('保存完毕！');
-          }
-          if (!CommonFunction.isEmpty(this.buildingAddressInfo.area) || !CommonFunction.isEmpty(this.buildingAddressInfo.road)
-            || !CommonFunction.isEmpty(this.buildingAddressInfo.street)) {
-            this.axios.post('/api/profInfo/addBuildAddress', this.buildingAddressInfo, {
-              //判断字段是否为null，是则转为空字符串
-              transformRequest: [function (data) {
-                return CommonFunction.dataIsNull(data)
-              }]
-            });
-          }
-          if (this.mapInfoData !== []) {
-            this.axios.post('/api/profInfo/addMapInfo', JSON.stringify(this.mapInfoData), config)
-          }
-          if (this.areaHisNoData !== []) {
-            this.axios.post('/api/profInfo/addAreaHisNo', JSON.stringify(this.areaHisNoData), config);
-          }
-          if (this.projectNoData !== []) {
-            this.axios.post('/api/profInfo/addProjectNo', JSON.stringify(this.projectNoData), config);
-          }
-          this.$router.go(-2);
-          this.$emit('changeShowView')
+          this.realSave()
         }
       },
       // 更新档案信息
       realUpdate() {
-        this.axios.post('/api/profInfo/updateProfInfo', this.profArch, {
-          //判断字段是否为null，是则转为空字符串
-          transformRequest: [function (data) {
-            return CommonFunction.dataIsNull(data)
-          }]
-        }).then(res => {
-          //todo,有错报错，没错提示并跳转
-        });
-        //项目地点更新
-        this.axios.post('/api/profInfo/updateBuildAddress', this.buildingAddressInfo, {
-          //判断字段是否为null，是则转为空字符串
-          transformRequest: [function (data) {
-            return CommonFunction.dataIsNull(data)
-          }]
-        });
-        //子组件的数据更新方法
-        // this.$refs.PBA.updatePBA(); //旧版
-        this.$refs.PMI.updatePMI();
-        this.$refs.PAHN.updatePAHN();
-        this.$refs.PPN.updatePPN();
-        alert('修改完毕')
+        this.axios.all([this.axiosSaveProfInfo(), this.axiosSaveBuildingAddress(),    //专业信息基本和建设地址信息
+          this.$refs.PMI.updatePMI(), this.$refs.PAHN.updatePAHN(), this.$refs.PPN.updatePPN()])    //子组件的数据更新方法
+          .then(this.axios.spread((res1, res2, res3, res4, res5) => {
+            this.$Message.info('修改完毕！')
+          }))
       },
       updateArch() {
         // 判断档案有无特性著录项
         if (this.$refs.specialView != null) {
           // 保存特性著录项(返回是否能保存或修改的标识)
           this.$refs.specialView.updateArch();
-        } else {
-          this.axios.post('/api/profInfo/updateProfInfo', this.profArch, {
-            //判断字段是否为null，是则转为空字符串
-            transformRequest: [function (data) {
-              return CommonFunction.dataIsNull(data)
-            }]
-          }).then(res => {
-            //todo,有错报错，没错提示并跳转
-            alert('修改完毕')
-          });
-          //项目地点更新
-          this.axios.post('/api/profInfo/updateBuildAddress', this.buildingAddressInfo, {
-            //判断字段是否为null，是则转为空字符串
-            transformRequest: [function (data) {
-              return CommonFunction.dataIsNull(data)
-            }]
-          });
-          //子组件的数据更新方法
-          // this.$refs.PBA.updatePBA(); //旧版
-          this.$refs.PMI.updatePMI();
-          this.$refs.PAHN.updatePAHN();
-          this.$refs.PPN.updatePPN();
+        }
+        else {
+          this.realUpdate();
         }
       },
       //后退
       goBack() {
-        if (this.$refs.specialView != null) {
-          //有些跳2有的跳3
-          // this.$router.go(-2);
-          this.$refs.specialView.goback();
-        } else {
-          this.$router.go(-2);
-        }
         this.$emit('changeShowView')
       },
       // 子组件地图型号表传过来的数据
@@ -363,11 +351,34 @@
       // 子组件建设工程规划许可证号表传过来的数据
       savePND(data) {
         this.projectNoData = data
+      },
+      axiosSaveProfInfo() {
+        this.axios.post('/api/profInfo/updateProfInfo', this.profArch, {
+          //判断字段是否为null，是则转为空字符串
+          transformRequest: [function (data) {
+            return CommonFunction.dataIsNull(data)
+          }]
+        })
+      },
+      axiosSaveBuildingAddress() {
+        //项目地点更新
+        this.axios.post('/api/profInfo/updateBuildAddress', this.buildingAddressInfo, {
+          //判断字段是否为null，是则转为空字符串
+          transformRequest: [function (data) {
+            return CommonFunction.dataIsNull(data)
+          }]
+        })
       }
     },
     mounted() {
-      this.$router.push({name: 'ProfCommon', params: {archId: this.$route.params.archId, archType: this.archType}});
-      this.loadArch()
+      // this.$router.push({name: 'ProfCommon', params: {archId: this.$route.params.archId, archType: this.archType}});
+      this.loadArch();
+      this.showMapInfo = true;
+      this.showAreaHisNo = true;
+      this.showProjectNo = true
+    },
+    created() {
+      this.initSpecParams();
     }
   }
 </script>
@@ -377,16 +388,19 @@
   .profSpecCss {
     width: 160px;
   }
-  .buildingAddressCss{
+
+  .buildingAddressCss {
     font-size: 14px;
     padding-top: 5px;
     padding-left: 10px;
   }
-  .buildingAddressCss2{
+
+  .buildingAddressCss2 {
     font-size: 14px;
 
   }
-  .formSpec /deep/ .ivu-form-item-content{
+
+  .formSpec /deep/ .ivu-form-item-content {
     margin-left: 0px !important;
   }
 

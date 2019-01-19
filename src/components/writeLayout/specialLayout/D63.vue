@@ -87,8 +87,9 @@
 
     <Col span="20" offset="1">
       <!-- 验收测量记录册 -->
-      <RouterView ref="MeaInfo" name="MeasureInfo" :isUpdate="updateInfo"
-                  @saveMeasureInfoData="saveD63MI"></RouterView>
+      <!--<RouterView ref="MeaInfo" name="MeasureInfo" :isUpdate="updateInfo"-->
+                  <!--@saveMeasureInfoData="saveD63MI"></RouterView>-->
+      <MeasureInfo ref="MeaInfo" name="MeasureInfo" :D6123SpecParams="D6123SpecParams" @saveMeasureInfoData="saveD63MI"></MeasureInfo>
     </Col>
   </Row>
 </template>
@@ -96,18 +97,20 @@
 <script>
   import {isDecimalNotMust} from '../../../js/validate'
   import {ArchRequestConfig} from "../../../js/global";
+  import MeasureInfo from "./MeasureInfo";
 
   export default {
     name: "D63",
-    props: ['isUpdate'],
+    components: {MeasureInfo},
+    props: ['specViewParams'],
     data() {
       return {
         labelWidth: 100,
-        archType: this.$route.params.archType,
-        archId: this.$route.params.archId,
+        archType: this.specViewParams.archType,
+        archId: this.specViewParams.archId,
         D63PipelineInfo: {
           id: null,
-          archId: this.$route.params.archId, // 读取出来
+          archId: this.specViewParams.archId, // 读取出来
           overheadPipeStart: '',
           overheadPipeType: '',
           overheadPipeLength: '',
@@ -120,7 +123,7 @@
           underPipeEtc: ''
         },
         MeasureInfoData: [],
-        updateInfo: this.isUpdate,
+        updateInfo: this.specViewParams.isUpdate,
         rules: {
           overheadPipeLength: [
             {validator: isDecimalNotMust, trigger: 'blur'}
@@ -139,8 +142,8 @@
     },
     methods: {
       loadD63() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/profETC/getD63PipelineInfo', {params: {archId: this.archId}}).then(
+        if (this.specViewParams.isUpdate === true) {
+          this.axios.get('/api/profETC/getD63PipelineInfo', {params: {archId: this.specViewParams.archId}}).then(
             res => {
               this.D63PipelineInfo = res.data.data
             }
@@ -150,11 +153,10 @@
       saveArch() {
         this.$refs.D63form.validate((valid) => {
           if (valid) {
-            this.axios.post('/api/profETC/addD63PipelineInfo', this.D63PipelineInfo, ArchRequestConfig);
-            if (this.MeasureInfoData !== []) {
-              this.axios.post('/api/profETC/addD63MI', JSON.stringify(this.MeasureInfoData), ArchRequestConfig);
-            }
-            this.$emit('RealSave');
+            this.axios.all([this.axios.post('/api/profETC/addD63PipelineInfo', this.D63PipelineInfo, ArchRequestConfig),this.axiosSaveD63Pipeline()])
+              .then(this.axios.spread((res1,res2) => {
+                this.$emit('RealSave');
+              }))
           } else {
             this.$Message.error('著录数据有误！')
           }
@@ -163,9 +165,10 @@
       updateArch() {
         this.$refs.D63form.validate((valid) => {
           if (valid) {
-            this.axios.post('/api/profETC/updateD63PipelineInfo', this.D63PipelineInfo, ArchRequestConfig);
-            this.$refs.MeaInfo.updatePMI();
-            this.$emit('RealUpdate');
+            this.axios.all([this.axios.post('/api/profETC/updateD63PipelineInfo', this.D63PipelineInfo, ArchRequestConfig),this.$refs.MeaInfo.updatePMI()])
+              .then(this.axios.spread((res1,res2) =>{
+                this.$emit('RealUpdate');
+              }))
           } else {
             this.$Message.error('修改数据有误！')
           }
@@ -174,13 +177,21 @@
       saveD63MI(data) {
         this.MeasureInfoData = data
       },
-      goback() {
-        this.$router.go(-3);
+      axiosSaveD63Pipeline(){
+        if (this.MeasureInfoData !== []) {
+          this.axios.post('/api/profETC/addD63MI', JSON.stringify(this.MeasureInfoData), ArchRequestConfig);
+        }
+      },
+      initD6123Params() {
+        this.D6123SpecParams = this.specViewParams
       }
     },
     mounted() {
-      this.$router.push({name: 'ProfSpcCommon', params: {archId: this.$route.params.archId, archType: this.archType}});
+      // this.$router.push({name: 'ProfSpcCommon', params: {archId: this.$route.params.archId, archType: this.archType}});
       this.loadD63()
+    },
+    created() {
+      this.initD6123Params();
     }
   }
 </script>

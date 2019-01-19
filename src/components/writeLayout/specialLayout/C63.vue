@@ -19,22 +19,22 @@
 
   export default {
     name: 'C63',
-    props: ['isUpdate'],
+    props: ['specViewParams'],
     data() {
       return {
         labelWidth: 100,
-        archId: this.$route.params.archId,
+        archId: this.specViewParams.archId,
         C63Info: {
           id: null,
-          archId: this.$route.params.archId, // 读取出来
+          archId: this.specViewParams.archId, // 读取出来
           designCompany: ''
         }
       }
     },
     methods: {
       loadC63() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/profETC/getC63', {params: {archId: this.archId}}).then(
+        if (this.specViewParams.isUpdate === true) {
+          this.axios.get('/api/profETC/getC63', {params: {archId: this.specViewParams.archId}}).then(
             res => {
               this.C63Info = res.data.data
             }
@@ -48,9 +48,6 @@
       updateArch() {
         this.axios.post('/api/profETC/updateC63', this.C63Info, ArchRequestConfig);
         this.$emit('RealUpdate');
-      },
-      goback() {
-        this.$router.go(-2);
       }
     },
     mounted() {

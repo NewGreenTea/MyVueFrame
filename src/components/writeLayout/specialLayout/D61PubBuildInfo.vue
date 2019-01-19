@@ -7,13 +7,13 @@
         </Col>
         <Col span="12">
           <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
-          <Button @click="updateMInfo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="updateMInfo" v-if="D6123SpecParams.isUpdate" class="profButtonFloat">√</Button>
           <Button @click="saveMInfo" class="profButtonFloat">+</Button>
         </Col>
       </Row>
     </Col>
     <Col class="TableFontCss">
-      <Table border :columns="columns" :data="tableData" :height="tableHeight"
+      <Table border :columns="columns" :data="tableData" :height="tableHeight" ref="D61Table"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
@@ -120,14 +120,14 @@
 
   export default {
     name: "PubBuildInfo",
-    props: ['isUpdate'],
+    props: ['D6123SpecParams'],
     data() {
       return {
         PubBuildInfoData: [],
-        archId: this.$route.params.archId,
+        archId: this.D6123SpecParams.archId,
         D61PubBuildInfo: {
           id: null,
-          archId: this.$route.params.archId, // 读取出来
+          archId: this.D6123SpecParams.archId, // 读取出来
           projectName: '',
           independentArea: '',
           buildArea: '',
@@ -181,8 +181,8 @@
     },
     methods: {
       loadPBI() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/profETC/getD61PubBuildInfo', {params: {archId: this.archId}}).then(
+        if (this.D6123SpecParams.isUpdate === true) {
+          this.axios.get('/api/profETC/getD61PubBuildInfo', {params: {archId: this.D6123SpecParams.archId}}).then(
             res => {
               this.tableData = res.data.data
             })
@@ -214,7 +214,8 @@
         }
       },
       cancleUpdate() {
-        this.tempData = []
+        this.tempData = [];
+        this.$refs.D61Table.selectAll(false)
       },
       UpdatePBIData() {
         let temp = {
@@ -303,17 +304,17 @@
         this.tempData = [];
       },
       updatePMI() {
-        this.axios.post('/api/profETC/addD61PubBuildInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
-          this.UpdateAddData = []
-          //todo,有错报错，没错提示并跳转
-        });
-        this.axios.post('/api/profETC/deleteD61PubBuildInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig).then(res => {
-          this.UpdateDeleteData = []
-          //todo,有错报错，没错提示并跳转
-        })
+        this.axios.all([this.axios.post('/api/profETC/addD61PubBuildInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
+          this.axios.post('/api/profETC/deleteD61PubBuildInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
+          .then(this.axios.spread((res1, res2) => {
+            this.UpdateAddData = [];
+            this.UpdateDeleteData = [];
+            //todo,有错报错，没错提示并跳转
+            this.loadPBI()
+          }))
       },
       updateRowData(row, index) {
-        if (this.isUpdate === true) {
+        if (this.D6123SpecParams.isUpdate === true) {
           let temp = {
             id: null,
             archId: '',
@@ -363,7 +364,7 @@
               !CommonFunction.isEmpty(temp.independentArea) ||
               !CommonFunction.isEmpty(temp.buildArea) ||
               !CommonFunction.isEmpty(temp.position)) {
-              if (this.isUpdate === true) {
+              if (this.D6123SpecParams.isUpdate === true) {
                 this.UpdateAddData.unshift(temp);
                 this.tableData.unshift(temp)
               }
@@ -430,7 +431,7 @@
               }
             }
           }
-          if (this.isUpdate !== true) {
+          if (this.D6123SpecParams.isUpdate !== true) {
             this.$emit('savePubBuildInfoData', this.tableData);
           }
           this.tempData = []
@@ -471,16 +472,18 @@
 </script>
 
 <style scoped>
-  .D61WriteInput{
+  .D61WriteInput {
     width: 200px;
     float: right;
   }
+
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;
   }
+
   /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
+  .TableFontCss >>> .ivu-table {
     font-size: 14px;
   }
 </style>

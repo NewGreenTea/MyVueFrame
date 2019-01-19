@@ -122,15 +122,15 @@
 
   export default {
     name: "C61",
-    props: ['isUpdate'],
+    props: ['specViewParams'],
     data() {
       return {
         labelWidth: 100,
-        archId: this.$route.params.archId,
+        archId: this.specViewParams.archId,
         // 表单用一个基本信息档案类装字段
         C61Info: {
           id: null,
-          archId: this.$route.params.archId, // 读取出来
+          archId: this.specViewParams.archId, // 读取出来
           totalArea: '',
           buildArea: '',
           roadArea: '',
@@ -171,8 +171,8 @@
     methods: {
       //修改操作时加载个性著录项
       loadC61() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/profETC/getC61', {params: {archId: this.archId}}).then(
+        if (this.specViewParams.isUpdate === true) {
+          this.axios.get('/api/profETC/getC61', {params: {archId: this.specViewParams.archId}}).then(
             res => {
               this.C61Info = res.data.data
             }
@@ -184,7 +184,7 @@
         this.$refs.C61form.validate((valid) => {
           if (valid) {
             this.axios.post('/api/profETC/addC61', this.C61Info, ArchRequestConfig);
-            this.$emit('RealSave');
+            this.$emit('RealSave'); //todo
           } else {
             this.$Message.error('著录数据有误！')
           }
@@ -195,14 +195,11 @@
         this.$refs.C61form.validate((valid) => {
           if (valid) {
             this.axios.post('/api/profETC/updateC61', this.C61Info, ArchRequestConfig);
-            this.$emit('RealUpdate');
+            this.$emit('RealUpdate'); //todo
           } else {
             this.$Message.error('修改数据有误！')
           }
         })
-      },
-      goback() {
-        this.$router.go(-2);
       }
     },
     mounted() {

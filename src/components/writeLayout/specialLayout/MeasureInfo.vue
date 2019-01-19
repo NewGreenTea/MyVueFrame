@@ -7,13 +7,13 @@
         </Col>
         <Col span="12">
           <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
-          <Button @click="updateMInfo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="updateMInfo" v-if="D6123SpecParams.isUpdate" class="profButtonFloat">√</Button>
           <Button @click="saveMInfo" class="profButtonFloat">+</Button>
         </Col>
       </Row>
     </Col>
     <Col class="TableFontCss">
-      <Table border :columns="columns" :data="tableData" :height="tableHeight"
+      <Table border :columns="columns" :data="tableData" :height="tableHeight" ref="MeaTable"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
@@ -42,14 +42,14 @@
 
   export default {
     name: "MeasureInfo",
-    props: ['isUpdate'],
+    props: ['D6123SpecParams'],
     data() {
       return {
         //档案分类
-        archType: this.$route.params.archType,
+        archType: this.D6123SpecParams.archType,
         //保存数据
         MeasureInfoData: [],
-        archId: this.$route.params.archId,
+        archId: this.D6123SpecParams.archId,
         MeasureInfo: {
           id: null,
           archId: '',
@@ -82,8 +82,8 @@
     },
     methods: {
       loadDMI(data) {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/profETC/getMeasureInfo', {params: {archId: this.archId, ArchInfo: data}}).then(
+        if (this.D6123SpecParams.isUpdate === true) {
+          this.axios.get('/api/profETC/getMeasureInfo', {params: {archId: this.D6123SpecParams.archId, ArchInfo: data}}).then(
             res => {
               this.tableData = res.data.data
             })
@@ -108,7 +108,8 @@
         }
       },
       cancleUpdate() {
-        this.tempData = []
+        this.tempData = [];
+        this.$refs.MeaTable.selectAll(false)
       },
       update61MIData() {
         let temp = {
@@ -171,17 +172,17 @@
         this.tempData = [];
       },
       updatePMI() {
-        this.axios.post('/api/profETC/add' + this.archType + 'MI', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
-          this.UpdateAddData = []
-          //todo,有错报错，没错提示并跳转
-        });
-        this.axios.post('/api/profETC/delete' + this.archType + 'MI', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig).then(res => {
-          this.UpdateDeleteData = []
-          //todo,有错报错，没错提示并跳转
-        })
+        this.axios.all([this.axios.post('/api/profETC/add' + this.archType + 'MI', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
+          this.axios.post('/api/profETC/delete' + this.archType + 'MI', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
+        .then(this.axios.spread((res1,res2) => {
+          this.UpdateAddData = [];
+          this.UpdateDeleteData = [];
+          //todo,有错报错
+          this.loadDMI(this.D6123SpecParams.archType);
+        }))
       },
       updateRowData(row, index) {
-        if (this.isUpdate === true) {
+        if (this.D6123SpecParams.isUpdate === true) {
           let temp = {
             id: null,
             archId: '',
@@ -206,7 +207,7 @@
         temp.archId = this.archId;
         temp.remarkNo = this.MeasureInfo.remarkNo;
         if (!CommonFunction.isEmpty(this.MeasureInfo.remarkNo)) {
-          if (this.isUpdate === true) {
+          if (this.D6123SpecParams.isUpdate === true) {
             this.UpdateAddData.unshift(temp);
             this.tableData.unshift(temp)
           }
@@ -218,7 +219,6 @@
         } else {
           this.$Message.error('记录册编号不能为空');
         }
-
         this.MeasureInfo.id = '';
         this.MeasureInfo.archId = '';
         this.MeasureInfo.remarkNo = '';
@@ -253,7 +253,7 @@
               }
             }
           }
-          if (this.isUpdate !== true) {
+          if (this.D6123SpecParams.isUpdate !== true) {
             this.$emit('saveMeasureInfoData', this.tableData);
           }
           this.tempData = []
@@ -283,8 +283,11 @@
         this.MeasureInfo.remarkNo = '';
       }
     },
-    mounted() {
-      this.loadDMI(this.archType)
+    beforeMount() {
+
+    },
+    mounted(){
+      this.loadDMI(this.D6123SpecParams.archType)
     }
   }
 </script>

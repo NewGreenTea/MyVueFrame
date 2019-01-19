@@ -7,13 +7,13 @@
         </Col>
         <Col span="12">
           <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
-          <Button @click="updateMInfo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="updateMInfo" v-if="specViewParams.isUpdate" class="profButtonFloat">√</Button>
           <Button @click="saveMInfo" class="profButtonFloat">+</Button>
         </Col>
       </Row>
     </Col>
     <Col class="TableFontCss">
-      <Table border :columns="columns" :data="tableData" :height="tableHeight"
+      <Table border :columns="columns" :data="tableData" :height="tableHeight" ref="MITable"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
@@ -37,15 +37,11 @@
 </template>
 
 <script>
-  import {CommonFunction} from '../../js/global'
-  //档案数据对象的传输配置
-  const config = {
-    headers: {'Content-Type': 'application/json'}
-  };
+  import {CommonFunction,ArchRequestConfig} from '../../js/global'
 
   export default {
     name: "MapInfo",
-    props: ['isUpdate'],
+    props: ['specViewParams'],
     data() {
       return {
         //临时存储数据(给父组件)
@@ -85,7 +81,7 @@
           mapNo: ''
         },
         //重要的archId
-        archId: this.$route.params.archId,
+        archId: this.specViewParams.archId,
         // 添加弹窗显示控制
         AddModal: false,
         UpdateModal: false
@@ -94,8 +90,8 @@
     methods: {
       //加载档案信息（修改时触发）
       loadPMI() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/loadArch/getProfInfo', {params: {archId: this.archId, ArchInfo: 'MI'}}).then(
+        if (this.specViewParams.isUpdate === true) {
+          this.axios.get('/api/loadArch/getProfInfo', {params: {archId: this.specViewParams.archId, ArchInfo: 'MI'}}).then(
             res => {
               this.tableData = res.data.data
             })
@@ -121,7 +117,8 @@
       },
       cancleUpdate() {
         this.mapInfo.mapNo = '';
-        this.tempData = []
+        this.tempData = [];
+        this.$refs.MITable.selectAll(false)
       },
       updateMInfoData() {
         let temp = {
@@ -146,12 +143,7 @@
           if (check === true) {
             let data = [];
             data.push(temp);
-            this.axios.post('/api/profInfo/updateMapInfo', data, {
-              //判断字段是否为null，是则转为空字符串
-              transformRequest: [function (data) {
-                return CommonFunction.dataIsNull(data)
-              }]
-            }).then(res => {
+            this.axios.post('/api/profInfo/updateMapInfo', JSON.stringify(data), ArchRequestConfig).then(res => {
               this.axios.get('/api/loadArch/getProfInfo', {
                 params: {
                   archId: data[0].archId,
@@ -187,20 +179,17 @@
       },
       //更新档案信息
       updatePMI() {
-        //(实际为：新增的数据)
-        this.axios.post('/api/profInfo/addMapInfo', JSON.stringify(this.UpdateAddData), config)
-          .then(res => {
-            this.UpdateAddData = []
-            //todo,有错报错，没错提示并跳转
-          });
-        //(实际为：删除已存在的数据)
-        this.axios.post('/api/profInfo/deleteMapInfo', JSON.stringify(this.UpdateDeleteData), config).then(res => {
-          this.UpdateDeleteData = []
-          //todo,有错报错，没错提示并跳转
-        })
+        //(实际为：新增的数据) 和 (实际为：删除已存在的数据)
+        this.axios.all([this.axios.post('/api/profInfo/addMapInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
+          this.axios.post('/api/profInfo/deleteMapInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
+          .then(this.axios.spread((res1,res2) => {
+            this.UpdateAddData = [];
+            this.UpdateDeleteData = [];
+            this.loadPMI();
+          }))
       },
       updateRowData(row, index) {
-        if (this.isUpdate === true) {
+        if (this.specViewParams.isUpdate === true) {
           let temp = {
             id: null,
             archId: '',
@@ -228,7 +217,7 @@
         temp.archId = this.archId;
         temp.mapNo = this.mapInfo.mapNo;
         if (!CommonFunction.isEmpty(this.mapInfo.mapNo)) {
-          if (this.isUpdate === true) {
+          if (this.specViewParams.isUpdate === true) {
             //把最后新加的放在第一位
             this.UpdateAddData.unshift(temp);
             this.tableData.unshift(temp)
@@ -276,7 +265,7 @@
               }
             }
           }
-          if (this.isUpdate !== true) {
+          if (this.specViewParams.isUpdate !== true) {
             this.$emit('saveMapInfoData', this.tableData);
           }
           this.tempData = []
@@ -307,7 +296,7 @@
     },
     mounted() {
       this.loadPMI()
-    }
+    },
   }
 </script>
 

@@ -205,6 +205,7 @@
 
   export default {
     name: "FileInfo",
+    props: ['FileParams'],
     data() {
       return {
         labelWidth: 100,
@@ -271,10 +272,10 @@
         //修改时要删除真实存在的数据
         UpdateDeleteData: [],
         fileType: ['申请材料', '办案过程材料', '结论性文件', '其他材料', '档案变更材料'],
-        operation: this.$route.params.operation, //false为修改
-        archId: this.$route.params.archId,
-        archNo: this.$route.params.archNo,
-        classId: this.$route.params.archTypeID,
+        operation: this.FileParams.operation, //false为修改
+        archId: this.FileParams.archId,
+        archNo: this.FileParams.archNo,
+        classId: this.FileParams.archTypeID,
         rules: {
           fileIndex: [
             {validator: isInteger, trigger: 'blur'}
@@ -297,8 +298,8 @@
         },
         fileArch: {
           id: null,
-          archId: this.$route.params.archId, // 读取出来
-          archNo: this.$route.params.archNo,
+          archId: this.FileParams.archId, // 读取出来
+          archNo: this.FileParams.archNo,
           fileIndex: '',
           fileNo: '',
           liableId: '',
@@ -307,7 +308,7 @@
           fileDate: '',
           pageNo: '',
           remark: '',
-          classId: this.$route.params.archTypeID
+          classId: this.FileParams.archTypeID
         },
         AddModal: false,
         UpdateModal: false
@@ -648,12 +649,12 @@
       },
       //后退
       goBack() {
-        this.$router.go(-1);
+        // this.$router.go(-1);
         this.$emit('changeShowView')
       }
     },
     mounted() {
-      this.loadFileArch()
+      this.loadFileArch();
     }
   }
 </script>

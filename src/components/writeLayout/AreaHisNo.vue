@@ -7,13 +7,13 @@
         </Col>
         <Col span="12">
           <Button @click="cancelAHNo" class="profButtonFloat">-</Button>
-          <Button @click="updateAHNo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="updateAHNo" v-if="specViewParams.isUpdate" class="profButtonFloat">√</Button>
           <Button @click="saveAHNo" class="profButtonFloat">+</Button>
         </Col>
       </Row>
     </Col>
     <Col class="TableFontCss">
-      <Table border :columns="columns" :data="tableData" :height="tableHeight"
+      <Table border :columns="columns" :data="tableData" :height="tableHeight" ref="AHNTable"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
@@ -91,15 +91,11 @@
 
 <script>
   import {isIntegerNotMust} from '../../js/validate'
-  import {CommonFunction} from '../../js/global'
-  //档案数据对象的传输配置
-  const config = {
-    headers: {'Content-Type': 'application/json'}
-  };
+  import {CommonFunction,ArchRequestConfig} from '../../js/global'
 
   export default {
     name: "AreaHisNo",
-    props: ['isUpdate'],
+    props: ['specViewParams'],
     data() {
       return {
         loading: true,
@@ -157,7 +153,7 @@
           hisNum: ''
         },
         //重要的archId
-        archId: this.$route.params.archId,
+        archId: this.specViewParams.archId,
         // 添加弹窗显示控制
         AddModal: false,
         UpdateModal: false
@@ -166,8 +162,13 @@
     methods: {
       //加载档案信息（修改时触发）
       loadPAHN() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/loadArch/getProfInfo', {params: {archId: this.archId, ArchInfo: 'AHN'}}).then(
+        if (this.specViewParams.isUpdate === true) {
+          this.axios.get('/api/loadArch/getProfInfo', {
+            params: {
+              archId: this.specViewParams.archId,
+              ArchInfo: 'AHN'
+            }
+          }).then(
             res => {
               this.tableData = res.data.data;
             }
@@ -197,9 +198,10 @@
       cancleUpdate() {
         this.$refs.updateForm.resetFields();
         this.formReset();
-        this.tempData = []
+        this.tempData = [];
+        this.$refs.AHNTable.selectAll(false)
       },
-      updateAHNoData() {          //todo 这里也是需要修改一下的
+      updateAHNoData() {
         let temp = {
           id: null,
           archId: '',
@@ -213,7 +215,7 @@
         temp.hisYear = this.areaHisNoInfo.hisYear;
         temp.hisNum = this.areaHisNoInfo.hisNum;
         let check = true;
-        this.$refs.updateForm.validate((valid) => {    //todo 更新检测
+        this.$refs.updateForm.validate((valid) => {
           if (valid) {
             if (!CommonFunction.isEmpty(temp.hisType) ||
               !CommonFunction.isEmpty(temp.hisYear) ||
@@ -233,7 +235,7 @@
               if (check === true) {
                 let data = [];
                 data.push(temp);
-                this.axios.post('/api/loadArch/updateAreaHisNo', JSON.stringify(data), config).then(res => {
+                this.axios.post('/api/profInfo/updateAreaHisNo', JSON.stringify(data), ArchRequestConfig).then(res => {
                   this.axios.get('/api/loadArch/getProfInfo', {
                     params: {
                       archId: data[0].archId,
@@ -283,15 +285,16 @@
         })
       },
       updatePAHN() {
-        this.axios.post('/api/profInfo/addAreaHisNo', JSON.stringify(this.UpdateAddData), config).then(res => {
-          this.UpdateAddData = []
-        });
-        this.axios.post('/api/profInfo/deleteAreaHisNo', JSON.stringify(this.UpdateDeleteData), config).then(res => {
-          this.UpdateDeleteData = []
-        })
+        this.axios.all([this.axios.post('/api/profInfo/addAreaHisNo', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
+          this.axios.post('/api/profInfo/deleteAreaHisNo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
+          .then(this.axios.spread((res1, res2) => {
+            this.UpdateAddData = [];
+            this.UpdateDeleteData = [];
+            this.loadPAHN();
+          }))
       },
       updateRowData(row, index) {
-        if (this.isUpdate === true) {
+        if (this.specViewParams.isUpdate === true) {
           let temp = {
             id: null,
             archId: '',
@@ -326,12 +329,12 @@
         temp.hisType = this.areaHisNoInfo.hisType;
         temp.hisYear = this.areaHisNoInfo.hisYear;
         temp.hisNum = this.areaHisNoInfo.hisNum;
-        this.$refs.addForm.validate((valid) => {         // todo 添加这里需要更改一下
+        this.$refs.addForm.validate((valid) => {
           if (valid) {
             if (!CommonFunction.isEmpty(temp.hisType) ||
               !CommonFunction.isEmpty(temp.hisYear) ||
               !CommonFunction.isEmpty(temp.hisNum)) {
-              if (this.isUpdate === true) {
+              if (this.specViewParams.isUpdate === true) {
                 this.UpdateAddData.unshift(temp);
                 this.tableData.unshift(temp)
               }
@@ -359,7 +362,7 @@
         this.areaHisNoInfo.archId = '';
         this.formReset();
       },
-      cancelAHNo() {                                      //todo  所有表格数据表都要修改
+      cancelAHNo() {
         if (Object.keys(this.tempData).length === 0) {
           alert('请钩选要删除的局历史审批文件编号')
         }
@@ -400,8 +403,7 @@
               }
             }
           }
-
-          if (this.isUpdate !== true) {
+          if (this.specViewParams.isUpdate !== true) {
             this.$emit('saveAreaHisNoData', this.tableData);
           }
           this.tempData = []
@@ -447,9 +449,10 @@
 
 <style scoped>
   /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
+  .TableFontCss >>> .ivu-table {
     font-size: 14px;
   }
+
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;

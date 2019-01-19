@@ -14,42 +14,51 @@
 
     <Col span="20" offset="1">
       <!-- 报建项目详细 -->
-      <RouterView ref="BPInfo" name="BuildProjInfo" :isUpdate="updateInfo"
-                  @saveBuildProjInfoData="saveD31BPI" class="routeView"></RouterView>
+      <!--<RouterView ref="BPInfo" name="BuildProjInfo" :isUpdate="updateInfo"-->
+                  <!--@saveBuildProjInfoData="saveD31BPI" class="routeView"></RouterView>-->
+      <D31BuildProjInfo ref="BPInfo" name="BuildProjInfo" :D31SpecParams="D31SpecParams"
+                        @saveBuildProjInfoData="saveD31BPI" class="routeView"></D31BuildProjInfo>
     </Col>
 
     <Col span="20" offset="1">
       <!-- 公建配套 -->
-      <RouterView ref="PBInfo" name="D31PubBuildInfo" :isUpdate="updateInfo"
-                  @savePubBuildInfoData="saveD31PBI" class="routeView"></RouterView>
+      <!--<RouterView ref="PBInfo" name="D31PubBuildInfo" :isUpdate="updateInfo"-->
+                  <!--@savePubBuildInfoData="saveD31PBI" class="routeView"></RouterView>-->
+      <D31PubBuildInfo ref="PBInfo" name="D31PubBuildInfo" :D31SpecParams="D31SpecParams"
+                       @savePubBuildInfoData="saveD31PBI" class="routeView"></D31PubBuildInfo>
     </Col>
   </Row>
 </template>
 
 <script>
   import {CommonFunction, ArchRequestConfig} from "../../../js/global";
+  import D31PubBuildInfo from "./D31PubBuildInfo";
+  import D31BuildProjInfo from "./D31BuildProjInfo";
 
   export default {
     name: "D31",
-    props: ['isUpdate'],
+    components: {D31BuildProjInfo, D31PubBuildInfo},
+    props: ['specViewParams'],
     data() {
       return {
         labelWidth: 100,
-        archId: this.$route.params.archId,
+        archId: this.specViewParams.archId,
         D31Info: {
           id: null,
-          archId: this.$route.params.archId, // 读取出来
+          archId: this.specViewParams.archId, // 读取出来
           designCompany: ''
         },
         PubBuildInfoData: [],
         BuildProjInfoData: [],
-        updateInfo: this.isUpdate
+        updateInfo: this.specViewParams.isUpdate,
+        //传递参数
+        D31SpecParams: ''
       }
     },
     methods: {
       loadD31() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/profETC/getD31', {params: {archId: this.archId}}).then(
+        if (this.specViewParams.isUpdate === true) {
+          this.axios.get('/api/profETC/getD31', {params: {archId: this.specViewParams.archId}}).then(
             res => {
               this.D31Info = res.data.data
             }
@@ -57,19 +66,10 @@
         }
       },
       saveArch() {
-        this.$emit('RealSave');
-        this.axios.post('/api/profETC/addD31', this.D31Info, {
-          //判断字段是否为null，是则转为空字符串
-          transformRequest: [function (data) {
-            return CommonFunction.dataIsNull(data)
-          }]
-        });
-        if (this.BuildProjInfoData !== []) {
-          this.axios.post('/api/profETC/addD31BuildProjInfo', JSON.stringify(this.BuildProjInfoData), ArchRequestConfig);
-        }
-        if (this.PubBuildInfoData !== []) {
-          this.axios.post('/api/profETC/addD31PubBuildInfo', JSON.stringify(this.PubBuildInfoData), ArchRequestConfig);
-        }
+        this.axios.all([this.axios.post('/api/profETC/addD31', this.D31Info, ArchRequestConfig),
+        this.axiosSaveD31BPI(),this.axiosSaveD31PBI()]).then(this.axios.spread((res1,res2,res3) => {
+          this.$emit('RealSave');
+        }))
       },
       saveD31BPI(data) {
         this.BuildProjInfoData = data
@@ -77,19 +77,32 @@
       saveD31PBI(data) {
         this.PubBuildInfoData = data
       },
+      axiosSaveD31BPI(){
+        if (this.BuildProjInfoData !== []) {
+          this.axios.post('/api/profETC/addD31BuildProjInfo', JSON.stringify(this.BuildProjInfoData), ArchRequestConfig);
+        }
+      },
+      axiosSaveD31PBI(){
+        if (this.PubBuildInfoData !== []) {
+          this.axios.post('/api/profETC/addD31PubBuildInfo', JSON.stringify(this.PubBuildInfoData), ArchRequestConfig);
+        }
+      },
       updateArch() {
-        this.$emit('RealUpdate');
         this.axios.post('/api/profETC/updateD31', this.D31Info, ArchRequestConfig);
         this.$refs.BPInfo.updatePMI();
         this.$refs.PBInfo.updatePMI();
+        this.$Message.info('修改完毕!');
       },
-      goback() {
-
+      initParams(){
+        this.D31SpecParams = this.specViewParams
       }
     },
     mounted() {
-      this.$router.push({name: 'ProfSpcCommon', params: {archId: this.$route.params.archId, archType: this.archType}});
+      // this.$router.push({name: 'ProfSpcCommon', params: {archId: this.$route.params.archId, archType: this.archType}});
       this.loadD31()
+    },
+    created() {
+      this.initParams();
     }
   }
 </script>

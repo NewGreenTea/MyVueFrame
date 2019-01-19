@@ -7,13 +7,13 @@
         </Col>
         <Col span="12">
           <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
-          <Button @click="updateMInfo" v-if="isUpdate" class="profButtonFloat">√</Button>
+          <Button @click="updateMInfo" v-if="D212SpecParams.isUpdate" class="profButtonFloat">√</Button>
           <Button @click="saveMInfo" class="profButtonFloat">+</Button>
         </Col>
       </Row>
     </Col>
     <Col class="TableFontCss">
-      <Table border :columns="columns" :data="tableData" :height="tableHeight"
+      <Table border :columns="columns" :data="tableData" :height="tableHeight" ref="UseATable"
              @on-row-dblclick="updateRowData"
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
@@ -41,7 +41,7 @@
                 </FormItem>
               </Col>
               <Col span="8">
-                <FormItem class="FormItemClass">
+                <FormItem class="FormItemClass" prop="areaCode">
                   <Input placeholder="..." v-model="UseAreaInfo.areaCode" class="D212WriteInput"/>
                 </FormItem>
               </Col>
@@ -79,7 +79,7 @@
                 </FormItem>
               </Col>
               <Col span="8">
-                <FormItem class="FormItemClass">
+                <FormItem class="FormItemClass" prop="areaCode">
                   <Input placeholder="..." v-model="UseAreaInfo.areaCode" class="D212WriteInput"/>
                 </FormItem>
               </Col>
@@ -97,25 +97,28 @@
 </template>
 
 <script>
-  import {isIntegerNotMust} from '../../../js/validate'
+  import {notNull,isDecimalNotMust} from '../../../js/validate'
   import {CommonFunction, ArchRequestConfig} from '../../../js/global'
 
   export default {
     name: "UseAreaInfo",
-    props: ['isUpdate'],
+    props: ['D212SpecParams'],
     data() {
       return {
         loading: false,
         rules: {
+          areaCode: [
+            {validator: notNull, trigger: 'blur'}
+          ],
           typeArea: [
-            {validator: isIntegerNotMust, trigger: 'blur'}
+            {validator: isDecimalNotMust, trigger: 'blur'}
           ]
         },
         //档案分类
-        archType: this.$route.params.archType,
+        archType: this.D212SpecParams.archType,
         //保存数据
         UseAreaInfoData: [],
-        archId: this.$route.params.archId,
+        archId: this.D212SpecParams.archId,
         tableData: [],
         tempData: [],
         UpdateAddData: [],
@@ -158,9 +161,9 @@
     },
     methods: {
       loadUAI(data) {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/profETC/getUseAreaInfo', {params: {archId: this.archId, ArchInfo: data}}).then(
-            res => {
+        if (this.D212SpecParams.isUpdate === true) {
+          this.axios.get('/api/profETC/getUseAreaInfo', {params: {archId: this.D212SpecParams.archId, ArchInfo: data}})
+            .then(res => {
               this.tableData = res.data.data
             })
         }
@@ -187,7 +190,8 @@
       },
       cancleUpdate() {
         this.$refs.updateForm.resetFields();
-        this.tempData = []
+        this.tempData = [];
+        this.$refs.UseATable.selectAll(false)
       },
       UpdateUAIData() {
         let temp = {
@@ -270,17 +274,18 @@
         })
       },
       updatePMI() {
-        this.axios.post('/api/profETC/add' + this.archType + 'UseAreaInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
-          this.UpdateAddData = []
-          //todo,有错报错，没错提示并跳转
-        });
-        this.axios.post('/api/profETC/delete' + this.archType + 'UseAreaInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig).then(res => {
-          this.UpdateDeleteData = []
-          //todo,有错报错，没错提示并跳转
-        })
+        this.axios.all([
+          this.axios.post('/api/profETC/add' + this.archType + 'UseAreaInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
+          this.axios.post('/api/profETC/delete' + this.archType + 'UseAreaInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
+          .then(this.axios.spread((res1, res2) => {
+            this.UpdateAddData = [];
+            this.UpdateDeleteData = [];
+            //todo,有错报错，没错提示并跳转
+            this.loadUAI(this.D212SpecParams.archType)
+          }))
       },
       updateRowData(row, index) {
-        if (this.isUpdate === true) {
+        if (this.D212SpecParams.isUpdate === true) {
           let temp = {
             id: null,
             archId: '',
@@ -314,12 +319,12 @@
         temp.areaNature = this.UseAreaInfo.areaNature;
         temp.areaCode = this.UseAreaInfo.areaCode;
         temp.typeArea = this.UseAreaInfo.typeArea;
-        this.$refs.updateForm.validate((valid) => {
+        this.$refs.addForm.validate((valid) => {
           if (valid) {
             if (!CommonFunction.isEmpty(temp.areaNature) ||
               !CommonFunction.isEmpty(temp.areaCode) ||
               !CommonFunction.isEmpty(temp.typeArea)) {
-              if (this.isUpdate === true) {
+              if (this.D212SpecParams.isUpdate === true) {
                 this.UpdateAddData.unshift(temp);
                 this.tableData.unshift(temp)
               }
@@ -334,7 +339,7 @@
               this.formReset()
             }
             else {
-              this.AddModal = false
+              // this.AddModal = false
             }
           }
           else {
@@ -383,7 +388,7 @@
               }
             }
           }
-          if (this.isUpdate !== true) {
+          if (this.D212SpecParams.isUpdate !== true) {
             this.$emit('saveUseAreaInfoData', this.tableData);
           }
           this.tempData = []
@@ -419,22 +424,24 @@
       }
     },
     mounted() {
-      this.loadUAI(this.archType)
+      this.loadUAI(this.D212SpecParams.archType)
     }
   }
 </script>
 
 <style scoped>
-  .D212WriteInput{
+  .D212WriteInput {
     width: 280px;
     float: right;
   }
+
   /*如果位置有变，错误的显示信息需要改变大小*/
   .FormItemClass >>> .ivu-form-item-error-tip {
     padding-top: 35px !important;
   }
+
   /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
+  .TableFontCss >>> .ivu-table {
     font-size: 14px;
   }
 </style>

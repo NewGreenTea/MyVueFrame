@@ -99,14 +99,14 @@
 
   export default {
     name: "D34",
-    props: ['isUpdate'],
+    props: ['specViewParams'],
     data() {
       return {
         labelWidth: 100,
-        archId: this.$route.params.archId,
+        archId: this.specViewParams.archId,
         D34Info: {
           id: null,
-          archId: this.$route.params.archId, // 读取出来
+          archId: this.specViewParams.archId, // 读取出来
           overheadPipeStart: '',
           overheadPipeType: '',
           overheadPipeLength: '',
@@ -136,8 +136,8 @@
     },
     methods: {
       loadD34() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/profETC/getD34', {params: {archId: this.archId}}).then(
+        if (this.specViewParams.isUpdate === true) {
+          this.axios.get('/api/profETC/getD34', {params: {archId: this.specViewParams.archId}}).then(
             res => {
               this.D34Info = res.data.data
             }
@@ -163,9 +163,6 @@
             this.$Message.error('修改数据有误！')
           }
         })
-      },
-      goback() {
-        this.$router.go(-2);
       }
     },
     mounted() {
