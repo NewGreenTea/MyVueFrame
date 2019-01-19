@@ -8,20 +8,22 @@
               @file-success="fileSuccess"
               @file-error="fileError"
               @complete="finishUpload"
-              @fileComplete="onefinish"
               v-if="show">
       <uploader-unsupport></uploader-unsupport>
       <uploader-drop style="background: white">
-        <div style="margin: 10px 0px;padding:5px;border: 1px #c64e53 dashed;border-radius: 5px;">
+        <div style="margin: 10px 0px;padding:10px;border: 1px #c64e53 dashed;border-radius: 5px;">
+          <Checkbox v-model="ifIgnore" size="large" @on-change="checkboxChange">执行覆盖上传</Checkbox>
+        </div>
+        <div style="margin: 10px 0px;padding:10px;border: 1px #c64e53 dashed;border-radius: 5px;">
           <span>
             <Tooltip placement="right" max-width="200px" theme="light"  content="选择文件上传时，需要输入档号">
               <Icon type="ios-help-circle-outline" size="30"/>
             </Tooltip>
           </span>
           <uploader-btn :attrs="attrs" class="uploadbutton" @click="clickFileUpload">选择文件</uploader-btn>
-          <span>档号：<Input size="large" style="width: 300px;" placeholder="请输入需要替换文件的档号" v-model="archNoPage" @on-change="changeInputValue"/></span>
+          <span>档号：<Input size="large" style="width: 300px;" placeholder="请输入需要档号" v-model="archNoPage" @on-change="changeInputValue"/></span>
         </div>
-        <div style="padding: 5px;border: 1px #c64e53 dashed;">
+        <div style="padding: 10px;border: 1px #c64e53 dashed;border-radius: 5px;">
           <span>
             <Tooltip placement="right" max-width="200px" theme="light"  content="单次上传限制文件总大小为4000MB以下（单个文件大小不超过20MB）">
               <Icon type="ios-help-circle-outline" size="30"/>
@@ -61,7 +63,10 @@
       return {
         alldelete:false,
         archNoPage:'',
+        ifIgnore:false,
         errorList:[],
+        singleFile:true,
+        simultaneousUploads:1,
         options: {
           target: '/api/upload/vueUpload', // 请求的目标URL
           chunkSize: 1024 * 1024 * 50, // 每个上传的数据块的大小（以字节为单位）默认值：1*1024*1024
@@ -101,13 +106,23 @@
         }
         this.alldelete=true
       },
-      beforeUpload (file) { // 添加文件的时候，设置档号
+      beforeUpload (file) { // 添加文件的时候，设置档号，复选框为true添加覆盖上传标记
         const uploaderInstance = this.$refs.myupload.uploader;
         uploaderInstance.opts.query={archNo : this.archNoPage};
+        if(this.ifIgnore){
+          const uploaderInstance = this.$refs.myupload.uploader;
+          uploaderInstance.opts.query={archNo : this.archNoPage, ifIgnore : '1'};
+        }
       },
       changeInputValue(){   // 文本框改变的时候，设置档号
         const uploaderInstance = this.$refs.myupload.uploader;
         uploaderInstance.opts.query={archNo : this.archNoPage};
+      },
+      checkboxChange(){   // 复选框为true添加覆盖上传标记
+        if(this.ifIgnore){
+          const uploaderInstance = this.$refs.myupload.uploader;
+          uploaderInstance.opts.query={archNo : this.archNoPage, ifIgnore : '1'};
+        }
       },
       uploading (file) { // 上传中的事件
 
@@ -157,12 +172,10 @@
             }
           });
         }
+        this.ifIgnore=false;
         this.errorList=[];
         this.$refs.myupload.$children[2].$children=[];
       },
-      onefinish(){
-        alert("????")
-      }
 
     }
 
