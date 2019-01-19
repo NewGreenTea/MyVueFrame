@@ -2,15 +2,19 @@
   <div v-if="show">
     <Tabs :value="currentTab" type="card" closable @on-tab-remove="handleTabRemove" @on-click="tabclick">
       <TabPane :key="index" v-for="(tab, index) in tabsArray" :label="tab.desName" :name="tab.name">
-        <router-view :name="tab.name"></router-view>
+        <keep-alive>
+          <router-view :name="tab.name" v-if="$route.meta.keepAlive"></router-view>
+        </keep-alive>
       </TabPane>
     </Tabs>
   </div>
 </template>
 
 <script>
+import WriterGroup from "./organization/writerGroup";
 export default {
   name: 'testcontent',
+  components: {WriterGroup},
   props: ['tabsArray', 'currentTab'], // 打开的标签页组,默认标签页
   data () {
     return {

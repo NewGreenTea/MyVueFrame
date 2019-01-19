@@ -1,7 +1,7 @@
 <template>
     <div>
       <!-- 主布局 -->
-      <Layout name="mianWapper" style="height: 900px">
+      <Layout name="mianWapper">
         <!-- 侧边栏 -->
         <!-- 如果不常变更就固定成一个组件，不用router-view来显示（下同） -->
         <Sider style="max-width: 240px !important;flex-basis: 240px !important;background-color:white;" >
@@ -18,7 +18,7 @@
 
           <!-- 新布局3c -->
           <!-- 内容列表，经常会变更，使用router-view去变换 -->
-          <layout name="mianContent" style="">
+          <layout name="mianContent" style="overflow-scrolling: auto">
             <!--<Content style="background-color:silver">-->
             <Content style="background-color: white">
               <router-view name="tools"></router-view>
