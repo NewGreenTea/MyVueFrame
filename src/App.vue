@@ -5,23 +5,22 @@
 </template>
 
 <script>
-  export default {
-
-  }
+  export default {}
 </script>
 
-<style  lang="less">
+<style lang="less">
   .size {
     width: 100%;
     height: 100%;
   }
-  html,body{
-  .size;
-    overflow: hidden;
+
+  html, body {
+    .size;
     margin: 0;
     padding: 0;
   }
+
   #app {
-  .size;
+    .size;
   }
 </style>
