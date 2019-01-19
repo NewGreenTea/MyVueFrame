@@ -20,7 +20,7 @@
     <!--按钮-->
     <Row style="margin: 0px 0px 10px">
       <Col span="22" offset="1">
-        <Button v-on:click="doArchClassify()" size="large"  type="primary">档案组卷</Button>
+        <Button v-on:click="ifdoArchClassify()" size="large"  type="primary">档案组卷</Button>
       </Col>
     </Row>
 
@@ -42,6 +42,10 @@
               show-elevator show-total show-sizer/>
       </Col>
     </Row>
+    <!--隐藏窗口-->
+    <Modal v-model="qrcxzj" title="确认" @on-ok="cxzj">
+      <p>勾选中存在已完成组卷的档案，确认需要重新组卷吗？</p>
+    </Modal>
   </Row>
 </template>
 
@@ -51,6 +55,8 @@
     name: 'archData',
     data () {
       return {
+        qrzj:false,
+        qrcxzj:false,
         statusdata:8,
         statusList:[
           {
@@ -158,12 +164,33 @@
         this.writeLayout(this.currentPage, this.pageSize);
         this.tempData=[];
       },
-      //组卷
-      doArchClassify : function() {
+      cxzj(){
+        this.doArchClassify();
+      },
+      ifdoArchClassify(){
         if(this.tempData.length==0){
           this.$Message.warning("请选择需要操作的记录");
           return false;
         }
+        if(this.statusdata=='8'){
+          this.doArchClassify()
+        }else if(this.statusdata=='9'){
+          this.$Modal.confirm({
+            title: '确认',
+            content: '<p style="font-size: 15px">勾选中存在已完成组卷的档案</p><p style="font-size: 15px">确认需要重新组卷吗？</p>',
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => {
+              this.doArchClassify()
+            },
+            onCancel: () => {
+              return false;
+            }
+          });
+        }
+      },
+      //组卷
+      doArchClassify : function() {
         this.showing();
         this.axios.get('/api/arch/doArchClassify', {
           params: {

@@ -44,18 +44,10 @@
     </Col>
 
     <!--隐藏窗口-->
-    <Modal
-      v-model="checkmodal"
-      :title=archno
-      @on-ok="inputok"
-      @on-cancel="inputcancel">
+    <Modal v-model="checkmodal" :title=archno @on-ok="inputok" @on-cancel="inputcancel">
       <Input v-model="bzinput" type="textarea" :autosize="{minRows: 4,maxRows: 5}" placeholder="请输入备注信息..." />
     </Modal>
-    <Modal
-      v-model="checkmodals"
-      title="批量操作，质检不通过"
-      @on-ok="inputoks"
-      @on-cancel="inputcancels">
+    <Modal v-model="checkmodals" title="批量操作，质检不通过" @on-ok="inputoks" @on-cancel="inputcancels">
       <Input v-model="bzinput" type="textarea" :autosize="{minRows: 4,maxRows: 5}" placeholder="请输入备注信息..." />
     </Modal>
 
