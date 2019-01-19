@@ -58,7 +58,8 @@ import archPrint from '../components/archPrint'
 Vue.use(Router);
 
 export default new Router({
-  model: 'history',
+  mode: 'history',     //路由模式，如果是history，则在子路由下的路径（children的path）要加父路径上去，去掉url中的“#”
+                       //如果是hash（默认），子路由下的路径可以不添加父路径
   routes: [
     { // 测试页面
       path: '/test',
@@ -77,208 +78,227 @@ export default new Router({
       name: 'index',
       component: managerLayout,
       children: [{
-        path: 'viewcont',
+        path: '/index/viewcont',
         name: '',
         components: {
           index_side: myside,
           index_header: myheader,
           index_content: testcontent
         },
+        meta:{
+          keepAlive:true //需要被缓存的组件
+        },
         children: [
           {
-            path: 'dd',
+            path: '/index/viewcont/dd',
             name: 'A',
             components: {
               A: fileupload
             }
           },
           { // 测试echarts用 （可删）
-            path: 'echarts',
+            path: '/index/viewcont/echarts',
             name: 'echarts',
             components: {
               echarts: echarts
             }
           },
           { // 上传界面
-            path: 'upload',
+            path: '/index/viewcont/upload',
             name: 'fileupload',
             components: {
               fileupload: fileupload
-            }
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
+            },
           },
           { // 组卷界面
-            path: 'archClassify',
+            path: '/index/viewcont/archClassify',
             name: 'archClassify',
             components: {
               archClassify: archClassify
-            }
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
+            },
           },
           { // 扫描质检
-            path: 'archSmCheck',
+            path: '/index/viewcont/archSmCheck',
             name: 'archSmCheck',
             components: {
               archSmCheck: archSmCheck
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
             }
           },
           { // 档案打印
-            path: 'archPrint',
+            path: '/index/viewcont/archPrint',
             name: 'archPrint',
             components: {
               archPrint: archPrint
-            }
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
+            },
           },
-          { // 业务流程创建
-            path: 'flowCreated',
+          { // 业务流程创建(弃用，可删)
+            path: '/index/viewcont/flowCreated',
             name: 'flowCreated',
             components: {
               flowCreated: temp
             }
           },
-          { // 任务
-            path: 'Assignment',
+          { // 任务(弃用，可删)
+            path: '/index/viewcont/Assignment',
             name: 'Assignment',
             components: {
               Assignment: Assignment
             }
           },
           { // 导入清单
-            path: 'archAdmin',
+            path: '/index/viewcont/archAdmin',
             name: 'archAdmin',
             components: {
               archAdmin: archAdmin
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
             }
           },
           { // 分配
-            path: 'director',
+            path: '/index/viewcont/director',
             name: 'director',
             components: {
               director: director
-            }
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
+            },
           },
           { // 著录
-            path: 'writerGroup',
+            path: '/index/viewcont/writerGroup',
             name: 'writerGroup',
             components: {
               writerGroup: writerGroup
             },
+            meta:{
+              keepAlive:true //需要被缓存的组件
+            },
             children: [
               {
-                path: 'BaseInfo',
+                path: '/index/viewcont/writerGroup/BaseInfo',
                 name: 'BaseInfo',
                 components: {
                   BaseInfo: BaseInfo
+                },
+                meta:{
+                  keepAlive:true
                 }
               },
               {
-                path: 'ProfInfo',
+                path: '/index/viewcont/writerGroup/ProfInfo',
                 name: 'ProfInfo',
                 components: {
                   ProfInfo: ProfInfo
                 },
-                children: [
-                  {
-                    path: 'ProfCommon',
-                    name: 'ProfCommon',
-                    components: {
-                      BuildingAddress: BuildingAddress,
-                      AreaHisNo: AreaHisNo,
-                      MapInfo: MapInfo,
-                      ProjectNo: ProjectNo,
-                      C61: C61,
-                      C62: C62,
-                      C63: C63,
-                      D21: D21,
-                      D22: D22,
-                      D31: D31,
-                      D32: D32,
-                      D34: D34,
-                      D61: D61,
-                      D62: D62,
-                      D63: D63
-                    },
-                    children: [
-                      {
-                        path: 'ProfSpcCommon',
-                        name: 'ProfSpcCommon',
-                        components: {
-                          MeasureInfo: MeasureInfo,
-                          NumAreaInfo: D61NumAreaInfo,
-                          D61PubBuildInfo: D61PubBuildInfo,
-                          BuildProjInfo: BuildProjInfo,
-                          D31PubBuildInfo: D31PubBuildInfo,
-                          D21UseAreaInfo: UseAreaInfo,
-                          D22UseAreaInfo: UseAreaInfo
-                        }
-                      }
-                    ]
-                  }
-                ]
+                meta:{
+                  keepAlive:true //需要被缓存的组件
+                },
+                // children: [ //2019/01/19弃用，改为组件引用，不使用路由
+                //  ............
+                // ]
               },
               {
-                path: 'FileInfo',
+                path: '/index/viewcont/writerGroup/FileInfo',
                 name: 'FileInfo',
                 components: {
                   FileInfo: FileInfo
+                },
+                meta:{
+                  keepAlive:true //不需要被缓存的组件
                 }
               }
             ]
           },
           { // 著录质检
-            path: 'checkWrite',
+            path: '/index/viewcont/checkWrite',
             name: 'checkWrite',
             components: {
               checkWrite: checkWrite
             },
+            meta:{
+              keepAlive:true
+            },
             children: [
               {
-                path: 'CheckLayout',
+                path: '/index/viewcont/checkWrite/CheckLayout',
                 name: 'CheckLayout',
                 components: {
                   CheckLayout: CheckLayout
+                },
+                meta:{
+                  keepAlive:true //需要被缓存的组件
                 }
               }
             ]
           },
-          { // 档案业务数据管理
-            path: 'archManagement',
+          { // 档案业务数据管理(弃用，可删)
+            path: '/index/viewcont/archManagement',
             name: 'archManagement',
             components: {
               archManagement: archManagement
             }
           },
           {
-            path: 'userManagement',
+            path: '/index/viewcont/userManagement',
             name: 'userManagement',
             components: {
               userManagement: userManagement
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
             }
           },
           {
-            path: 'departmentManagement',
+            path: '/index/viewcont/departmentManagement',
             name: 'departmentManagement',
             components: {
               departmentManagement: departmentManagement
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
             }
           },
           {
-            path: 'postManagement',
+            path: '/index/viewcont/postManagement',
             name: 'postManagement',
             components: {
               postManagement: postManagement
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
             }
           },
           { // 档案业务数据管理
-            path: 'classtype',
+            path: '/index/viewcont/classtype',
             name: 'classtype',
             components: {
               classtype: classtype
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
             }
           },
           {//档案档号管理
-            path: 'archNoTool',
+            path: '/index/viewcont/archNoTool',
             name: 'archNoManagement',
             components: {
               archNoManagement: archTool
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
             }
           }
         ]
