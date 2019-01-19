@@ -231,18 +231,18 @@ export default new Router({
             meta:{
               keepAlive:true
             },
-            children: [
-              {
-                path: '/index/viewcont/checkWrite/CheckLayout',
-                name: 'CheckLayout',
-                components: {
-                  CheckLayout: CheckLayout
-                },
-                meta:{
-                  keepAlive:true //需要被缓存的组件
-                }
-              }
-            ]
+            // children: [
+            //   {
+            //     path: '/index/viewcont/checkWrite/CheckLayout',
+            //     name: 'CheckLayout',
+            //     components: {
+            //       CheckLayout: CheckLayout
+            //     },
+            //     meta:{
+            //       keepAlive:true //需要被缓存的组件
+            //     }
+            //   }
+            // ]
           },
           { // 档案业务数据管理(弃用，可删)
             path: '/index/viewcont/archManagement',

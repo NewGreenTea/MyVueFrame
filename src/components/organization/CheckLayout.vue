@@ -689,6 +689,7 @@
 
   export default {
     name: "CheckLayout",
+    props: ['checkParams'],
     data() {
       return {
         //基本
@@ -1089,8 +1090,8 @@
         this.resetData();
         this.axios.get('/api/Arch/ArchID', {
           params: {
-            'archId': this.$route.params.archId,
-            'classId': this.$route.params.classId
+            'archId': this.checkParams.archId,
+            'classId': this.checkParams.classId
           }
         })
           .then(res => {
@@ -1103,78 +1104,78 @@
             this.PPNtableData = res.data.data.list[0].projNoVO;
             this.tableData = res.data.data.list[0].fileInfoVO;
             //个性
-            if (this.$route.params.archType === 'C61') {
+            if (this.checkParams.archType === 'C61') {
               //同下 --2019/01/14
               if(res.data.data.list[0].c61SpecInfoVO !== null){
                 this.C61Info = res.data.data.list[0].c61SpecInfoVO;
               }else{
-                this.C61Info.archId = this.$route.params.archId
+                this.C61Info.archId = this.checkParams.archId
               }
             }
-            if (this.$route.params.archType === 'C62') {
+            if (this.checkParams.archType === 'C62') {
               //同下 --2019/01/14
               if(res.data.data.list[0].c62SpecInfoVO !== null){
                 this.C62Info = res.data.data.list[0].c62SpecInfoVO;
               }else{
-                this.C62Info.archId = this.$route.params.archId
+                this.C62Info.archId = this.checkParams.archId
               }
             }
-            if (this.$route.params.archType === 'C63') {
+            if (this.checkParams.archType === 'C63') {
               //同下 --2019/01/14
               if(res.data.data.list[0].c63SpecInfoVO !== null){
                 this.C63Info = res.data.data.list[0].c63SpecInfoVO;
               }else{
-                this.C63Info.archId = this.$route.params.archId
+                this.C63Info.archId = this.checkParams.archId
               }
             }
-            if (this.$route.params.archType === 'D21') {
+            if (this.checkParams.archType === 'D21') {
               this.showD212 = true;
               if(res.data.data.list[0].d21SpecInfoVO !== null){
                 this.D21Info = res.data.data.list[0].d21SpecInfoVO;
               }else{
-                this.D21Info.archId = this.$route.params.archId
+                this.D21Info.archId = this.checkParams.archId
               }
               this.UseAreaInfoData = res.data.data.list[0].d21UseAreaVO;
             }
-            if (this.$route.params.archType === 'D22') {
+            if (this.checkParams.archType === 'D22') {
               this.showD212 = true;
               //专业信息特性信息的archId不能为‘’（空字符串）  --2019/01/14
               if(res.data.data.list[0].d22SpecInfoVO !== null){
                 this.D22Info = res.data.data.list[0].d22SpecInfoVO;
               }else{
-                this.D22Info.archId = this.$route.params.archId
+                this.D22Info.archId = this.checkParams.archId
               }
               this.UseAreaInfoData = res.data.data.list[0].d22UseAreaVO;
             }
-            if (this.$route.params.archType === 'D31') {
+            if (this.checkParams.archType === 'D31') {
               this.showD31 = true;
               //专业信息特性信息的archId不能为‘’（空字符串）  --2019/01/14
               if(res.data.data.list[0].d31SpecInfoVO !== null){
                 this.D31Info = res.data.data.list[0].d31SpecInfoVO;
               }else{
-                this.D31Info.archId = this.$route.params.archId
+                this.D31Info.archId = this.checkParams.archId
               }
               this.D31BuildProjData = res.data.data.list[0].d31BuildProjInfoList;
               this.D31PubBuildData = res.data.data.list[0].d31PubBuildInfoList
             }
-            if (this.$route.params.archType === 'D32') {
+            if (this.checkParams.archType === 'D32') {
               this.D32Info = res.data.data.list[0].d32PlanInfoList;
             }
-            if (this.$route.params.archType === 'D34') {
+            if (this.checkParams.archType === 'D34') {
               this.D34Info = res.data.data.list[0].d34PlanInfoVO;
             }
-            if (this.$route.params.archType === 'D61') {
+            if (this.checkParams.archType === 'D61') {
               this.showD61 = true;
               this.showD6123 = true;
               this.PubBuildInfoData = res.data.data.list[0].d61PubBuildInfoList;
               this.NumAreaInfoData = res.data.data.list[0].d61NumAreaInfoList;
               this.MeasureInfoData = res.data.data.list[0].d61MeasureInfoList;
             }
-            if (this.$route.params.archType === 'D62') {
+            if (this.checkParams.archType === 'D62') {
               this.showD6123 = true;
               this.MeasureInfoData = res.data.data.list[0].d62MeasureInfoList;
             }
-            if (this.$route.params.archType === 'D63') {
+            if (this.checkParams.archType === 'D63') {
               this.showD6123 = true;
               this.D63Info = res.data.data.list[0].d63PipelineInfoVO;
               this.MeasureInfoData = res.data.data.list[0].d63MeasureInfoList;
@@ -1241,7 +1242,6 @@
       },
       //返回
       goBack() {
-        this.$router.go(-1);
         let type = {
           id: this.baseArch.classId,
           className: this.baseArch.archType

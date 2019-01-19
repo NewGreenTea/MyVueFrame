@@ -46,15 +46,19 @@
     <!-- 质检档案信息的路由界面 -->
     <div v-if="showWriteData">
       <keep-alive>
-      <router-view :name="viewName" @changeShowView="showView" v-if="$route.meta.keepAlive"></router-view>
+        <!--<router-view :name="viewName" @changeShowView="showView" v-if="$route.meta.keepAlive"></router-view>-->
+        <CheckLayout @changeShowView="showView" :checkParams="checkParam"></CheckLayout>
       </keep-alive>
     </div>
   </div>
 </template>
 
 <script>
+  import CheckLayout from "./CheckLayout";
+
   export default {
     name: "checkWrite",
+    components: {CheckLayout},
     data() {
       return {
         showTwoType: false, // 控制二级分类的显示
@@ -143,14 +147,11 @@
                           hidd: true
                         };
                         this.showWriteData = true;
-                        this.$router.push({
-                          name: this.viewName,
-                          params: {
-                            archId: params.row.archId, //传递一些重要参数给下一个界面
-                            classId: this.archTypeID,
-                            archType: writeVueLayout(params.row.archNo)
-                          }
-                        });
+                        this.checkParam = {
+                          archId: params.row.archId, //传递一些重要参数给下一个界面
+                          classId: this.archTypeID,
+                          archType: writeVueLayout(params.row.archNo)
+                        };
                       }
                     }
                   }, '查看')
@@ -166,18 +167,15 @@
           hidd: false
         }, // todo
         //
-        userID: ''
+        userID: '',
+        checkParam: ''
       }
     },
     methods: {
       //加载工作组负责的待质检档案数据
       loadGroupArch() {
-        if (this.userID === '') {
-          this.userID = window.localStorage.getItem('userid')
-        }
         this.axios.get('/api/loadArch/getGroupArch', {
           params: {
-            'userID': this.userID,
             'archStatue': 3,
             'page': this.needToDoPage,
             'pageSize': this.needToDoPageSize
@@ -240,12 +238,8 @@
       //切换页码
       destPage(index) {
         this.needToDoPage = index;
-        if (this.userID === '') {
-          this.userID = window.localStorage.getItem('userid')
-        }
         this.axios.get('/api/loadArch/getGroupArch', {
           params: {
-            'userID': this.userID,
             'page': this.needToDoPage,
             'pageSize': this.needToDoPageSize
           }
@@ -257,12 +251,8 @@
       //切换配置页
       changePageSize(index) {
         this.needToDoPageSize = index;
-        if (this.userID === '') {
-          this.userID = window.localStorage.getItem('userid')
-        }
         this.axios.get('/api/loadArch/getGroupArch', {
           params: {
-            'userID': this.userID,
             'page': this.needToDoPage,
             'pageSize': this.needToDoPageSize
           }
@@ -315,7 +305,7 @@
   }
 
   /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
+  .TableFontCss >>> .ivu-table {
     font-size: 14px;
   }
 </style>
