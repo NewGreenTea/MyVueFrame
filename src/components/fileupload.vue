@@ -62,11 +62,12 @@
     name: 'fileupload',
     data () {
       return {
+        uploadedFile:[],
         alldelete:false,
         archNoPage:'',
         ifIgnore:false,
         errorList:[],
-        singleFile:true,
+        // singleFile:true,
         simultaneousUploads:1,
         options: {
           target: '/api/upload/vueUpload', // 请求的目标URL
@@ -148,45 +149,56 @@
       },
       //单个文件上传成功
       fileSuccess(rootFile, file, message, chunk){
+        //判断当前已完成多少个文件
         if(rootFile.isFolder){
-          let filenum=file.parent.fileList.length;
-          let parentFile=file.parent.fileList
           let archno=file.parent.name;
-          for(let i=0;i<filenum;i++){
-            if(file.name==parentFile[i].name && i==parentFile.length-1){
-              let param = new URLSearchParams();
-              param.append('archno', archno);
-              axios({
-                method: 'post',
-                url: '/api/upload/deleteUploadCache',
-                data: param
-              }).then(res=>{
-
-              })
+          let filenum=file.parent.fileList.length;
+          let uploadedNum=0;
+          this.uploadedFile.push(archno);
+          for (let i=0;i<this.uploadedFile.length;i++){
+            if(this.uploadedFile[i]==archno){
+              uploadedNum++;
             }
+          }
+          if( uploadedNum == filenum || uploadedNum > filenum ){
+            let param = new URLSearchParams();
+            param.append('archno', archno);
+            axios({
+              method: 'post',
+              url: '/api/upload/deleteUploadCache',
+              data: param
+            }).then(res=>{
+
+            })
           }
         }
       },
       //单个文件上传失败
       fileError(rootFile, file, message, chunk){
+        //记录上传失败的信息
         let resmsg=JSON.parse(chunk.xhr.response).msg;
         this.errorList.push(resmsg);
-        if(rootFile.isFolder){
-          let filenum=file.parent.fileList.length;
-          let parentFile=file.parent.fileList
-          let archno=file.parent.name;
-          for(let i=0;i<filenum;i++){
-            if(file.name==parentFile[i].name && i==parentFile.length-1){
-              let param = new URLSearchParams();
-              param.append('archno', archno);
-              axios({
-                method: 'post',
-                url: '/api/upload/deleteUploadCache',
-                data: param
-              }).then(res=>{
-
-              })
+        //判断当前已完成多少个文件
+        if(rootFile.isFolder) {
+          let archno = file.parent.name;
+          let filenum = file.parent.fileList.length;
+          let uploadedNum = 0;
+          this.uploadedFile.push(archno);
+          for (let i = 0; i < this.uploadedFile.length; i++) {
+            if (this.uploadedFile[i] == archno) {
+              uploadedNum++;
             }
+          }
+          if (uploadedNum == filenum || uploadedNum > filenum) {
+            let param = new URLSearchParams();
+            param.append('archno', archno);
+            axios({
+              method: 'post',
+              url: '/api/upload/deleteUploadCache',
+              data: param
+            }).then(res => {
+
+            })
           }
         }
       },
@@ -196,10 +208,16 @@
       finishUpload(){
         /*显示错误信息*/
         if(this.errorList.length>0){
+          let showError = [];
+          for(let i = 0; i < this.errorList.length; i++){
+            if (showError.indexOf(this.errorList[i]) == -1){
+              showError.push(this.errorList[i]);
+            }
+          }
           let errorList='共计：'+this.errorList.length+' 份文件上传失败'+'\n';
           errorList+='失败原因如下：'+'\n';
-          for (let i=0;i<this.errorList.length;i++){
-            errorList+=(i+1)+'.'+this.errorList[i]+'\n'
+          for (let i=0;i<showError.length;i++){
+            errorList+=(i+1)+'.'+showError[i]+'\n'
           }
           this.$Notice.open({
             title: '上传失败信息汇总   '+dateFormate(new Date()),
@@ -210,6 +228,8 @@
             }
           });
         }
+        /*重置数据*/
+        this.uploadedFile=[];
         this.ifIgnore=false;
         this.errorList=[];
         this.$refs.myupload.$children[2].$children=[];
