@@ -68,14 +68,14 @@
         ifIgnore:false,
         errorList:[],
         // singleFile:true,
-        simultaneousUploads:1,
         options: {
           target: '/api/upload/vueUpload', // 请求的目标URL
           chunkSize: 1024 * 1024 * 50, // 每个上传的数据块的大小（以字节为单位）默认值：1*1024*1024
           query:'',
           forceChunkSize: false, // 是否强制每块大小小于chunkSize（规定大小）
           autoStart: false, // 是否是自动上传（默认true）
-          testChunks: false
+          testChunks: false,
+          simultaneousUploads:1
         },
         attrs: {
           accept: 'image/*'
