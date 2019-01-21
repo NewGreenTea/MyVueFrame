@@ -18,14 +18,14 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal v-model="AddModal" draggable :closable="false" title="添加地图型号" @on-ok="addMInfoData">
+    <Modal v-model="AddModal" draggable :mask-closable="false" title="添加地图型号" @on-ok="addMInfoData">
       <Form v-model="mapInfo">
         <FormItem label="地图型号">
           <Input placeholder="..." v-model="mapInfo.mapNo" class="writeInput"/>
         </FormItem>
       </Form>
     </Modal>
-    <Modal v-model="UpdateModal" draggable :closable="false" title="修改地图型号" @on-ok="updateMInfoData"
+    <Modal v-model="UpdateModal" draggable :mask-closable="false" title="修改地图型号" @on-ok="updateMInfoData"
            @on-cancel="cancleUpdate">
       <Form v-model="mapInfo">
         <FormItem label="地图型号">

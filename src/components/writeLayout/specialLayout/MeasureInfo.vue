@@ -18,7 +18,7 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal width="1000px" v-model="AddModal" draggable :closable="false" title="添加记录册编号"
+    <Modal width="1000px" v-model="AddModal" draggable :mask-closable="false" title="添加记录册编号"
            @on-ok="add61MIData" @on-cancel="addcancle">
       <Form class="formClass" :model="MeasureInfo">
         <FormItem class="FormItemClass" label="记录册编号">
@@ -26,7 +26,7 @@
         </FormItem>
       </Form>
     </Modal>
-    <Modal width="1000px" v-model="UpdateModal" draggable :closable="false" title="修改记录册编号"
+    <Modal width="1000px" v-model="UpdateModal" draggable :mask-closable="false" title="修改记录册编号"
            @on-ok="update61MIData" @on-cancel="cancleUpdate">
       <Form class="formClass" :model="MeasureInfo">
         <FormItem class="FormItemClass" label="记录册编号">

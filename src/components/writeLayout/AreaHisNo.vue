@@ -18,7 +18,7 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal v-model="AddModal" :loading="loading" draggable :closable="false" title="添加局历史审批文件编号"
+    <Modal v-model="AddModal" :loading="loading" draggable :mask-closable="false" title="添加局历史审批文件编号"
            @on-ok="addAHNoData" @on-cancel="addcancel" width="800px">
       <Form :model="areaHisNoInfo" :rules="rules" ref="addForm">
         <Row>
@@ -52,7 +52,7 @@
         </Row>
       </Form>
     </Modal>
-    <Modal v-model="UpdateModal" :loading="loading" draggable :closable="false" title="修改局历史审批文件编号"
+    <Modal v-model="UpdateModal" :loading="loading" draggable :mask-closable="false" title="修改局历史审批文件编号"
            @on-ok="updateAHNoData" @on-cancel="cancleUpdate" width="800px">
       <Form :model="areaHisNoInfo" ref="updateForm" :rules="rules">
         <Row>
