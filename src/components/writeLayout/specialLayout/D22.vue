@@ -71,7 +71,7 @@
     },
     methods: {
       loadD22() {
-        if (this.isUpdate === true) {
+        if (this.specViewParams.isUpdate === true) {
           this.axios.get('/api/profETC/getD22', {params: {archId: this.archId}}).then(
             res => {
               this.D22Info = res.data.data
