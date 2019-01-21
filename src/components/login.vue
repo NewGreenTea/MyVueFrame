@@ -86,11 +86,12 @@
                   this.$store.dispatch('SetUserID', res.data.data.id); // 在前端记录登录者的用户ID
                   this.$store.dispatch('SetUserName', this.formInline.user); // 在前端保持登录者的用户名
                 });
-
                 this.$router.push('/index/viewcont')
               } else {
-                alert(res.data.msg)
+                this.$Message.success(res.data.msg)
               }
+            }).catch(err =>{
+              this.$Message.error('请求超时！')
             })
           } else {
             this.$Message.error('格式错误!')
