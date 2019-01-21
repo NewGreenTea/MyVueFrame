@@ -46,7 +46,7 @@
         this.$emit('RealSave');
       },
       updateArch() {
-        this.axios.post('/api/profETC/updateC62', this.C62Info, ArchRequestConfig);
+        this.axios.post('/api/profETC/updateC62', this.C62Info, ArchRequestConfig); //todo 最好有一个错误铺抓和提示
         this.$emit('RealUpdate');
       }
     },

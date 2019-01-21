@@ -11,15 +11,15 @@
         <!--专业信息必有的两个著录项-->
         <Row>
           <Col span="20" offset="1">
-            <Form class="formClass" :model="profArch" :label-width="labelWidth">
+            <Form class="formClass" :model="profArch" :label-width="labelWidth" :rules="rules" ref="profForm">
               <Row :gutter="16">
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="建设单位">
+                  <FormItem class="FormItemClass" label="建设单位" prop="buildCompany">
                     <Input placeholder="..." v-model="profArch.buildCompany" class="writeInput"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="建设项目">
+                  <FormItem class="FormItemClass" label="建设项目" prop="buildProject">
                     <Input placeholder="..." v-model="profArch.buildProject" class="writeInput"/>
                   </FormItem>
                 </Col>
@@ -166,8 +166,8 @@
 </template>
 
 <script>
-  import {isIntegerNotMust} from '../../js/validate'
-  import {CommonFunction,ArchRequestConfig} from '../../js/global'
+  import {isIntegerNotMust, notNull} from '../../js/validate'
+  import {CommonFunction, ArchRequestConfig} from '../../js/global'
   import ProjectNo from "./ProjectNo";
   import AreaHisNo from "./AreaHisNo";
   import MapInfo from "./MapInfo";
@@ -234,7 +234,16 @@
         //控制显示
         showMapInfo: false,
         showAreaHisNo: false,
-        showProjectNo: false
+        showProjectNo: false,
+        //专业信息基本信息校验规则
+        rules: {
+          buildCompany: [
+            {validator: notNull, trigger: 'blur'}
+          ],
+          buildProject: [
+            {validator: notNull, trigger: 'blur'}
+          ]
+        }
       }
     },
     methods: {
@@ -279,40 +288,42 @@
       },
       // 保存档案信息
       realSave() { // 特性档案的著录专业信息存储方法
-        if (!CommonFunction.isEmpty(this.profArch.buildCompany) || !CommonFunction.isEmpty(this.profArch.buildProject)) {
-          this.axios.post('/api/profInfo/addProfInfo', this.profArch, {
-            //判断字段是否为null，是则转为空字符串
-            transformRequest: [function (data) {
-              return CommonFunction.dataIsNull(data)
-            }]
-          });
-        }
-        if (!CommonFunction.isEmpty(this.buildingAddressInfo.area) || !CommonFunction.isEmpty(this.buildingAddressInfo.road)
-          || !CommonFunction.isEmpty(this.buildingAddressInfo.street)) {
-          this.axios.post('/api/profInfo/addBuildAddress', this.buildingAddressInfo, {
-            //判断字段是否为null，是则转为空字符串
-            transformRequest: [function (data) {
-              return CommonFunction.dataIsNull(data)
-            }]
-          });
-        }
-        if (this.mapInfoData !== []) {
-          this.axios.post('/api/profInfo/addMapInfo', JSON.stringify(this.mapInfoData), ArchRequestConfig);
-        }
-        if (this.areaHisNoData !== []) {
-          this.axios.post('/api/profInfo/addAreaHisNo', JSON.stringify(this.areaHisNoData), ArchRequestConfig);
-        }
-        if (this.projectNoData !== []) {
-          this.axios.post('/api/profInfo/addProjectNo', JSON.stringify(this.projectNoData), ArchRequestConfig);
-        }
-        this.$Message.success('保存成功！');
-        this.$emit('changeShowView')
+        this.$refs.profForm.validate((valid) => {
+          if (valid) {
+            this.axios.post('/api/profInfo/addProfInfo', this.profArch, {
+              //判断字段是否为null，是则转为空字符串
+              transformRequest: [function (data) {
+                return CommonFunction.dataIsNull(data)
+              }]
+            });
+
+            this.axios.post('/api/profInfo/addBuildAddress', this.buildingAddressInfo, ArchRequestConfig);
+
+            if (this.mapInfoData !== []) {
+              this.axios.post('/api/profInfo/addMapInfo', JSON.stringify(this.mapInfoData), ArchRequestConfig);
+            }
+            if (this.areaHisNoData !== []) {
+              this.axios.post('/api/profInfo/addAreaHisNo', JSON.stringify(this.areaHisNoData), ArchRequestConfig);
+            }
+            if (this.projectNoData !== []) {
+              this.axios.post('/api/profInfo/addProjectNo', JSON.stringify(this.projectNoData), ArchRequestConfig);
+            }
+            this.$Message.success('保存成功！');
+            this.$emit('changeShowView')
+          } else {
+            this.$Message.error('著录信息有误！');
+          }
+        })
       },
       saveArch() { // 无特性档案的著录专业信息存储方法
-        console.log(this.$refs.specialView)
         // 判断档案有无特性著录项
         if (this.$refs.specialView !== null && this.$refs.specialView !== undefined) {
-          this.$refs.specialView.saveArch();  //即调用realSave方法,但是里面包含个性信息保存操作
+          this.$refs.profForm.validate((valid) => {
+              if (valid) {
+                this.$refs.specialView.saveArch();  //即调用realSave方法,但是里面包含个性信息保存操作
+              }else{
+                this.$Message.error('著录信息有误！');
+              }})
         }
         else {
           this.realSave()
@@ -320,7 +331,7 @@
       },
       // 更新档案信息
       realUpdate() {
-        this.axios.all([this.axiosSaveProfInfo(), this.axiosSaveBuildingAddress(),    //专业信息基本和建设地址信息
+        this.axios.all([this.axiosUpdateProfInfo(), this.axiosUpdateBuildingAddress(),    //专业信息基本和建设地址信息
           this.$refs.PMI.updatePMI(), this.$refs.PAHN.updatePAHN(), this.$refs.PPN.updatePPN()])    //子组件的数据更新方法
           .then(this.axios.spread((res1, res2, res3, res4, res5) => {
             this.$Message.info('修改完毕！')
@@ -352,7 +363,7 @@
       savePND(data) {
         this.projectNoData = data
       },
-      axiosSaveProfInfo() {
+      axiosUpdateProfInfo() {
         this.axios.post('/api/profInfo/updateProfInfo', this.profArch, {
           //判断字段是否为null，是则转为空字符串
           transformRequest: [function (data) {
@@ -360,14 +371,9 @@
           }]
         })
       },
-      axiosSaveBuildingAddress() {
+      axiosUpdateBuildingAddress() {
         //项目地点更新
-        this.axios.post('/api/profInfo/updateBuildAddress', this.buildingAddressInfo, {
-          //判断字段是否为null，是则转为空字符串
-          transformRequest: [function (data) {
-            return CommonFunction.dataIsNull(data)
-          }]
-        })
+        this.axios.post('/api/profInfo/updateBuildAddress', this.buildingAddressInfo, ArchRequestConfig)
       }
     },
     mounted() {

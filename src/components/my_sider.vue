@@ -1,9 +1,9 @@
 <template>
   <div style="width: 240px;">
-    <Menu active-name="1-1" :accordion="menuAccordion">
-      <Submenu name="1">
+    <Menu active-name="1-1" :accordion="menuAccordion" class="sideClass">
+      <Submenu name="1" >
         <template slot="title">
-          <Icon type="ios-analytics"/>
+          <Icon type="ios-analytics" size="16px"/>
           档案整理
         </template>
         <MenuItem name="1-1">
@@ -16,13 +16,13 @@
           <router-link to="/index/viewcont/writerGroup"><p @click="writerLauout">著录</p></router-link>
         </MenuItem>
         <MenuItem name="1-4">
-          <router-link to="/index/viewcont/checkWrite"><p @click="checkWriter">著录质检</p></router-link>
+          <router-link to="/index/viewcont/checkWrite"><p @click="checkWriter" >著录质检</p></router-link>
         </MenuItem>
         <MenuItem name="1-5">
-          <router-link to="/index/viewcont/archSmCheck"><p @click="smcheckLauout">扫描质检</p></router-link>
+          <router-link to="/index/viewcont/archSmCheck"><p @click="smcheckLauout" >扫描质检</p></router-link>
         </MenuItem>
         <MenuItem name="1-6">
-          <router-link to="/index/viewcont/upload"><p @click="fileuploadLauout">上传</p></router-link>
+          <router-link to="/index/viewcont/upload"><p @click="fileuploadLauout" >上传</p></router-link>
         </MenuItem>
         <MenuItem name="1-7">
           <router-link to="/index/viewcont/archClassify"><p @click="archClassifyLauout">档案组卷</p></router-link>
@@ -33,7 +33,7 @@
       </Submenu>
       <Submenu name="2">
         <template slot="title">
-          <Icon type="ios-filing"/>
+          <Icon type="ios-filing" size="16px"/>
           借阅管理
         </template>
         <MenuItem name="2-1">待完善</MenuItem>
@@ -50,7 +50,7 @@
       </Submenu>
       <Submenu name="4">
         <template slot="title">
-          <Icon type="ios-cog"/>
+          <Icon type="ios-cog" size="20px"/>
           系统管理
         </template>
         <MenuItem name="4-1">
@@ -70,7 +70,7 @@
       </Submenu>
       <Submenu name="5">
         <template slot="title">
-          <Icon type="ios-cog"/>
+          <Icon type="ios-cog" size="16px"/>
           测试专用
         </template>
         <MenuItem name="5-1">
@@ -83,7 +83,8 @@
           <Cascader :data="data" @on-change="handleChange" trigger="hover">源数据管理</Cascader>
         </MenuItem>
         <MenuItem name="5-4">
-          <router-link to="/index/viewcont/archManagement"><p @click="ArchManagerLauout">档案管理</p></router-link>
+          <!--<p @click="ArchManagerLauout">档案管理</p>-->
+          <router-link to="/index/viewcont/archManagement"><p>档案管理</p></router-link>
         </MenuItem>
         <MenuItem name="5-5">
           <router-link to="/index/viewcont"><p @click="ArchTypeLauout">档案类型</p></router-link>
@@ -91,7 +92,6 @@
         <MenuItem name="5-6">
           <router-link to="/index/viewcont/echarts"><p @click="testEcharts">测试ECHARTS</p></router-link>
         </MenuItem>
-        <MenuItem name="5-6"><a href="/api/getVO">测试VO</a></MenuItem>
       </Submenu>
     </Menu>
   </div>
@@ -309,5 +309,8 @@
 </script>
 
 <style scoped>
-
+  .sideClass >>> .ivu-menu-submenu-title{
+    font-size: 16px !important;
+    font-weight: 500;
+  }
 </style>

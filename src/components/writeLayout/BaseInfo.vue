@@ -251,7 +251,7 @@
               this.goBack()
             })
           } else {
-            this.$Message.error('Fail!');
+            this.$Message.error('著录信息有误！');
           }
         })
       },
