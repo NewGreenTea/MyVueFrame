@@ -493,7 +493,8 @@
         ).then(res => {
           this.UpdateAddData = [];
           this.UpdateDeleteData = [];
-          this.loadFileArch()
+          this.loadFileArch();
+          this.$Message.info('修改完成!')
         });
       },
       //点击显示添加弹窗
@@ -504,7 +505,7 @@
         }else if(Object.keys(this.tempData).length === 1){
           this.fileArch.fileIndex = this.tempData[0].fileIndex + 1;
           this.AddModal = true;
-        }else{
+        }else{ //直接按“+”号，新建一个最末尾的文件信息
           this.fileArch.fileIndex = this.addFileIndex;
           this.AddModal = true;
         }
