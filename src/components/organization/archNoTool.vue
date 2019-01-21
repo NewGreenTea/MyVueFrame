@@ -60,7 +60,7 @@
     </Row>
 
     <!-- 添加或修改档案档号设置视图 -->
-    <Modal v-model="addModal" title="添加档号设置" :loading="loading" draggable :closable="false" width="800"
+    <Modal v-model="addModal" title="添加档号设置" :loading="loading" draggable :mask-closable="false" width="800"
            @on-ok="saveArchNo" @on-cancel="cancleAdd">
       <Row>
         <Col>
@@ -121,7 +121,7 @@
       </Row>
     </Modal>
 
-    <Modal v-model="updateModal" title="修改档号设置" :loading="loading" draggable :closable="false" width="800"
+    <Modal v-model="updateModal" title="修改档号设置" :loading="loading" draggable :mask-closable="false" width="800"
            @on-ok="updateArchNo" @on-cancel="cancleUpdate">
       <Row>
         <Col>

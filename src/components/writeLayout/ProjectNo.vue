@@ -18,7 +18,7 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal v-model="AddModal" :loading="loading" draggable :closable="false" title="添加建设工程规划许可证号"
+    <Modal v-model="AddModal" :loading="loading" draggable :mask-closable="false" title="添加建设工程规划许可证号"
            @on-ok="addPNoData" @on-cancel="addcancle" width="800px">
       <Form :model="projectNoInfo" ref="addForm" :rules="rules">
         <Row>
@@ -53,7 +53,7 @@
       </Form>
     </Modal>
 
-    <Modal v-model="UpdateModal" :loading="loading" draggable :closable="false" title="修改建设工程规划许可证号"
+    <Modal v-model="UpdateModal" :loading="loading" draggable :mask-closable="false" title="修改建设工程规划许可证号"
            @on-ok="updatePNoData" @on-cancel="cancleUpdate" width="800px">
       <Form :model="projectNoInfo" ref="updateForm" :rules="rules">
         <Row>
