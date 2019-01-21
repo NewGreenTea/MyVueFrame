@@ -5,6 +5,7 @@
         <keep-alive>
           <router-view :name="tab.name" v-if="$route.meta.keepAlive"></router-view>
         </keep-alive>
+        <router-view :name="tab.name" v-if="!$route.meta.keepAlive"></router-view>
       </TabPane>
     </Tabs>
   </div>
