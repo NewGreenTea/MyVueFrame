@@ -210,7 +210,7 @@
       return {
         labelWidth: 100,
         loading: true,
-        tableHeight: '500px',
+        tableHeight: '500',
         columns: [
           {
             type: 'selection',
