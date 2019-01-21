@@ -493,7 +493,8 @@
         ).then(res => {
           this.UpdateAddData = [];
           this.UpdateDeleteData = [];
-          this.loadFileArch()
+          this.loadFileArch();
+          this.$Message.info('修改完成!')
         });
       },
       //点击显示添加弹窗
