@@ -187,6 +187,8 @@
               return false;
             }
           });
+        }else {
+          this.$Message.warning("当前的筛选档案状态不能进行档案组卷！");
         }
       },
       //组卷
