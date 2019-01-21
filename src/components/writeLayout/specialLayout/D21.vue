@@ -71,8 +71,8 @@
     },
     methods: {
       loadD21() {
-        if (this.isUpdate === true) {
-          this.axios.get('/api/profETC/getD21', {params: {archId: this.archId}}).then(
+        if (this.specViewParams.isUpdate === true) {
+          this.axios.get('/api/profETC/getD21', {params: {archId: this.specViewParams.archId}}).then(
             res => {
               this.D21Info = res.data.data
             }
