@@ -6,17 +6,16 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/api' : {  // 本项目的所有请求url含有“/api”，进行匹配
-        target: 'http://192.168.13.78:8081',  // 接口的IP
+        target: 'http://127.0.0.1:8081',  // 接口的IP
         // secure : false,  //如果是https接口，需要配置这个参数
         changeOrigin : true,  // 如果请求接口跨域，需要配置
         pathRewrite : {  // 如果接口没有/api，可以重写路径
-          '^/api' : '/'  // 变为"/"，本项目的请求含有/api变为/，例如/api/upload变为/upload
+          '^/api' : '/api'  // 变为"/"，本项目的请求含有/api变为/，例如/api/upload变为/upload
         }
       }
     },
@@ -51,8 +50,10 @@ module.exports = {
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsSubDirectory: 'static',   //路由模式为history，打包使用
+    assetsPublicPath: '/',        //路由模式为history，打包使用
+    // assetsSubDirectory: './static',  //路由模式为hash（默认），打包使用时修改为“./static”
+    // assetsPublicPath: './',     //路由模式为hash（默认），打包使用时修改为“./”
 
     /**
      * Source Maps

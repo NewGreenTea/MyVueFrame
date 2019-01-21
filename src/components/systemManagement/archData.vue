@@ -1,8 +1,9 @@
 <template>
-  <Row>
+  <Row class="WriteLayoutFont">
     <!-- 筛选条件表格 -->
-    <Col span="24">
-      <Form><!-- 搜索条件表单 -->
+    <Col span="22" offset="1">
+      <!-- 搜索条件表单 -->
+      <Form>
         <Row type="flex"><!-- 搜索条件表单：第一行 -->
           <Col span="2">
             <FormItem>
@@ -89,11 +90,11 @@
       </Form>
     </Col>
     <!-- 加载档案数据表格 -->
-    <Col span="24">
+    <Col span="22" offset="1">
       <Table ref="table" border :columns="WAColumn" :data="WriterArchData"
              v-if="WriterArchData != null"></Table>
-      <Page :total="archDataCount" :page-size="pageSize" show-elevator show-total show-sizer @on-change="destPage"
-            @on-page-size-change="changePage" :page-size-opts="pso"/>
+      <Page :total="archDataCount" :page-size="pageSize" show-elevator show-total show-sizer
+            @on-change="destPage" @on-page-size-change="changePage" :page-size-opts="pso"/>
     </Col>
   </Row>
 </template>
@@ -115,7 +116,7 @@ export default {
       showDateNum: 0, // 多类型日期显示控制参数
       WriterArchData: [], // 档案数据临时集合
       archDataCount: 0, // 分页数据总条数
-      pageSize: 0, // 当前是第几分页
+      pageSize: 10, // 当前是第几分页
       pso: [10, 20, 30, 50, 100], // 分页显示条数
       // 档案业务数据
       WAColumn: [
