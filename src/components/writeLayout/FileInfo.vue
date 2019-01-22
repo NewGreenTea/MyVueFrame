@@ -20,10 +20,14 @@
         </Row>
         <Row>
           <Col class="TableFontCss">
-            <Table border :columns="columns" :data="tableData" :height="tableHeight"
+            <Table border :columns="columns" :data="tableData" :height="tableHeight" ref="fileTable"
                    @on-row-dblclick="updateRowData"
                    @on-select-all="selectAllData" @on-select="selectData"
                    @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
+            <Spin fix v-if="spinShow">
+              <Icon type="ios-loading" size=36 class="demo-spin-icon-load"></Icon>
+              <div>加载中</div>
+            </Spin>
           </Col>
         </Row>
       </Col>
@@ -311,16 +315,20 @@
           classId: this.FileParams.archTypeID
         },
         AddModal: false,
-        UpdateModal: false
+        UpdateModal: false,
+        //加载条动画
+        spinShow: false
       }
     },
     methods: {
       //修改时加载文件级信息
       loadFileArch() {
+        this.spinShow = true;
         this.axios.get('/api/loadArch/getArchInfo', {params: {archId: this.archId, ArchInfo: 'FileInfo'}}).then(
           res => {
             this.tableData = res.data.data;
             this.addFileIndex = this.tableData.length + 1;
+            this.spinShow = false;
           }
         )
       },
@@ -352,15 +360,18 @@
           if (valid) {
             if (this.operation === false) { //判断是否在修改著录还是新建著录
               this.UpdateAddData.push(temp);
+              this.spinShow = true;
               this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig)
                 .then(res => {
                   if(res.data.code === 0){
                     this.$Message.success('添加成功！');
+                    this.$refs.addForm.resetFields();
                     this.loadFileArch();
                     this.addFileIndex +=1;
                   }else{
                     this.$Message.error('添加失败！');
                   }
+                  this.spinShow = false;
                 });
             }
             else {
@@ -370,6 +381,7 @@
                 .then(res => {
                   if(res.data.code === 0){
                     this.$Message.success('添加成功！');
+                    this.$refs.addForm.resetFields();
                     this.loadFileArch();
                     this.addFileIndex +=1;
                   }else{
@@ -446,6 +458,7 @@
             if (check === true) {
               let data = [];
               data.push(temp);
+              this.spinShow = true;
               this.axios.post('/api/fileInfo/update', JSON.stringify(data), ArchRequestConfig).then(res => {
                   this.axios.get('/api/loadArch/getArchInfo', {params: {archId: this.archId, ArchInfo: 'FileInfo'}})
                     .then(res => {
@@ -466,6 +479,7 @@
                       for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
                         this.tableData.unshift(this.UpdateAddData[i])
                       }
+                      this.spinShow = false;
                     });
                   this.fileArch.id = null;
                   this.reset();
@@ -486,6 +500,7 @@
       },
       //总更新按钮
       updateArch() {
+        this.spinShow = true;
         this.axios.all([
             this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
             this.axios.post('/api/fileInfo/delete', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)
@@ -494,11 +509,13 @@
           this.UpdateAddData = [];
           this.UpdateDeleteData = [];
           this.loadFileArch();
+          this.spinShow = false;
           this.$Message.info('修改完成!')
         });
       },
       //点击显示添加弹窗
       saveFileInfo() {
+        this.$refs.addForm.resetFields();
         //判断是否是勾选添加，简单点说明就是从中间插入
         if(Object.keys(this.tempData).length > 1){
           this.$Message.error('请勾选一条以下的数据！')
@@ -536,7 +553,8 @@
       cancleAdd() {
         this.$refs.addForm.resetFields();
         this.reset();
-        this.AddModal = false
+        this.AddModal = false;
+        this.$refs.fileTable.selectAll(false)
       },
       //删除所选文件记录数（只能删除一条  --2019/01/14）
       cancelFileInfo() {
@@ -545,6 +563,7 @@
         } else if(Object.keys(this.tempData).length > 1){
           this.$Message.info('请钩选一条要删除的文件')
         } else {
+          this.spinShow = true;
           this.axios.post('/api/fileInfo/delete', JSON.stringify(this.tempData), ArchRequestConfig)
             .then(res => {
               if(res.data.code === 0){
@@ -553,12 +572,14 @@
               }else{
                 this.$Message.error('删除失败！');
               }
+              this.spinShow = false;
             });
           this.tempData = []
         }
       },
       //删除全部文件级信息(--2019/01/14)
       allDeleteFileInfo(){
+        this.spinShow = true;
         this.axios.post('/api/fileInfo/delete', JSON.stringify(this.tableData), ArchRequestConfig)
           .then(res => {
             if(res.data.code === 0){
@@ -567,6 +588,7 @@
             }else{
               this.$Message.success('删除失败！')
             }
+            this.spinShow = false;
           })
       },
       // 双击显示修改弹窗
@@ -612,7 +634,8 @@
       // 取消更新
       cancleUpdate() {
         this.$refs.updateForm.resetFields();
-        this.tempData = []
+        this.tempData = [];
+        this.$refs.fileTable.selectAll(false)
       },
       // 选择单条记录
       selectData(selection, row) {
@@ -638,7 +661,6 @@
       },
       //重置表格内容
       reset() {
-        this.fileArch.fileIndex = '';
         this.fileArch.liableId = '';
         this.fileArch.fileNo = '';
         this.fileArch.fileTitle = '';

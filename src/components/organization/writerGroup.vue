@@ -11,11 +11,11 @@
                   <h2>筛选条件:</h2>
                 </FormItem>
               </Col>
-              <!--<Col span="4">-->
-              <!--<FormItem>-->
-              <!--<Input placeholder="档号等"/>-->
-              <!--</FormItem>-->
-              <!--</Col>-->
+              <Col span="4">
+                <FormItem>
+                  <Input placeholder="档号等" v-model="keyword"/>
+                </FormItem>
+              </Col>
               <Col span="4">
                 <FormItem>
                   <Row>
@@ -23,16 +23,23 @@
                       档案状态：
                     </Col>
                     <Col span="12">
-                      <Select placeholder="状态" @on-change="oneSelect" clearable>
+                      <Select placeholder="状态" @on-change="oneSelect" :clearable="true" @on-clear="oneClear" ref="selectStatue">
                         <Option :key="item" v-for="item in twoStatues" :value="item">{{item}}</Option>
                       </Select>
                     </Col>
                   </Row>
                 </FormItem>
               </Col>
-              <Col span="2" offset="1">
+              <Col span="13" offset="1">
                 <FormItem>
-                  <Button type="primary" @click="searchArch">搜索</Button>
+                  <Row>
+                    <Col span="4">
+                      <Button type="primary" @click="searchArch">搜索</Button>
+                    </Col>
+                    <Col span="6" offset="14">
+                      <Button type="primary" @click="allWriteArch">待著录档案</Button>
+                    </Col>
+                  </Row>
                 </FormItem>
               </Col>
             </Row>
@@ -42,7 +49,12 @@
         <Col span="20" offset="2" class="TableFontCss">
           <Table border :columns="needToDoColumns" :data="needToDoData"></Table>
           <Page :current="needToDoPage" :total="needToDoCount" :page-size="needToDoPageSize" show-elevator show-total
+                placement="top"
                 show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="needToDoPSO"/>
+          <Spin fix v-if="spinShow">
+            <Icon type="ios-loading" size=36 class="demo-spin-icon-load"></Icon>
+            <div>加载中</div>
+          </Spin>
         </Col>
       </Row>
 
@@ -72,9 +84,8 @@
         <!-- 加载档案数据表格 -->
         <Col span="20" offset="2" class="TableFontCss">
           <Table border :columns="columns" :data="tableData"></Table>
-          <!--todo 还没完全做好，待完善 2018/12/6-->
           <Page :current="currentPage" :total="totalCount" :page-size="pageSize" show-elevator show-total show-sizer
-                :page-size-opts="pageSizeOpt"/>
+                :page-size-opts="pageSizeOpt" @on-change="destPage1" @on-page-size-change="changePageSize1"/>
         </Col>
       </Row>
     </div>
@@ -95,14 +106,14 @@
         </div>
       </keep-alive>
       <keep-alive>
-      <div v-if="viewName === 'ProfInfo'">
-        <ProfInfo @changeShowView="showView" :ProfParams="profParams"></ProfInfo>
-      </div>
+        <div v-if="viewName === 'ProfInfo'">
+          <ProfInfo @changeShowView="showView" :ProfParams="profParams"></ProfInfo>
+        </div>
       </keep-alive>
       <keep-alive>
-      <div v-if="viewName === 'FileInfo'">
-        <FileInfo @changeShowView="showView" :FileParams="fileParams"></FileInfo>
-      </div>
+        <div v-if="viewName === 'FileInfo'">
+          <FileInfo @changeShowView="showView" :FileParams="fileParams"></FileInfo>
+        </div>
       </keep-alive>
     </div>
   </div>
@@ -405,7 +416,7 @@
                   if (params.row.archVO.twoStatue === 3) {
                     return h('p', '')
                   } else {
-                    return h('button', {
+                    return h('Button', {
                       props: {
                         type: 'primary', size: 'small'
                       },
@@ -414,10 +425,22 @@
                       },
                       on: {
                         click: () => {
+                          this.spinShow = true;
                           // 修改档案状态，变为已著录/待质检的状态
                           this.axios.post('/api/loadArch/writeComplete', this.qs.stringify({archID: params.row.archId}))
-                            .then(res => {
-                              this.loadGroupArch()
+                          .then(res => {
+                            this.loadGroupArch();
+                            this.axios.get('/api/loadArch/getTpyeArch', {
+                              params: {
+                                type: this.archTypeName,
+                                page: this.currentPage,
+                                pageSize: this.pageSize
+                              }
+                            }).then(res => {
+                              this.tableData = res.data.data.list;
+                              this.totalCount = res.data.data.total;
+                              this.spinShow = false;
+                            })
                             })
                         }
                       }
@@ -437,19 +460,20 @@
         //用户信息id
         userID: this.$store.state.userID,
         //查询档案二级状态码
-        archStatueCode: 1
+        archStatueCode: 1,
+        //档号查询关键字
+        keyword: '',
+        //查看待档案著录数据表格的加载动画
+        spinShow: false
       }
     },
     methods: {
       //加载工作组负责的待著录档案数据
       loadGroupArch() {
-        if (this.userID === '') {
-          this.userID = window.localStorage.getItem('userid')
-        }
         this.axios.get('/api/loadArch/getGroupArch', {
           params: {
-            'userID': this.userID,
-            'archStatue': 1,
+            'archStatue': this.archStatueCode,
+            'keyword': this.keyword,
             'page': this.needToDoPage,
             'pageSize': this.needToDoPageSize
           }
@@ -520,11 +544,34 @@
       oneSelect(value) {
         this.archStatueCode = statueTwoCode(value);
       },
+      //清空搜索条件中的状态条件
+      oneClear(){
+        this.archStatueCode = ''
+      },
       //搜索条件中的点击搜索按钮
       searchArch() {
         this.axios.get('/api/loadArch/getGroupArch', {
           params: {
             'archStatue': this.archStatueCode,
+            'keyword': this.keyword,
+            'page': this.needToDoPage,
+            'pageSize': this.needToDoPageSize
+          }
+        }).then(res => {
+          this.needToDoData = res.data.data.list;
+          this.needToDoCount = res.data.data.total;
+          this.$refs.selectStatue.clearSingleSelect();
+        })
+      },
+      //查询所有该登录者的待著录数据
+      allWriteArch(){
+        this.$refs.selectStatue.clearSingleSelect();
+        this.archStatueCode = 1;
+        this.needToDoPage = 1;
+        this.axios.get('/api/loadArch/getGroupArch', {
+          params: {
+            'archStatue': this.archStatueCode,
+            'keyword': this.keyword,
             'page': this.needToDoPage,
             'pageSize': this.needToDoPageSize
           }
@@ -536,31 +583,66 @@
       //切换页码
       destPage(index) {
         this.needToDoPage = index;
+        this.spinShow = true;
         this.axios.get('/api/loadArch/getGroupArch', {
           params: {
             'archStatue': this.archStatueCode,
+            'keyword': this.keyword,
             'page': this.needToDoPage,
             'pageSize': this.needToDoPageSize
           }
         }).then(res => {
           this.needToDoData = res.data.data.list;
-          this.needToDoCount = res.data.data.total
+          this.needToDoCount = res.data.data.total;
+          this.spinShow = false;
         })
       },
       //切换配置页
       changePageSize(index) {
         this.needToDoPageSize = index;
+        this.spinShow = true;
         this.axios.get('/api/loadArch/getGroupArch', {
           params: {
             'archStatue': this.archStatueCode,
+            'keyword': this.keyword,
             'page': this.needToDoPage,
             'pageSize': this.needToDoPageSize
           }
         }).then(res => {
           this.needToDoData = res.data.data.list;
-          this.needToDoCount = res.data.data.total
+          this.needToDoCount = res.data.data.total;
+          this.spinShow = false;
         })
-      }
+      },
+      //著录数据表格分页方法  //待测试
+      //切换页码
+      destPage1(index) {
+        this.currentPage = index;
+        this.axios.get('/api/loadArch/getTpyeArch', {
+          params: {
+            type: this.archTypeName,
+            page: this.currentPage,
+            pageSize: this.pageSize
+          }
+        }).then(res => {
+          this.tableData = res.data.data.list;
+          this.totalCount = res.data.data.total
+        })
+      },
+      //切换配置页
+      changePageSize1(index) {
+        this.pageSize = index;
+        this.axios.get('/api/loadArch/getGroupArch', {
+          params: {
+            type: this.archTypeName,
+            page: this.currentPage,
+            pageSize: this.pageSize
+          }
+        }).then(res => {
+          this.tableData = res.data.data.list;
+          this.totalCount = res.data.data.total
+        })
+      },
     },
     mounted() {
       this.loadOneTypes();
