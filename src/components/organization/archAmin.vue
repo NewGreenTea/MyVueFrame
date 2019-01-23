@@ -1,7 +1,7 @@
 <template>
   <Row>
     <Col span="20" offset="2">
-      <Form :model="SQform" inline ref="importForm" class="conditionFormFront">
+      <Form :model="SQform" inline ref="importForm" class="conditionForm">
         <FormItem prop="district">
           <h2>选择批次:</h2>
         </FormItem>
@@ -36,6 +36,7 @@
         <!--<FormItem>-->
           <!--<Button @click="ArchNOTool" shape="circle">档号设置</Button>-->
         <!--</FormItem>-->
+        <Button @click="test">测试</Button>
       </Form>
     </Col>
     <!-- 显示导进来的Excel的内容（并且是把档号补充完整的） -->
@@ -193,18 +194,15 @@
       clearList(){
         this.$refs.importForm.resetFields();
         this.tableData = [];
+      },
+      test(){
+        alert(this.$route.fullPath)
+        this.$router.push({name: 'archAdmin',path:this.$route.fullPath})
       }
     }
   }
 </script>
 
 <style scoped>
-  /*条件显示样式*/
-  .conditionFormFront >>> .ivu-form-item-content{
-    font-size: 15px;
-    font-weight: 600;
-  }
-  .conditionFormFront >>> .ivu-input{
-    font-size: 14px;
-  }
+
 </style>

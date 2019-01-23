@@ -685,7 +685,7 @@
 </script>
 
 <style scoped>
-  /*专业信息著录界面的类型文字显示*/
+  /*著录界面的类型文字显示*/
   .archTypeText {
     float: right;
     font-size: 14px;
@@ -697,7 +697,6 @@
   .view {
     display: block
   }
-
   .hidd {
     display: none
   }

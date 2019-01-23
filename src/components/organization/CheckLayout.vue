@@ -16,7 +16,7 @@
     <Modal v-model="showModal" :title="modalTitle" draggable :mask-closable="false" @on-ok="modelOK"
            @on-cancel="modelCancel">
       <div>
-        <Form class="formClass">
+        <Form class="checkFormClass">
           <FormItem label="原因：">
             <Input type="textarea" :autosize="reasonText" placeholder="..." v-model="reason"/>
           </FormItem>
@@ -27,7 +27,7 @@
     <!-- 基本信息 -->
     <Row v-if="base" class="displayClass">
       <Col span="20" offset="1">
-        <Form class="formClass" :model="baseArch" ref="BaseInfoForm">
+        <Form class="checkFormClass" :model="baseArch" ref="BaseInfoForm">
           <Row>
             <!--立案号,档号,案卷类别-->
             <Col>
@@ -167,7 +167,7 @@
     <Row v-if="prof" class="displayClass">
       <!-- 专业基本 -->
       <Col span="20" offset="1">
-        <Form class="formClass" :model="profArch">
+        <Form class="checkFormClass" :model="profArch">
           <Row>
             <Col>
               <Row>
@@ -190,7 +190,7 @@
       </Col>
       <!-- 专业项目地点 -->
       <Col span="20" offset="1">
-        <Form class="formClass" :model="buildingAddressInfo">
+        <Form class="checkFormClass" :model="buildingAddressInfo">
           <Row>
             <Col>
               <FormItem label="建设地址：" class="FormItemClass">
@@ -218,7 +218,7 @@
       <!-- 个性专业信息 -->
       <Col span="20" offset="1">
         <Row v-if="C61Info.archId !== ''">
-          <Form class="formClass" :model="C61Info">
+          <Form class="checkFormClass" :model="C61Info">
             <Col>
               <Row>
                 <Col span="12">
@@ -280,7 +280,7 @@
         </Row>
 
         <Row v-if="C62Info.archId !== ''">
-          <Form class="formClass" :model="C62Info">
+          <Form class="checkFormClass" :model="C62Info">
             <Col>
               <Row>
                 <Col span="8">
@@ -295,7 +295,7 @@
         </Row>
 
         <Row v-if="C63Info.archId !== ''">
-          <Form class="formClass" :model="C63Info">
+          <Form class="checkFormClass" :model="C63Info">
             <Col>
               <Row>
                 <Col span="8">
@@ -310,7 +310,7 @@
         </Row>
 
         <Row v-if="D21Info.archId !== ''">
-          <Form class="formClass" :model="D21Info">
+          <Form class="checkFormClass" :model="D21Info">
             <Col>
               <Row>
                 <Col span="12">
@@ -331,7 +331,7 @@
         </Row>
 
         <Row v-if="D22Info.archId !== ''">
-          <Form class="formClass" :model="D22Info">
+          <Form class="checkFormClass" :model="D22Info">
             <Col>
               <Row>
                 <Col span="12">
@@ -352,7 +352,7 @@
         </Row>
 
         <Row v-if="D31Info.archId !== ''">
-          <Form class="formClass" :model="D31Info">
+          <Form class="checkFormClass" :model="D31Info">
             <Col>
               <Row>
                 <Col span="8">
@@ -367,7 +367,7 @@
         </Row>
 
         <Row v-if="D32Info.archId !== ''">
-          <Form class="formClass" :model="D32Info">
+          <Form class="checkFormClass" :model="D32Info">
             <Col>
               <Row>
                 <Col span="12">
@@ -436,7 +436,7 @@
         </Row>
 
         <Row v-if="D34Info.archId !== ''">
-          <Form class="formClass" :model="D34Info">
+          <Form class="checkFormClass" :model="D34Info">
             <Col>
               <Row>
                 <Col span="12">
@@ -505,7 +505,7 @@
         </Row>
 
         <Row v-if="D63Info.archId !== ''">
-          <Form class="formClass" :model="D63Info">
+          <Form class="checkFormClass" :model="D63Info">
             <Col>
               <Row>
                 <Col span="12">
@@ -1248,35 +1248,5 @@
 </script>
 
 <style scoped>
-  .displayClass {
-    margin-top: 20px;
-  }
 
-  /*选中按钮改变的颜色*/
-  .buttonSelect {
-    background-color: deepskyblue;
-  }
-
-  /*页面的css*/
-  .formClass /deep/ .ivu-form-item-content {
-    font-size: 20px;
-    line-height: 42px;
-  }
-
-  .formClass /deep/ .ivu-form-item-label {
-    font-size: 20px;
-  }
-
-  .checkWriteCss {
-    font-size: 20px;
-  }
-
-  /*表格字体大小*/
-  .TableFontCss >>> .ivu-table {
-    font-size: 14px;
-  }
-
-  .displaySpan {
-    padding-right: 20px;
-  }
 </style>

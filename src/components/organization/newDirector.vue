@@ -920,19 +920,5 @@
 </script>
 
 <style scoped>
-  .buttonSelect {
-    background-color: deepskyblue;
-  }
 
-  /*表格字体大小*/
-  .TableFontCss >>> .ivu-table {
-    font-size: 14px;
-  }
-  /*条件显示样式*/
-  .conditionFormFront >>> .ivu-form-item-content{
-    font-size: 15px;
-  }
-  .conditionFormFront >>> .ivu-input{
-    font-size: 14px;
-  }
 </style>

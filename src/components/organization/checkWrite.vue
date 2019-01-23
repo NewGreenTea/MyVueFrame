@@ -289,24 +289,10 @@
 </script>
 
 <style scoped>
-  /*专业信息著录界面的类型文字显示*/
-  .archTypeText {
-    float: right;
-    font-size: 14px;
-    padding-top: 7px;
-    padding-right: 15px;
-  }
-
   .view {
     display: block
   }
-
   .hidd {
     display: none
-  }
-
-  /*表格字体大小*/
-  .TableFontCss >>> .ivu-table {
-    font-size: 14px;
   }
 </style>
