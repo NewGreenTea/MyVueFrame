@@ -41,15 +41,6 @@
 }
 
 /*archNoTool*/
-/*archNoTool(档号管理界面)样式*/
-.archToolCss {
-  font-size: 15px;
-  text-align: center;
-  padding-top: 5px;
-  /*字体变粗*/
-  font-weight: 700;
-}
-
 /*archNoTool（档号管理界面）的表格样式*/
 .archToolTableCss {
   font-size: 15px;

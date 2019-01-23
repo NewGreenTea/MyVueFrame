@@ -4,8 +4,8 @@
     <Row>
       <Col span="20" offset="1">
         <Row>
-          <Col span="2">
-            <p class="archToolCss">档案类型：</p>
+          <Col span="2" class="archToolCss">
+            <p>档案类型：</p>
           </Col>
           <Col span="3">
             <Select @on-change="oneSelect" clearable :clearable="clearTwoClass" ref="OneCalssSelect">
@@ -19,8 +19,8 @@
               </Option>
             </Select>
           </Col>
-          <Col span="2">
-            <p class="archToolCss">年份：</p>
+          <Col span="2" class="archToolCss">
+            <p>年份：</p>
           </Col>
           <Col span="3">
             <DatePicker type="year" placeholder="选择年份" v-model="yearKey" :value="yearKey" @on-change="yearKey=$event"></DatePicker>
