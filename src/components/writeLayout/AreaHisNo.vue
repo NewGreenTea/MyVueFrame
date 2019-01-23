@@ -18,7 +18,7 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal v-model="AddModal" :loading="loading" draggable :mask-closable="false" title="添加局历史审批文件编号"
+    <Modal v-model="AddModal" :loading="loading" :mask-closable="false" title="添加局历史审批文件编号"
            @on-ok="addAHNoData" @on-cancel="addcancel" width="800px">
       <Form :model="areaHisNoInfo" :rules="rules" ref="addForm">
         <Row>
@@ -52,7 +52,7 @@
         </Row>
       </Form>
     </Modal>
-    <Modal v-model="UpdateModal" :loading="loading" draggable :mask-closable="false" title="修改局历史审批文件编号"
+    <Modal v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改局历史审批文件编号"
            @on-ok="updateAHNoData" @on-cancel="cancleUpdate" width="800px">
       <Form :model="areaHisNoInfo" ref="updateForm" :rules="rules">
         <Row>
@@ -448,13 +448,4 @@
 </script>
 
 <style scoped>
-  /*表格字体大小*/
-  .TableFontCss >>> .ivu-table {
-    font-size: 14px;
-  }
-
-  /*如果位置有变，错误的显示信息需要改变大小*/
-  .FormItemClass >>> .ivu-form-item-error-tip {
-    padding-top: 35px !important;
-  }
 </style>

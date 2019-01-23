@@ -18,7 +18,7 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal width="1000px" :loading="loading" v-model="AddModal" draggable :mask-closable="false" title="添加报建项目详细"
+    <Modal width="1000px" :loading="loading" v-model="AddModal" :mask-closable="false" title="添加报建项目详细"
            @on-ok="addBPIData" @on-cancel="addcancle">
       <Form class="formClass" :model="D31BuildProjInfo" ref="addForm" :rules="rules">
         <Row>
@@ -50,37 +50,37 @@
             <Row>
               <Col span="3">
                 <FormItem class="FormItemClass">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.projectName" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.projectName" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="buildingNum">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.buildingNum" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.buildingNum" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="overgroundFloor">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.overgroundFloor" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.overgroundFloor" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="undergroundFloor">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.undergroundFloor" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.undergroundFloor" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="overgroundArea">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.overgroundArea" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.overgroundArea" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="undergroundArea">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.undergroundArea" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.undergroundArea" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="totalArea">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.totalArea" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.totalArea" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
             </Row>
@@ -89,7 +89,7 @@
       </Form>
     </Modal>
 
-    <Modal width="1000px" :loading="loading" v-model="UpdateModal" draggable :mask-closable="false" title="修改报建项目详细"
+    <Modal width="1000px" :loading="loading" v-model="UpdateModal" :mask-closable="false" title="修改报建项目详细"
            @on-ok="UpdateBPIData" @on-cancel="cancleUpdate">
       <Form class="formClass" :model="D31BuildProjInfo" ref="updateForm" :rules="rules">
         <Row>
@@ -121,37 +121,37 @@
             <Row>
               <Col span="3">
                 <FormItem class="FormItemClass">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.projectName" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.projectName" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="buildingNum">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.buildingNum" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.buildingNum" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="overgroundFloor">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.overgroundFloor" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.overgroundFloor" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="undergroundFloor">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.undergroundFloor" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.undergroundFloor" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="overgroundArea">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.overgroundArea" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.overgroundArea" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="undergroundArea">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.undergroundArea" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.undergroundArea" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
               <Col span="3">
                 <FormItem class="FormItemClass" prop="totalArea">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.totalArea" class="D31WriteInput"/>
+                  <Input placeholder="..." v-model="D31BuildProjInfo.totalArea" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
             </Row>
@@ -602,17 +602,5 @@
 </script>
 
 <style scoped>
-  .D31WriteInput{
-    width: 100px;
-    float: right;
-  }
-  /*如果位置有变，错误的显示信息需要改变大小*/
-  .FormItemClass >>> .ivu-form-item-error-tip {
-    padding-top: 35px !important;
-  }
 
-  /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
-    font-size: 14px;
-  }
 </style>

@@ -1,19 +1,21 @@
 <template>
-  <div>
+  <div style="margin: 0px 0px 50px;">
     <uploader :options="options" class="uploader-example" ref="myupload"
               :autoStart="autoParam"
               :file-status-text="StatusText"
-              @file-added="beforeUpload"
               @file-progress="uploading"
               @file-success="fileSuccess"
               @file-error="fileError"
               @complete="finishUpload"
               @file-complete="fileComplete"
+              @file-removed="fileRemoved"
+              @files-added="filesAdded"
               v-if="show">
       <uploader-unsupport></uploader-unsupport>
       <uploader-drop style="background: white">
         <div style="margin: 10px 0px;padding:10px;border: 1px #c64e53 dashed;border-radius: 5px;">
           <Checkbox v-model="ifIgnore" size="large" @on-change="checkboxChange">执行覆盖上传</Checkbox>
+          <Button type="error" @click="ifCleanCache" :disabled="cacheB">清除上传缓存</Button>
         </div>
         <div style="margin: 10px 0px;padding:10px;border: 1px #c64e53 dashed;border-radius: 5px;">
           <span>
@@ -21,7 +23,7 @@
               <Icon type="ios-help-circle-outline" size="30"/>
             </Tooltip>
           </span>
-          <uploader-btn :attrs="attrs" class="uploadbutton" @click="clickFileUpload">选择文件</uploader-btn>
+          <uploader-btn :attrs="attrs" class="uploadbutton">选择文件</uploader-btn>
           <span>档号：<Input size="large" style="width: 300px;" placeholder="请输入需要档号" v-model="archNoPage" @on-change="changeInputValue"/></span>
         </div>
         <div style="padding: 10px;border: 1px #c64e53 dashed;border-radius: 5px;">
@@ -62,26 +64,39 @@
     name: 'fileupload',
     data () {
       return {
-        uploadedFile:[],
-        alldelete:false,
-        archNoPage:'',
-        ifIgnore:false,
-        errorList:[],
-        // singleFile:true,
-        simultaneousUploads:1,
+        /*uploader属性*/
         options: {
           target: '/api/upload/vueUpload', // 请求的目标URL
           chunkSize: 1024 * 1024 * 50, // 每个上传的数据块的大小（以字节为单位）默认值：1*1024*1024
           query:'',
           forceChunkSize: false, // 是否强制每块大小小于chunkSize（规定大小）
           autoStart: false, // 是否是自动上传（默认true）
-          testChunks: false
+          testChunks: false,
+          // singleFile:true,
+          simultaneousUploads:1
         },
+        /*上传转换数列*/
+        uploadFolders:[],
+        uploadFiles:[],
+        /*已上传文件队列，用于清除缓存*/
+        uploadedFile:[],
+        /*上传单个文件需要输入的档号*/
+        archNoPage:'',
+        /*控件*/
+        cacheB:false,
+        alldelete:false,
+        ifIgnore:false,
+        /*上传错误列表*/
+        errorList:[],
+        /*上传拦截器*/
         attrs: {
           accept: 'image/*'
         },
+        /*自动上传参数*/
         autoParam: this.$store.state.autoUploadParam,
+        /*是否显示预览*/
         show: true,
+        /*上传状态汉化*/
         StatusText: {
           success: '上传成功',
           error: '上传失败',
@@ -92,9 +107,6 @@
       }
     },
     methods: {
-      clickFileUpload(){
-
-      },
       alldeleteok(){// 清空文件列表
         const uploaderInstance = this.$refs.myupload.uploader
         uploaderInstance.cancel()
@@ -108,26 +120,66 @@
         }
         this.alldelete=true
       },
-      beforeUpload (file) { // 添加文件的时候，设置档号，复选框为true添加覆盖上传标记
+      filesAdded(files, fileList, event){
+        // 添加文件的时候，设置档号，复选框为true添加覆盖上传标记
         const uploaderInstance = this.$refs.myupload.uploader;
         uploaderInstance.opts.query={archNo : this.archNoPage};
         if(this.ifIgnore){
           const uploaderInstance = this.$refs.myupload.uploader;
           uploaderInstance.opts.query={archNo : this.archNoPage, ifIgnore : '1'};
         }
+
+        // uploaderInstance.fileList=uploaderInstance.fileList.slice(0,-1);
+        // for(let i=0;i<fileList.length;i++){
+        //   this.uploadFolders.push(fileList[i]);
+        //   for(let j=0;j<fileList[i].fileList.length;j++){
+        //       this.uploadFolders.push(fileList[i].fileList[j])
+        //   }
+        // }
+        // for (let i=0;i<this.uploadFolders.length;i++){
+        //   uploaderInstance.fileList.push(this.uploadFolders[i])
+        // }
+        // uploaderInstance.files.push(files);
+        // console.log(uploaderInstance)
+
       },
-      changeInputValue(){   // 文本框改变的时候，设置档号
+      ifCleanCache(){
+        this.$Modal.confirm({
+          title: '警告！',
+          content: '<p style="font-size: 15px">此操作会影响正在上传的文件</p><p style="font-size: 15px">请确保没有文件正在上传！</p>',
+          okText: '确认',
+          cancelText: '取消',
+          onOk: () => {
+            this.cleanCache()
+          },
+          onCancel: () => {
+            return false;
+          }
+        });
+      },
+      cleanCache(){
+        axios({
+          method: 'post',
+          url: '/api/upload/cleanUploadCache'
+        }).then(res=>{
+          this.$Message.success("缓存清除完成")
+        })
+      },
+      changeInputValue(){
+        // 文本框改变的时候，设置档号
         const uploaderInstance = this.$refs.myupload.uploader;
         uploaderInstance.opts.query={archNo : this.archNoPage};
       },
-      checkboxChange(){   // 复选框为true添加覆盖上传标记
+      checkboxChange(){
+        // 复选框为true添加覆盖上传标记
         if(this.ifIgnore){
           const uploaderInstance = this.$refs.myupload.uploader;
           uploaderInstance.opts.query={archNo : this.archNoPage, ifIgnore : '1'};
         }
       },
       uploading (file) { // 上传中的事件
-
+        // console.log('当前开始上传：'+file);
+        this.cacheB=true;
       },
       allUpload: function () { // 全部上传
         const uploaderInstance = this.$refs.myupload.$children[2]; // 获得uploader下的filelist
@@ -202,6 +254,9 @@
           }
         }
       },
+      fileRemoved(file){
+        //文件删除
+      },
       fileComplete(rootFile){
         //每一行上传完成
       },
@@ -229,6 +284,7 @@
           });
         }
         /*重置数据*/
+        this.cacheB=false;
         this.uploadedFile=[];
         this.ifIgnore=false;
         this.errorList=[];

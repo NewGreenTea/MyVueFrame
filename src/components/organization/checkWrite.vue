@@ -6,6 +6,7 @@
         <Col span="20" offset="2" class="TableFontCss">
           <Table border :columns="needToDoColumns" :data="needToDoData"></Table>
           <Page :current="needToDoPage" :total="needToDoCount" :page-size="needToDoPageSize" show-elevator show-total
+                placement="top"
                 show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="needToDoPSO"/>
         </Col>
       </Row>

@@ -390,28 +390,5 @@
 </script>
 
 <style scoped>
-  /*专业信息建设地址样式*/
-  .profSpecCss {
-    width: 160px;
-  }
 
-  .buildingAddressCss {
-    font-size: 14px;
-    padding-top: 5px;
-    padding-left: 10px;
-  }
-
-  .buildingAddressCss2 {
-    font-size: 14px;
-
-  }
-
-  .formSpec /deep/ .ivu-form-item-content {
-    margin-left: 0px !important;
-  }
-
-  /*如果位置有变，错误的显示信息需要改变大小*/
-  .FormItemClass >>> .ivu-form-item-error-tip {
-    padding-top: 35px !important;
-  }
 </style>

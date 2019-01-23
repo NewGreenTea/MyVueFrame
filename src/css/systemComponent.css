@@ -1,0 +1,58 @@
+/*newDirector(分配管理)和checkLayout（著录质检）样式*/
+/*选中任务按钮颜色改变*/
+.buttonSelect {
+  background-color: deepskyblue;
+}
+
+/*writerGroup*/
+/*writerGroup（著录界面）的类型文字显示*/
+.archTypeText {
+  float: right;
+  font-size: 14px;
+  padding-top: 7px;
+  padding-right: 15px;
+}
+/*档案著录界面档号卡片提示样式*/
+.tips {
+  float: right;
+  text-align: center;
+}
+/*著录界面的表单单个输入框样式*/
+.FormItemClass {
+  margin-left: 10px;
+}
+/*著录界面的页面字体大小*/
+.WriteLayoutFont {
+  font-size: 15px;
+}
+
+/*CheckLayout（著录质检）样式*/
+/*整体显示内容div样式*/
+.checkWriteCss {
+  font-size: 20px;
+}
+/*著录质检文件级信息样式*/
+.displayClass {
+  margin-top: 20px;
+}
+/*专业信息的“区路街号”-独特样式*/
+.displaySpan {
+  padding-right: 20px;
+}
+
+/*archNoTool*/
+/*archNoTool(档号管理界面)样式*/
+.archToolCss {
+  font-size: 15px;
+  text-align: center;
+  padding-top: 5px;
+  /*字体变粗*/
+  font-weight: 700;
+}
+
+/*archNoTool（档号管理界面）的表格样式*/
+.archToolTableCss {
+  font-size: 15px;
+  font-weight: 700;
+  padding-left: 15px;
+}

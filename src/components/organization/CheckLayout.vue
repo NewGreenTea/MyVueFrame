@@ -13,10 +13,10 @@
       </Col>
     </Row>
 
-    <Modal v-model="showModal" :title="modalTitle" draggable :closable="false" @on-ok="modelOK"
+    <Modal v-model="showModal" :title="modalTitle" draggable :mask-closable="false" @on-ok="modelOK"
            @on-cancel="modelCancel">
       <div>
-        <Form>
+        <Form class="formClass">
           <FormItem label="原因：">
             <Input type="textarea" :autosize="reasonText" placeholder="..." v-model="reason"/>
           </FormItem>
@@ -98,22 +98,14 @@
             <!--发文号：文种类别,年份,流水号-->
             <Col>
               <Row>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="文种类别：">
+                <Col>
+                  <FormItem class="FormItemClass" label="发文号：">
                     <!--<Input placeholder="发文号：文种类别" v-model="baseArch.dispatchNoType" class="writeInput"/>-->
-                    {{baseArch.dispatchNoType}}
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="年份：">
+                    {{baseArch.dispatchNoType}}&nbsp;
                     <!--<Input placeholder="发文号：年份" v-model="baseArch.dispatchNoYear" class="writeInput"/>-->
-                    {{baseArch.dispatchNoYear}}
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem class="FormItemClass" label="流水号：">
+                    〔 {{baseArch.dispatchNoYear}} 〕
                     <!--<Input placeholder="发文号：流水号" v-model="baseArch.dispatchNoNum" class="writeInput"/>-->
-                    {{baseArch.dispatchNoNum}}
+                    &nbsp;{{baseArch.dispatchNoNum}} 号
                   </FormItem>
                 </Col>
               </Row>
@@ -179,13 +171,13 @@
           <Row>
             <Col>
               <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="建设单位：">
                     <!--<Input placeholder="..." v-model="profArch.buildCompany" class="writeInput"/>-->
                     {{profArch.buildCompany}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="建设项目：">
                     <!--<Input placeholder="..." v-model="profArch.buildProject" class="writeInput"/>-->
                     {{profArch.buildProject}}
@@ -201,32 +193,23 @@
         <Form class="formClass" :model="buildingAddressInfo">
           <Row>
             <Col>
-              <Row>
-                <Col span="8">
-                  <FormItem label="区：" class="FormItemClass">
-                    <!--<Input placeholder="..." v-model="buildingAddressInfo.area" class="writeInput"/>-->
-                    {{buildingAddressInfo.area}}
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem label="路：" class="FormItemClass">
-                    <!--<Input placeholder="..." v-model="buildingAddressInfo.road" class="writeInput"/>-->
-                    {{buildingAddressInfo.road}}
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem label="街：" class="FormItemClass">
-                    <!--<Input placeholder="..." v-model="buildingAddressInfo.street" class="writeInput"/>-->
-                    {{buildingAddressInfo.street}}
-                  </FormItem>
-                </Col>
-                <Col span="8">
-                  <FormItem label="号：" class="FormItemClass" prop="no">
-                    <!--<Input placeholder="..." v-model="buildingAddressInfo.no" class="writeInput"/>-->
-                    {{buildingAddressInfo.no}}
-                  </FormItem>
-                </Col>
-              </Row>
+              <FormItem label="建设地址：" class="FormItemClass">
+                <Row>
+                  <Col>
+                    <p>
+                      <!--<Input placeholder="..." v-model="buildingAddressInfo.area" class="writeInput"/>-->
+                      <span v-if="buildingAddressInfo.area.length !== 0" class="displaySpan"> {{buildingAddressInfo.area + '区'}}</span>
+                      <!--<Input placeholder="..." v-model="buildingAddressInfo.road" class="writeInput"/>-->
+                      <span v-if="buildingAddressInfo.road.length !== 0" class="displaySpan">{{buildingAddressInfo.road + '路'}}</span>
+                      <!--<Input placeholder="..." v-model="buildingAddressInfo.street" class="writeInput"/>-->
+                      <span v-if="buildingAddressInfo.street.length !== 0" class="displaySpan">{{buildingAddressInfo.street + '街'}}</span>
+                      <!--<Input placeholder="..." v-model="buildingAddressInfo.no" class="writeInput"/>-->
+                      <span v-if="buildingAddressInfo.no.length !== 0" class="displaySpan">{{buildingAddressInfo.no + '号'}}</span>
+                    </p>
+                  </Col>
+                </Row>
+              </FormItem>
+
             </Col>
           </Row>
         </Form>
@@ -238,62 +221,57 @@
           <Form class="formClass" :model="C61Info">
             <Col>
               <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="总用地面积：" prop="totalArea">
                     <!--<Input placeholder="..." v-model="C61Info.totalArea" class="writeInput"/>-->
-                    {{C61Info.totalArea}}
+                    {{(C61Info !== null && C61Info.totalArea !== null)? C61Info.totalArea +'（m²/平方米）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="可建设用地面积(净用地面积)：" prop="buildArea">
                     <!--<Input placeholder="..." v-model="C61Info.buildArea" class="writeInput"/>-->
-                    {{C61Info.buildArea}}
+                    {{(C61Info !== null && C61Info.buildArea !== null)? C61Info.buildArea +'（m²/平方米）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+              </Row>
+            </Col>
+
+            <Col>
+              <Row>
+                <Col span="12">
                   <FormItem class="FormItemClass" label="道路用地面积：" prop="roadArea">
                     <!--<Input placeholder="..." v-model="C61Info.roadArea" class="writeInput"/>-->
-                    {{C61Info.roadArea}}
+                    {{(C61Info !== null && C61Info.roadArea !== null)? C61Info.roadArea +'（m²/平方米）': ''}}
                   </FormItem>
                 </Col>
-              </Row>
-            </Col>
-
-            <Col>
-              <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="容积率：" prop="plotRatio">
                     <!--<Input placeholder="..." v-model="C61Info.plotRatio" class="writeInput"/>-->
-                    {{C61Info.plotRatio}}
+                    {{(C61Info !== null && C61Info.plotRatio !== null)? C61Info.plotRatio +'（%）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="建筑密度：" prop="buildDensity">
                     <!--<Input placeholder="..." v-model="C61Info.buildDensity" class="writeInput"/>-->
-                    {{C61Info.buildDensity}}
+                    {{(C61Info !== null && C61Info.buildDensity !== null)? C61Info.buildDensity +'（kg/m³）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="绿地率：" prop="greenSpaceRatio">
                     <!--<Input placeholder="..." v-model="C61Info.greenSpaceRatio" class="writeInput"/>-->
-                    {{C61Info.greenSpaceRatio}}
+                    {{(C61Info !== null && C61Info.greenSpaceRatio !== null)? C61Info.greenSpaceRatio +'（%）': ''}}
                   </FormItem>
                 </Col>
-              </Row>
-            </Col>
-
-            <Col>
-              <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="居住人口：" prop="population">
                     <!--<Input placeholder="..." v-model="C61Info.population" class="writeInput"/>-->
-                    {{C61Info.population}}
+                    {{(C61Info !== null && C61Info.population !== null)? C61Info.population +'（万）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="计算容积率建筑面积：" prop="plotRatioArea">
                     <!--<Input placeholder="..." v-model="C61Info.plotRatioArea" class="writeInput"/>-->
-                    {{C61Info.plotRatioArea}}
+                    {{(C61Info !== null && C61Info.plotRatioArea !== null)? C61Info.plotRatioArea +'（m²/平方米）': ''}}
                   </FormItem>
                 </Col>
               </Row>
@@ -335,13 +313,13 @@
           <Form class="formClass" :model="D21Info">
             <Col>
               <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="规划批面积（总用地面积）：" prop="totalArea">
                     <!--<Input placeholder="..." v-model="D21Info.totalArea" class="writeInput"/>-->
-                    {{D21Info.totalArea}}
+                    {{(D21Info !== null && D21Info.totalArea !== null)? D21Info.totalArea +'（m²/平方米）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="拟征地现状土地类别：">
                     <!--<Input placeholder="..." v-model="D21Info.areaClass" class="writeInput"/>-->
                     {{D21Info.areaClass}}
@@ -356,13 +334,13 @@
           <Form class="formClass" :model="D22Info">
             <Col>
               <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="规划批面积（总用地面积）：" prop="totalArea">
                     <!--<Input placeholder="..." v-model="D22Info.totalArea" class="writeInput"/>-->
-                    {{D22Info.totalArea}}
+                    {{(D22Info !== null && D22Info.totalArea !== null)? D22Info.totalArea +'（m²/平方米）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="拟征地现状土地类别：">
                     <!--<Input placeholder="..." v-model="D22Info.areaClass" class="writeInput"/>-->
                     {{D22Info.areaClass}}
@@ -392,70 +370,61 @@
           <Form class="formClass" :model="D32Info">
             <Col>
               <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="起止点：">
                     <!--<Input placeholder="..." v-model="D32Info.roadStart" class="writeInput"/>-->
                     {{D32Info.roadStart}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="断面形式：">
                     <!--<Input placeholder="..." v-model="D32Info.roadTypeAspect" class="writeInput"/>-->
                     {{D32Info.roadTypeAspect}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="道路长度：">
                     <!--<Input placeholder="..." v-model="D32Info.roadLength" class="writeInput"/>-->
-                    {{D32Info.roadLength}}
+                    {{(D32Info !== null && D32Info.roadLength !== null)? D32Info.roadLength +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-              </Row>
-
-              <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="道路开口：">
                     <!--<Input placeholder="..." v-model="D32Info.roadCrossing" class="writeInput"/>-->
                     {{D32Info.roadCrossing}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="平面位置：">
                     <!--<Input placeholder="..." v-model="D32Info.roadAspectPosition" class="writeInput"/>-->
                     {{D32Info.roadAspectPosition}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="跨越区域：">
                     <!--<Input placeholder="..." v-model="D32Info.bridgeCrossingArea" class="writeInput"/>-->
                     {{D32Info.bridgeCrossingArea}}
                   </FormItem>
                 </Col>
-              </Row>
-
-              <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="桥面长度：">
                     <!--<Input placeholder="..." v-model="D32Info.bridgeLength" class="writeInput"/>-->
-                    {{D32Info.bridgeLength}}
+                    {{(D32Info !== null && D32Info.bridgeLength !== null)? D32Info.bridgeLength +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="总长度：">
                     <!--<Input placeholder="..." v-model="D32Info.bridgeTotalLength" class="writeInput"/>-->
-                    {{D32Info.bridgeTotalLength}}
+                    {{(D32Info !== null && D32Info.bridgeTotalLength !== null)? D32Info.bridgeTotalLength +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="净空高度：">
                     <!--<Input placeholder="..." v-model="D32Info.bridgeHight" class="writeInput"/>-->
-                    {{D32Info.bridgeHight}}
+                    {{(D32Info !== null && D32Info.bridgeHight !== null)? D32Info.bridgeHight +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-              </Row>
-
-              <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="平面位置：">
                     <!--<Input placeholder="..." v-model="D32Info.bridgeAspectPosition" class="writeInput"/>-->
                     {{D32Info.bridgeAspectPosition}}
@@ -470,70 +439,61 @@
           <Form class="formClass" :model="D34Info">
             <Col>
               <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="起止点：">
                     <!--<Input placeholder="..." v-model="D34Info.overheadPipeStart" class="writeInput"/>-->
                     {{D34Info.overheadPipeStart}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="管径规格：">
                     <!--<Input placeholder="..." v-model="D34Info.overheadPipeType" class="writeInput"/>-->
                     {{D34Info.overheadPipeType}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="管线长度：">
                     <!--<Input placeholder="..." v-model="D34Info.overheadPipeLength" class="writeInput"/>-->
-                    {{D34Info.overheadPipeLength}}
+                    {{(D34Info !== null && D34Info.overheadPipeLength !== null)? D34Info.overheadPipeLength +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-              </Row>
-
-              <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="架空高度：">
                     <!--<Input placeholder="..." v-model="D34Info.overheadPipeHight" class="writeInput"/>-->
-                    {{D34Info.overheadPipeHight}}
+                    {{(D34Info !== null && D34Info.overheadPipeHight !== null)? D34Info.overheadPipeHight +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="平面位置：">
                     <!--<Input placeholder="..." v-model="D34Info.overheadPipeEtc" class="writeInput"/>-->
                     {{D34Info.overheadPipeEtc}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="起止点：">
                     <!--<Input placeholder="..." v-model="D34Info.underPipeStart" class="writeInput"/>-->
                     {{D34Info.underPipeStart}}
                   </FormItem>
                 </Col>
-              </Row>
-
-              <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="管径规格：">
                     <!--<Input placeholder="..." v-model="D34Info.underPipeType" class="writeInput"/>-->
                     {{D34Info.underPipeType}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="管线长度：">
                     <!--<Input placeholder="..." v-model="D34Info.underPipeLength" class="writeInput"/>-->
-                    {{D34Info.underPipeLength}}
+                    {{(D34Info !== null && D34Info.underPipeLength !== null)? D34Info.underPipeLength +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="埋设深度：">
                     <!--<Input placeholder="..." v-model="D34Info.underPipeHight" class="writeInput"/>-->
-                    {{D34Info.underPipeHight}}
+                    {{(D34Info !== null && D32Info.underPipeHight !== null)? D32Info.underPipeHight +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-              </Row>
-
-              <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="平面位置：">
                     <!--<Input placeholder="..." v-model="D34Info.underPipePosition" class="writeInput"/>-->
                     {{D34Info.underPipePosition}}
@@ -548,67 +508,61 @@
           <Form class="formClass" :model="D63Info">
             <Col>
               <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="起止点：">
                     <!--<Input placeholder="..." v-model="D63Info.overheadPipeStart" class="writeInput"/>-->
                     {{D63Info.overheadPipeStart}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="管径规格：">
                     <!--<Input placeholder="..." v-model="D63Info.overheadPipeType" class="writeInput"/>-->
                     {{D63Info.overheadPipeType}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="管线长度：">
                     <!--<Input placeholder="..." v-model="D63Info.overheadPipeLength" class="writeInput"/>-->
-                    {{D63Info.overheadPipeLength}}
+                    {{(D63Info !== null && D63Info.overheadPipeLength !== null)? D63Info.overheadPipeLength +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-              </Row>
-
-              <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="架空高度：">
                     <!--<Input placeholder="..." v-model="D63Info.overheadPipeHight" class="writeInput"/>-->
-                    {{D63Info.overheadPipeHight}}
+                    {{(D63Info !== null && D63Info.overheadPipeHight !== null)? D63Info.overheadPipeHight +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="其他：">
                     <!--<Input placeholder="..." v-model="D63Info.overheadPipeEtc" class="writeInput"/>-->
                     {{D63Info.overheadPipeEtc}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="起止点：">
                     <!--<Input placeholder="..." v-model="D63Info.underPipeStart" class="writeInput"/>-->
                     {{D63Info.underPipeStart}}
                   </FormItem>
                 </Col>
-              </Row>
-
-              <Row>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="管径规格：">
                     <!--<Input placeholder="..." v-model="D63Info.underPipeType" class="writeInput"/>-->
                     {{D63Info.underPipeType}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="管线长度：">
                     <!--<Input placeholder="..." v-model="D63Info.underPipeLength" class="writeInput"/>-->
-                    {{D63Info.underPipeLength}}
+                    {{(D63Info !== null && D63Info.underPipeLength !== null)? D63Info.underPipeLength +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="埋设深度：">
                     <!--<Input placeholder="..." v-model="D63Info.underPipeHight" class="writeInput"/>-->
-                    {{D63Info.underPipeHight}}
+                    {{(D63Info !== null && D63Info.underPipeHight !== null)? D63Info.underPipeHight +'（m/米）': ''}}
                   </FormItem>
                 </Col>
-                <Col span="8">
+                <Col span="12">
                   <FormItem class="FormItemClass" label="其他：">
                     <!--<Input placeholder="..." v-model="D63Info.underPipeEtc" class="writeInput"/>-->
                     {{D63Info.underPipeEtc}}
@@ -1025,7 +979,7 @@
         columns: [
           {
             title: '序号',
-            width: 60,
+            width: 70,
             key: 'fileIndex'
           },
           {
@@ -1044,7 +998,7 @@
                   'content': params.row.fileTitle,
                   'max-width': 300
                 }
-              }, params.row.fileTitle.length > 23?params.row.fileTitle.substring(0,23)+'...':params.row.fileTitle)
+              }, params.row.fileTitle.length > 23 ? params.row.fileTitle.substring(0, 23) + '...' : params.row.fileTitle)
             }
           },
           {
@@ -1106,33 +1060,33 @@
             //个性
             if (this.checkParams.archType === 'C61') {
               //同下 --2019/01/14
-              if(res.data.data.list[0].c61SpecInfoVO !== null){
+              if (res.data.data.list[0].c61SpecInfoVO !== null) {
                 this.C61Info = res.data.data.list[0].c61SpecInfoVO;
-              }else{
+              } else {
                 this.C61Info.archId = this.checkParams.archId
               }
             }
             if (this.checkParams.archType === 'C62') {
               //同下 --2019/01/14
-              if(res.data.data.list[0].c62SpecInfoVO !== null){
+              if (res.data.data.list[0].c62SpecInfoVO !== null) {
                 this.C62Info = res.data.data.list[0].c62SpecInfoVO;
-              }else{
+              } else {
                 this.C62Info.archId = this.checkParams.archId
               }
             }
             if (this.checkParams.archType === 'C63') {
               //同下 --2019/01/14
-              if(res.data.data.list[0].c63SpecInfoVO !== null){
+              if (res.data.data.list[0].c63SpecInfoVO !== null) {
                 this.C63Info = res.data.data.list[0].c63SpecInfoVO;
-              }else{
+              } else {
                 this.C63Info.archId = this.checkParams.archId
               }
             }
             if (this.checkParams.archType === 'D21') {
               this.showD212 = true;
-              if(res.data.data.list[0].d21SpecInfoVO !== null){
+              if (res.data.data.list[0].d21SpecInfoVO !== null) {
                 this.D21Info = res.data.data.list[0].d21SpecInfoVO;
-              }else{
+              } else {
                 this.D21Info.archId = this.checkParams.archId
               }
               this.UseAreaInfoData = res.data.data.list[0].d21UseAreaVO;
@@ -1140,9 +1094,9 @@
             if (this.checkParams.archType === 'D22') {
               this.showD212 = true;
               //专业信息特性信息的archId不能为‘’（空字符串）  --2019/01/14
-              if(res.data.data.list[0].d22SpecInfoVO !== null){
+              if (res.data.data.list[0].d22SpecInfoVO !== null) {
                 this.D22Info = res.data.data.list[0].d22SpecInfoVO;
-              }else{
+              } else {
                 this.D22Info.archId = this.checkParams.archId
               }
               this.UseAreaInfoData = res.data.data.list[0].d22UseAreaVO;
@@ -1150,9 +1104,9 @@
             if (this.checkParams.archType === 'D31') {
               this.showD31 = true;
               //专业信息特性信息的archId不能为‘’（空字符串）  --2019/01/14
-              if(res.data.data.list[0].d31SpecInfoVO !== null){
+              if (res.data.data.list[0].d31SpecInfoVO !== null) {
                 this.D31Info = res.data.data.list[0].d31SpecInfoVO;
-              }else{
+              } else {
                 this.D31Info.archId = this.checkParams.archId
               }
               this.D31BuildProjData = res.data.data.list[0].d31BuildProjInfoList;
@@ -1294,26 +1248,35 @@
 </script>
 
 <style scoped>
-  .displayClass{
+  .displayClass {
     margin-top: 20px;
   }
+
   /*选中按钮改变的颜色*/
   .buttonSelect {
     background-color: deepskyblue;
   }
+
   /*页面的css*/
-  .formClass /deep/ .ivu-form-item-content{
+  .formClass /deep/ .ivu-form-item-content {
     font-size: 20px;
     line-height: 42px;
   }
-  .formClass /deep/ .ivu-form-item-label{
+
+  .formClass /deep/ .ivu-form-item-label {
     font-size: 20px;
   }
-  .checkWriteCss{
+
+  .checkWriteCss {
     font-size: 20px;
   }
+
   /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
+  .TableFontCss >>> .ivu-table {
     font-size: 14px;
+  }
+
+  .displaySpan {
+    padding-right: 20px;
   }
 </style>

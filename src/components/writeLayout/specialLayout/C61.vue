@@ -10,7 +10,7 @@
                       <Input placeholder="..." v-model="C61Info.totalArea" class="profWriteInput"/>
                     </FormItem>
                   </Col>
-                  <Col span="6" class="profWriteUnit">
+                  <Col span="7" class="profWriteUnit">
                     （平方米/m²）
                   </Col>
                 </Row>
@@ -23,7 +23,7 @@
                       <Input placeholder="..." v-model="C61Info.buildArea" class="profWriteInput"/>
                     </FormItem>
                   </Col>
-                  <Col span="6" class="profWriteUnit">
+                  <Col span="7" class="profWriteUnit">
                     （平方米/m²）
                   </Col>
                 </Row>
@@ -36,7 +36,7 @@
                       <Input placeholder="..." v-model="C61Info.roadArea" class="profWriteInput"/>
                     </FormItem>
                   </Col>
-                  <Col span="6" class="profWriteUnit">
+                  <Col span="7" class="profWriteUnit">
                     （平方米/m²）
                   </Col>
                 </Row>
@@ -51,7 +51,7 @@
                   <Input placeholder="..." v-model="C61Info.plotRatio" class="profWriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6" class="profWriteUnit">
+              <Col span="7" class="profWriteUnit">
                 （%）
               </Col>
             </Row>
@@ -64,7 +64,7 @@
                   <Input placeholder="..." v-model="C61Info.buildDensity" class="profWriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6" class="profWriteUnit">
+              <Col span="7" class="profWriteUnit">
                 （kg/m³）
               </Col>
             </Row>
@@ -77,7 +77,7 @@
                   <Input placeholder="..." v-model="C61Info.greenSpaceRatio" class="profWriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6" class="profWriteUnit">
+              <Col span="7" class="profWriteUnit">
                 （%）
               </Col>
             </Row>
@@ -92,8 +92,8 @@
                   <Input placeholder="..." v-model="C61Info.population" class="profWriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6" class="profWriteUnit">
-                （???单位）
+              <Col span="7" class="profWriteUnit">
+                （万）
               </Col>
             </Row>
           </Col>
@@ -105,7 +105,7 @@
                   <Input placeholder="..." v-model="C61Info.plotRatioArea" class="profWriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6" class="profWriteUnit">
+              <Col span="7" class="profWriteUnit">
                 （平方米/m²）
               </Col>
             </Row>
@@ -209,8 +209,4 @@
 </script>
 
 <style scoped>
-  /*如果位置有变，错误的显示信息需要改变大小*/
-  .FormItemClass >>> .ivu-form-item-error-tip {
-    padding-top: 35px !important;
-  }
 </style>

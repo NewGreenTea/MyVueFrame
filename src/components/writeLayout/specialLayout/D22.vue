@@ -71,7 +71,7 @@
     },
     methods: {
       loadD22() {
-        if (this.isUpdate === true) {
+        if (this.specViewParams.isUpdate === true) {
           this.axios.get('/api/profETC/getD22', {params: {archId: this.archId}}).then(
             res => {
               this.D22Info = res.data.data
@@ -127,8 +127,4 @@
 </script>
 
 <style scoped>
-  /*如果位置有变，错误的显示信息需要改变大小*/
-  .FormItemClass >>> .ivu-form-item-error-tip {
-    padding-top: 35px !important;
-  }
 </style>

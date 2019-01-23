@@ -1,34 +1,34 @@
 <template>
   <div style="width: 240px;">
-    <Menu active-name="1-1" :accordion="menuAccordion" class="sideClass">
+    <Menu :accordion="menuAccordion" class="sideClass">
       <Submenu name="1" >
         <template slot="title">
           <Icon type="ios-analytics" size="16px"/>
           档案整理
         </template>
         <MenuItem name="1-1">
-          <router-link to="/index/viewcont/archAdmin"><p @click="archAdminLauout">导入清单</p></router-link>
+          <router-link to="/index/viewcont/archAdmin" tag="p"><p @click="archAdminLauout">导入清单</p></router-link>
         </MenuItem>
         <MenuItem name="1-2">
-          <router-link to="/index/viewcont/director"><p @click="directorLauout">任务分配</p></router-link>
+          <router-link to="/index/viewcont/director" tag="p"><p @click="directorLauout">任务分配</p></router-link>
         </MenuItem>
         <MenuItem name="1-3">
-          <router-link to="/index/viewcont/writerGroup"><p @click="writerLauout">著录</p></router-link>
+          <router-link to="/index/viewcont/writerGroup" tag="p"><p @click="writerLauout">著录</p></router-link>
         </MenuItem>
         <MenuItem name="1-4">
-          <router-link to="/index/viewcont/checkWrite"><p @click="checkWriter" >著录质检</p></router-link>
+          <router-link to="/index/viewcont/checkWrite" tag="p"><p @click="checkWriter" >著录质检</p></router-link>
         </MenuItem>
         <MenuItem name="1-5">
-          <router-link to="/index/viewcont/archSmCheck"><p @click="smcheckLauout" >扫描质检</p></router-link>
+          <router-link to="/index/viewcont/archSmCheck" tag="p"><p @click="smcheckLauout" >扫描质检</p></router-link>
         </MenuItem>
         <MenuItem name="1-6">
-          <router-link to="/index/viewcont/upload"><p @click="fileuploadLauout" >上传</p></router-link>
+          <router-link to="/index/viewcont/upload" tag="p"><p @click="fileuploadLauout" >上传</p></router-link>
         </MenuItem>
         <MenuItem name="1-7">
-          <router-link to="/index/viewcont/archClassify"><p @click="archClassifyLauout">档案组卷</p></router-link>
+          <router-link to="/index/viewcont/archClassify" tag="p"><p @click="archClassifyLauout">档案组卷</p></router-link>
         </MenuItem>
         <MenuItem name="1-8">
-          <router-link to="/index/viewcont/archPrint"><p @click="printLauout">打印</p></router-link>
+          <router-link to="/index/viewcont/archPrint" tag="p"><p @click="printLauout">打印</p></router-link>
         </MenuItem>
       </Submenu>
       <Submenu name="2">
@@ -54,18 +54,18 @@
           系统管理
         </template>
         <MenuItem name="4-1">
-          <router-link to="/index/viewcont/userManagement"><p @click="userManagement">用户管理</p></router-link>
+          <router-link to="/index/viewcont/userManagement" tag="p"><p @click="userManagement">用户管理</p></router-link>
         </MenuItem>
         <MenuItem name="4-2">权限管理</MenuItem>
         <MenuItem name="4-3">
-          <router-link to="/index/viewcont/departmentManagement"><p @click="departmentManagement">部门管理</p></router-link>
+          <router-link to="/index/viewcont/departmentManagement" tag="p"><p @click="departmentManagement">部门管理</p></router-link>
         </MenuItem>
         <MenuItem name="4-4">
-          <router-link to="/index/viewcont/postManagement"><p @click="postManagement">职位管理</p></router-link>
+          <router-link to="/index/viewcont/postManagement" tag="p"><p @click="postManagement">职位管理</p></router-link>
         </MenuItem>
         <!--<MenuItem name="4-5">模板管理</MenuItem>-->
         <MenuItem name="4-5">
-          <router-link to="/index/viewcont/archNoTool"><p @click="archNoManagement">档号管理</p></router-link>
+          <router-link to="/index/viewcont/archNoTool" tag="p"><p @click="archNoManagement">档号管理</p></router-link>
         </MenuItem>
       </Submenu>
       <Submenu name="5">
@@ -309,8 +309,13 @@
 </script>
 
 <style scoped>
+  /*菜单字体样式*/
   .sideClass >>> .ivu-menu-submenu-title{
     font-size: 16px !important;
     font-weight: 500;
+  }
+  /*菜单选中颜色*/
+  .sideClass >>> .ivu-menu-item-active .ivu-menu-item-selected{
+    background: #D3FF93;
   }
 </style>

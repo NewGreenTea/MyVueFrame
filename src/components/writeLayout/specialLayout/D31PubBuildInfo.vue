@@ -18,7 +18,7 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal width="1000px" :loading="loading" v-model="AddModal" draggable :mask-closable="false" title="添加公建配套"
+    <Modal width="1000px" :loading="loading" v-model="AddModal" :mask-closable="false" title="添加公建配套"
            @on-ok="addD31PBIData" @on-cancel="addcancle">
       <Form class="formClass" :model="D31PubBuildInfo" ref="addForm" :rules="rules">
         <Row>
@@ -64,7 +64,7 @@
       </Form>
     </Modal>
 
-    <Modal width="1000px" :loading="loading" v-model="UpdateModal" draggable :mask-closable="false" title="修改公建配套"
+    <Modal width="1000px" :loading="loading" v-model="UpdateModal" :mask-closable="false" title="修改公建配套"
            @on-ok="UpdateNMIData" @on-cancel="cancleUpdate">
       <Form class="formClass" :model="D31PubBuildInfo" ref="updateForm" :rules="rules">
         <Row>
@@ -468,16 +468,5 @@
 </script>
 
 <style scoped>
-  .D31WriteInput{
-    width: 220px;
-    float: right;
-  }
-  /*如果位置有变，错误的显示信息需要改变大小*/
-  .FormItemClass >>> .ivu-form-item-error-tip {
-    padding-top: 35px !important;
-  }
-  /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
-    font-size: 14px;
-  }
+
 </style>
