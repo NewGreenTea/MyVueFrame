@@ -15,7 +15,7 @@ module.exports = {
         // secure : false,  //如果是https接口，需要配置这个参数
         changeOrigin : true,  // 如果请求接口跨域，需要配置
         pathRewrite : {  // 如果接口没有/api，可以重写路径
-          '^/api' : '/api'  // 变为"/"，本项目的请求含有/api变为/，例如/api/upload变为/upload
+          '^/api' : '/'  // 变为"/"，本项目的请求含有/api变为/，例如/api/upload变为/upload
         }
       }
     },
