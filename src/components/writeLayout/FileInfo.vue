@@ -41,7 +41,7 @@
       </Col>
     </Row>
 
-    <Modal width="1250px" v-model="AddModal" :loading="loading" draggable :mask-closable="false" title="添加文件信息"
+    <Modal width="1250px" v-model="AddModal" :loading="loading" :mask-closable="false" title="添加文件信息"
            @on-ok="saveArchData" @on-cancel="cancleAdd">
       <Row>
         <Col span="20" offset="2">
@@ -121,7 +121,7 @@
       </Row>
     </Modal>
 
-    <Modal width="1250px" v-model="UpdateModal" :loading="loading" draggable :mask-closable="false" title="修改文件信息"
+    <Modal width="1250px" v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改文件信息"
            @on-ok="updateArchData" @on-cancel="cancleUpdate">
       <Row>
         <Col span="20" offset="2">

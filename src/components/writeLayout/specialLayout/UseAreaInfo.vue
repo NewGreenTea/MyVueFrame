@@ -18,7 +18,7 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal width="1000px" v-model="AddModal" :loading="loading" draggable :mask-closable="false" title="添加用地性质详细著录"
+    <Modal width="1000px" v-model="AddModal" :loading="loading" :mask-closable="false" title="添加用地性质详细著录"
            @on-ok="addUAIData" @on-cancel="addcancle">
       <Form class="formClass" :model="UseAreaInfo" ref="addForm" :rules="rules">
         <Row>
@@ -56,7 +56,7 @@
       </Form>
     </Modal>
 
-    <Modal width="1000px" v-model="UpdateModal" :loading="loading" draggable :mask-closable="false" title="修改用地性质详细著录"
+    <Modal width="1000px" v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改用地性质详细著录"
            @on-ok="UpdateUAIData" @on-cancel="cancleUpdate">
       <Form class="formClass" :model="UseAreaInfo" ref="updateForm" :rules="rules">
         <Row>

@@ -18,7 +18,7 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal width="1000px" :loading="loading" v-model="AddModal" draggable :mask-closable="false" title="添加报建项目详细"
+    <Modal width="1000px" :loading="loading" v-model="AddModal" :mask-closable="false" title="添加报建项目详细"
            @on-ok="addBPIData" @on-cancel="addcancle">
       <Form class="formClass" :model="D31BuildProjInfo" ref="addForm" :rules="rules">
         <Row>
@@ -89,7 +89,7 @@
       </Form>
     </Modal>
 
-    <Modal width="1000px" :loading="loading" v-model="UpdateModal" draggable :mask-closable="false" title="修改报建项目详细"
+    <Modal width="1000px" :loading="loading" v-model="UpdateModal" :mask-closable="false" title="修改报建项目详细"
            @on-ok="UpdateBPIData" @on-cancel="cancleUpdate">
       <Form class="formClass" :model="D31BuildProjInfo" ref="updateForm" :rules="rules">
         <Row>

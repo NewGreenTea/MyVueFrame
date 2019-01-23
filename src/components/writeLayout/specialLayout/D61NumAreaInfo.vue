@@ -18,7 +18,7 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal width="1000px" :loading="loading" v-model="AddModal" draggable :mask-closable="false" title="添加验收建筑层数与面积"
+    <Modal width="1000px" :loading="loading" v-model="AddModal" :mask-closable="false" title="添加验收建筑层数与面积"
            @on-ok="addNMIData" @on-cancel="addcancle">
       <Form class="formClass" :model="D61NumAreaInfo" ref="addForm" :rules="rules">
         <Row>
@@ -91,7 +91,7 @@
       </Form>
     </Modal>
 
-    <Modal width="1000px" :loading="loading" v-model="UpdateModal" draggable :mask-closable="false" title="修改验收建筑层数与面积"
+    <Modal width="1000px" :loading="loading" v-model="UpdateModal" :mask-closable="false" title="修改验收建筑层数与面积"
            @on-ok="UpdateNMIData" @on-cancel="cancleUpdate">
       <Form class="formClass" :model="D61NumAreaInfo" ref="updateForm" :rules="rules">
         <Row>
