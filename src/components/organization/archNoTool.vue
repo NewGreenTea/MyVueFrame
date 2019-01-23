@@ -64,23 +64,23 @@
            @on-ok="saveArchNo" @on-cancel="cancleAdd">
       <Row>
         <Col>
-          <Row>
-            <Col span="12" class="archToolTableCss">
-              档案类型
+          <Row class="archToolTableCss">
+            <Col span="12">
+              <p>档案类型</p>
             </Col>
-            <Col span="6" class="archToolTableCss">
-              年份
+            <Col span="6">
+              <p>年份</p>
             </Col>
-            <Col span="6" class="archToolTableCss">
-              开始流水号
+            <Col span="6">
+              <p>开始流水号</p>
             </Col>
           </Row>
         </Col>
         <Col>
-          <Form ref="addForm" :rules="rules" :model="serialnumInfo">
-            <Row>
+          <Form ref="addForm" :rules="rules" :model="serialnumInfo" class="archToolTableCss">
+            <Row :gutter="16">
               <Col span="12">
-                <FormItem class="FormItemClass">
+                <FormItem class="ToolToolFormItemClass">
                   <Row>
                     <Col span="8">
                       <Select @on-change="addOneSelect" clearable ref="addOneCalssSelect">
@@ -101,17 +101,17 @@
                 </FormItem>
               </Col>
               <Col span="6">
-                <FormItem prop="archYear" class="FormItemClass">
+                <FormItem prop="archYear" class="ToolFormItemClass">
                   <Input type="text" v-model="serialnumInfo.archYear" placeholder="设置年份"/>
                 </FormItem>
               </Col>
               <Col span="6">
-                <FormItem prop="startNum" class="FormItemClass">
+                <FormItem prop="startNum" class="ToolFormItemClass">
                   <Input type="text" v-model="serialnumInfo.startNum" placeholder="定义开始流水号"/>
                 </FormItem>
               </Col>
               <!-- 隐藏（暂时没有用） -->
-              <FormItem prop="endNum" class="FormItemClass" hidden>
+              <FormItem prop="endNum" class="ToolFormItemClass" hidden>
                 <Input type="text" v-model="serialnumInfo.endNum" placeholder="定义结束流水号"/>
               </FormItem>
               <!-- 隐藏（暂时没有用） -->
@@ -122,33 +122,33 @@
     </Modal>
 
     <Modal v-model="updateModal" title="修改档号设置" :loading="loading" draggable :mask-closable="false" width="800"
-           @on-ok="updateArchNo" @on-cancel="cancleUpdate">
+           @on-ok="updateArchNo" @on-cancel="cancleUpdate" >
       <Row>
         <Col>
-          <Row>
-            <Col span="12" class="archToolTableCss">
-              档案类型
+          <Row class="archToolTableCss">
+            <Col span="12" >
+              <p>档案类型</p>
             </Col>
-            <Col span="6" class="archToolTableCss">
-              年份
+            <Col span="6">
+              <p>年份</p>
             </Col>
-            <Col span="6" class="archToolTableCss">
-              开始流水号
+            <Col span="6">
+              <p>开始流水号</p>
             </Col>
           </Row>
         </Col>
         <Col>
           <Form ref="updateForm" :rules="rules" :model="serialnumInfo">
-            <Row>
+            <Row :gutter="16">
               <Col span="12">
                   <Row>
                     <Col span="8">
-                      <FormItem class="FormItemClass colorBack">
+                      <FormItem class="ToolFormItemClass colorBack">
                         <Input type="text" v-model="updateOneTypeName" disabled/>
                       </FormItem>
                     </Col>
                     <Col span="16">
-                      <FormItem class="FormItemClass colorBack">
+                      <FormItem class="ToolFormItemClass colorBack">
                         <Tooltip :content="serialnumInfo.className" max-width="200" style="width: 240px;">
                         <Input type="text" v-model="serialnumInfo.className" disabled/>
                         </Tooltip>
@@ -157,17 +157,17 @@
                   </Row>
               </Col>
               <Col span="6">
-                <FormItem class="FormItemClass colorBack">
+                <FormItem class="ToolFormItemClass colorBack">
                   <Input type="text" v-model="serialnumInfo.archYear" placeholder="设置年份" disabled/>
                 </FormItem>
               </Col>
               <Col span="6">
-                <FormItem prop="startNum" class="FormItemClass">
+                <FormItem prop="startNum" class="ToolFormItemClass">
                   <Input type="text" v-model="serialnumInfo.startNum" placeholder="定义开始流水号"/>
                 </FormItem>
               </Col>
               <!-- 隐藏（暂时没有用） -->
-              <FormItem prop="endNum" class="FormItemClass" hidden>
+              <FormItem prop="endNum" class="ToolFormItemClass" hidden>
                 <Input type="text" v-model="serialnumInfo.endNum" placeholder="定义结束流水号"/>
               </FormItem>
               <!-- 隐藏（暂时没有用） -->
@@ -379,9 +379,9 @@
       //勾选修改
       updateArchNO(){
         if (Object.keys(this.tempData).length === 0) { //判断有没勾选
-          alert('请钩选要修改的档号')
+          this.$Message.info('请钩选要修改的档号')
         } else if (Object.keys(this.tempData).length > 1) {
-          alert('请钩选一条要修改的档号')
+          this.$Message.info('请钩选一条要修改的档号')
         } else {
           this.updateModal = true;
           this.serialnumInfo.id = this.tempData[0].id;

@@ -1,42 +1,47 @@
 <template>
   <div>
-    <Row>
+    <Row >
+      <Col>
       <div style="visibility: hidden;height: 200px;"></div>
-    </Row>
-    <Row>
-      <div style="height: 200px;background-color: silver">
-      </div>
-    </Row>
-
-    <Row>
+      </Col>
+      <Col>
+        <div style="height: 200px;background-color: silver"></div>
+      </Col>
       <!--<div class="loginStyle">-->
-      <div :style="loginStyle">
-        <div style="margin-bottom: 50px;text-align: center">
-          <h1>国土规划综合档案电子化管理系统</h1>
-        </div>
-        <div class="loginForm">
+      <Col :style="centerCss">
+        <div >
           <Row>
             <Col>
-              <Form ref="formInline" :model="formInline" :rules="ruleInline" label-position="right" :label-width="100" @keydown.enter.native="handleSubmit('formInline')">
-                <FormItem prop="user">
-                  <Input type="text" v-model="formInline.user" placeholder="Username">
-                  <Icon type="ios-person-outline" slot="prepend" size="22"></Icon>
-                  </Input>
-                </FormItem>
-                <FormItem prop="password">
-
-                  <Input type="password" v-model="formInline.password" placeholder="Password">
-                  <Icon type="ios-lock" slot="prepend" size="22"></Icon>
-                  </Input>
-                </FormItem>
-                <FormItem>
-                  <Button type="primary" @click="handleSubmit('formInline')" style="float: right">登录</Button>
-                </FormItem>
-              </Form>
+              <div style="margin-bottom: 50px;text-align: center" class="loginTitle">
+                <p>国土规划综合档案电子化管理系统</p>
+              </div>
+            </Col>
+            <Col span="8" offset="8" class="Top">
+              <div class="loginForm">
+                <Row>
+                  <Col>
+                    <Form ref="formInline" :model="formInline" :rules="ruleInline" label-position="right" :label-width="100" @keydown.enter.native="handleSubmit('formInline')">
+                      <FormItem prop="user">
+                        <Input type="text" v-model="formInline.user" placeholder="Username">
+                        <Icon type="ios-person-outline" slot="prepend" size="30"></Icon>
+                        </Input>
+                      </FormItem>
+                      <FormItem prop="password">
+                        <Input type="password" v-model="formInline.password" placeholder="Password">
+                        <Icon type="ios-lock" slot="prepend" size="30"></Icon>
+                        </Input>
+                      </FormItem>
+                      <FormItem>
+                        <Button type="primary" @click="handleSubmit('formInline')" style="float: right">登录</Button>
+                      </FormItem>
+                    </Form>
+                  </Col>
+                </Row>
+              </div>
             </Col>
           </Row>
         </div>
-      </div>
+      </Col>
     </Row>
   </div>
 </template>
@@ -48,8 +53,7 @@
       return {
         //屏幕高度
         clientHeight: '',
-        //屏幕宽度
-        clientWidth: '',
+        clientWidth: document.body.clientWidth,
         moveLeft: '',
         systems: ['规划系统', '国土系统', '文书系统'],
         formInline: {
@@ -65,12 +69,11 @@
             {type: 'string', min: 3, message: '密码的长度为3', trigger: 'blur'}
           ]
         },
-        loginStyle: {
-          position: 'absolute',
-          width: '600px',
-          left: '',
-          top: '-150px'
-        }
+        Top: {
+          position: 'relative',//'relative',
+          width: '100%',
+          top: ''
+        },
       }
     },
     methods: {
@@ -100,31 +103,17 @@
       }
     },
     mounted() {
-      this.clientHeight = document.body.clientHeight;
-      this.clientWidth = document.body.clientWidth;
-      this.loginStyle.left = this.clientWidth/2-300 + 'px';
+
+    },
+    computed:{
+      centerCss: function(){
+        this.Top.top ='-150px';
+        return this.Top;
+      }
     }
   }
 </script>
 
 <style scoped>
-  .loginStyle {
-    position: absolute;
-    width: 600px;
-    left: 624px;
-    top: -150px;
-  }
 
-  .loginForm {
-    background-color: white;
-    /*background-color: antiquewhite;*/
-    padding: 25px;
-    border:1px solid antiquewhite
-  }
-  .loginForm /deep/ .ivu-form-item-content {
-    margin-left: 0 !important;
-  }
-  .loginForm /deep/ .ivu-input {
-    height: 40px !important;
-  }
 </style>

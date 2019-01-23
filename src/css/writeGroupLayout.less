@@ -1,94 +1,156 @@
 /*所有页面*/
 //表格字体大小样式
-.TableFontCss{
+.TableFontCss {
   .ivu-table {
     font-size: 14px;
   }
 }
 
-/*ArchAdmin（导入清单）样式*/
-/*条件表单显示样式*/
-.conditionForm {
-  .ivu-form-item-content{
-    font-size: 15px;
-    font-weight: 600;
-  }
-  .ivu-input{
-    font-size: 14px;
-  }
+/*login（登录）样式*/
+.loginForm {
+  background-color: white;
+  padding: 25px 25px 0px 25px;
+  border:1px solid antiquewhite
 }
-
-/*newDirector(分配管理)样式*/
-/*条件显示样式*/
-.conditionFormFront {
+.loginForm{
   .ivu-form-item-content {
     font-size: 15px;
+    margin-left: 0 !important;
   }
   .ivu-input {
-    font-size: 14px;
+    font-size: 15px;
+    height: 40px !important;
+  }
+}
+/*系统名样式*/
+.loginTitle {
+  p {
+    font-size: 35px;
+    font-weight: 900;
+    /*设置字与字间距*/
+    letter-spacing: 10px;
   }
 }
 
-/*writeGroup著录各界面*/
-//应用在基本信息和专业信息 以及 小部分条件表单
-.formClass {
-  .ivu-form-item-label { /*著录框的label，字段名大小*/
-    text-align: left;
-    font-size: 15px;
+  /*my_sider（菜单）样式*/
+  .sideClass {
+    /*菜单字体样式*/
+    .ivu-menu-submenu-title {
+      font-size: 16px !important;
+      font-weight: 500;
+    }
+    /*菜单选中颜色*/
+    .ivu-menu-item-selected {
+      background: #D3FF93 !important;
+    }
   }
-  .ivu-input{  /*著录框的字体大小*/
-    font-size: 15px;
-  }
-}
-/*禁用的颜色高亮为黑色*/
-//应用在基本，文件级信息著录界面信息不可修改地方
-.colorBack {
-  .ivu-input[disabled], fieldset[disabled] .ivu-input {
-    color: black;
-  }
-}
-//著录错误的显示信息的位置
-.FormItemClass {
-  .ivu-form-item-error-tip {
-    padding-top: 35px;
-  }
-}
-//著录基本信息界面，“发文号”字段显示独特样式
-.dispatchCss {
-  .ivu-form-item-label {
-    padding-left: 30px;
-    font-size: 14px;
-  }
-}
-//专业信息著录界面，“区路街号”的独特样式
-.formSpec {
-  .ivu-form-item-content {
-    //(因为iview的formitem中必有一个额外的style的样式是左边距是100px)
-    margin-left: 0px !important;
-  }
-}
 
-/*checkLayout（著录质检显示界面）*/
-.checkFormClass {
-  //表格内容样式
-  .ivu-form-item-content {
-    font-size: 20px;
-    line-height: 42px;
+  /*ArchAdmin（导入清单）样式*/
+  /*条件表单显示样式*/
+  .conditionForm {
+    .ivu-form-item-content {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .ivu-input {
+      font-size: 14px;
+    }
   }
-  //表格标签样式
-  .ivu-form-item-label {
-    font-size: 20px;
-  }
-}
 
-/**/
-/*archNoTool(档号管理界面)样式*/
-.archToolCss {
-  p{
-    font-size: 15px;
-    text-align: center;
-    padding-top: 5px;
-    /*字体变粗*/
-    font-weight: 700;
+  /*newDirector(分配管理)样式*/
+  /*条件显示样式*/
+  .conditionFormFront {
+    .ivu-form-item-content {
+      font-size: 15px;
+    }
+    .ivu-input {
+      font-size: 14px;
+    }
   }
-}
+
+  /*writeGroup著录各界面*/
+  //应用在基本信息和专业信息 以及 小部分条件表单
+  .formClass {
+    .ivu-form-item-label { /*著录框的label，字段名大小*/
+      text-align: left;
+      font-size: 15px;
+    }
+    .ivu-input { /*著录框的字体大小*/
+      font-size: 15px;
+    }
+  }
+
+  /*禁用的颜色高亮为黑色*/
+  //应用在基本，文件级信息著录界面信息不可修改地方
+  .colorBack {
+    .ivu-input[disabled], fieldset[disabled] .ivu-input {
+      color: black;
+    }
+  }
+
+  //著录错误的显示信息的位置
+  .FormItemClass {
+    .ivu-form-item-error-tip {
+      padding-top: 35px;
+    }
+  }
+
+  //著录基本信息界面，“发文号”字段显示独特样式
+  .dispatchCss {
+    .ivu-form-item-label {
+      padding-left: 30px;
+      font-size: 14px;
+    }
+  }
+
+  //专业信息著录界面，“区路街号”的独特样式
+  .formSpec {
+    .ivu-form-item-content {
+      //(因为iview的formitem中必有一个额外的style的样式是左边距是100px)
+      margin-left: 0px !important;
+    }
+  }
+
+  /*checkLayout（著录质检显示界面）*/
+  .checkFormClass {
+    //表格内容样式
+    .ivu-form-item-content {
+      font-size: 20px;
+      line-height: 42px;
+    }
+    //表格标签样式
+    .ivu-form-item-label {
+      font-size: 20px;
+    }
+  }
+
+  /*archNoTool*/
+  //archNoTool(档号管理界面)样式
+  .archToolCss {
+    p {
+      font-size: 15px;
+      text-align: center;
+      padding-top: 5px;
+      /*字体变粗*/
+      font-weight: 700;
+    }
+  }
+
+  //archNoTool（档号管理界面）的表格样式
+  .archToolTableCss {
+    p {
+      font-size: 15px;
+      font-weight: 500;
+      padding-left: 12px;
+    }
+  }
+
+  //archNoTool(档号管理界面)错误提示样式
+  .ToolFormItemClass {
+    .ivu-form-item-error-tip {
+      padding-top: 10px;
+    }
+    .ivu-input {
+      font-size: 14px;
+    }
+  }

@@ -39,11 +39,3 @@
 .displaySpan {
   padding-right: 20px;
 }
-
-/*archNoTool*/
-/*archNoTool（档号管理界面）的表格样式*/
-.archToolTableCss {
-  font-size: 15px;
-  font-weight: 700;
-  padding-left: 15px;
-}

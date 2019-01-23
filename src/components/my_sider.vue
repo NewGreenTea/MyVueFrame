@@ -71,26 +71,26 @@
       <Submenu name="5">
         <template slot="title">
           <Icon type="ios-cog" size="16px"/>
-          测试专用
+          开发测试
         </template>
         <MenuItem name="5-1">
-          <router-link to="/index/viewcont/flowCreated"><p @click="flowCreatedLauout">业务创建</p></router-link>
+          <router-link to="/index/viewcont/flowCreated"><p>业务创建</p></router-link>
         </MenuItem>
         <MenuItem name="5-2">
-          <router-link to="/index/viewcont/Assignment"><p @click="AssignmentLauout">任务</p></router-link>
+          <router-link to="/index/viewcont/Assignment"><p>任务</p></router-link>
         </MenuItem>
         <MenuItem name="5-3">
-          <Cascader :data="data" @on-change="handleChange" trigger="hover">源数据管理</Cascader>
+          <router-link to="/index/viewcont/Assignment"><p>数据管理</p></router-link>
         </MenuItem>
         <MenuItem name="5-4">
-          <!--<p @click="ArchManagerLauout">档案管理</p>-->
           <router-link to="/index/viewcont/archManagement"><p>档案管理</p></router-link>
         </MenuItem>
         <MenuItem name="5-5">
-          <router-link to="/index/viewcont"><p @click="ArchTypeLauout">档案类型</p></router-link>
+          <!--<p @click="ArchTypeLauout">-->
+          <router-link to="/index/viewcont"><p>档案类型</p></router-link>
         </MenuItem>
         <MenuItem name="5-6">
-          <router-link to="/index/viewcont/echarts"><p @click="testEcharts">测试ECHARTS</p></router-link>
+          <router-link to="/index/viewcont/echarts"><p>测试ECHARTS</p></router-link>
         </MenuItem>
       </Submenu>
     </Menu>
@@ -101,30 +101,11 @@
   export default {
     data() {
       return {
-        data: [
-          {
-            value: 'beijing',
-            label: '北京'
-          },
-          {
-            value: 'beijing',
-            label: '上海'
-          }
-        ],
+        //开启手风琴模式，只能打开菜单的一个
         menuAccordion: true
       }
     },
     methods: {
-      testEcharts() {
-        let path = this.getTabViewPath;
-        let temp = {name: 'echarts', path: '/index/viewcont/echarts'};
-        if (recopy(path, 'echarts', '/index/viewcont/echarts')) {
-          this.$emit('showIndexCont', 'echarts')
-        } else {
-          this.$emit('showIndexCont', 'echarts'); // 子向父组件传值
-          this.$store.dispatch('AddTabView', temp)
-        }
-      },
       fileuploadLauout() {
         let path = this.getTabViewPath;
         let temp = {name: 'fileupload', path: '/index/viewcont/fileupload', desName: '文件上传'};
@@ -152,26 +133,6 @@
           this.$emit('showIndexCont', 'archPrint')
         } else {
           this.$emit('showIndexCont', 'archPrint'); // 子向父组件传值
-          this.$store.dispatch('AddTabView', temp)
-        }
-      },
-      flowCreatedLauout() {
-        let path = this.getTabViewPath;
-        let temp = {name: 'flowCreated', path: '/index/viewcont/flowCreated'};
-        if (recopy(path, 'flowCreated', '/index/viewcont/flowCreated')) {
-          this.$emit('showIndexCont', 'flowCreated')
-        } else {
-          this.$emit('showIndexCont', 'flowCreated'); // 子向父组件传值
-          this.$store.dispatch('AddTabView', temp)
-        }
-      },
-      AssignmentLauout() {
-        let path = this.getTabViewPath;
-        let temp = {name: 'Assignment', path: '/index/viewcont/Assignment'};
-        if (recopy(path, 'Assignment', '/index/viewcont/Assignment')) {
-          this.$emit('showIndexCont', 'Assignment')
-        } else {
-          this.$emit('showIndexCont', 'Assignment'); // 子向父组件传值
           this.$store.dispatch('AddTabView', temp)
         }
       },
@@ -225,17 +186,7 @@
           this.$store.dispatch('AddTabView', temp)
         }
       },
-      ArchManagerLauout() {
-        let path = this.getTabViewPath;
-        let temp = {name: 'archManagement', path: '/index/viewcont/archManagement'};
-        if (recopy(path, 'archManagement', '/index/viewcont/archManagement')) {
-          this.$emit('showIndexCont', 'archManagement')
-        } else {
-          this.$emit('showIndexCont', 'archManagement'); // 子向父组件传值
-          this.$store.dispatch('AddTabView', temp)
-        }
-      },
-      ArchTypeLauout() {
+      ArchTypeLauout() { //不使用（档案类型管理）
         let path = this.getTabViewPath;
         let temp = {name: 'classtype', path: '/index/viewcont/classtype'};
         if (recopy(path, 'classtype', '/index/viewcont/classtype')) {
@@ -244,9 +195,6 @@
           this.$emit('showIndexCont', 'classtype'); // 子向父组件传值
           this.$store.dispatch('AddTabView', temp)
         }
-      },
-      handleChange(value, selectedData) { // 二级级联菜单
-        console.log('处理点击的事件：' + value + selectedData)
       },
       userManagement() {
         let path = this.getTabViewPath;
@@ -309,13 +257,5 @@
 </script>
 
 <style scoped>
-  /*菜单字体样式*/
-  .sideClass >>> .ivu-menu-submenu-title{
-    font-size: 16px !important;
-    font-weight: 500;
-  }
-  /*菜单选中颜色*/
-  .sideClass >>> .ivu-menu-item-active .ivu-menu-item-selected{
-    background: #D3FF93;
-  }
+
 </style>
