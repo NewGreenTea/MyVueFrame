@@ -468,16 +468,5 @@
 </script>
 
 <style scoped>
-  .D31WriteInput{
-    width: 220px;
-    float: right;
-  }
-  /*如果位置有变，错误的显示信息需要改变大小*/
-  .FormItemClass >>> .ivu-form-item-error-tip {
-    padding-top: 35px !important;
-  }
-  /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
-    font-size: 14px;
-  }
+
 </style>

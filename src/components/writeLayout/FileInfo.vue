@@ -682,18 +682,5 @@
 </script>
 
 <style scoped>
-  /*禁用的颜色高亮为黑色*/
-  .colorBack /deep/ .ivu-input[disabled], fieldset[disabled] .ivu-input {
-    color: black !important;
-  }
 
-  /*如果位置有变，错误的显示信息需要改变大小*/
-  .FormItemClass >>> .ivu-form-item-error-tip {
-    padding-top: 35px !important;
-  }
-
-  /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
-    font-size: 14px;
-  }
 </style>

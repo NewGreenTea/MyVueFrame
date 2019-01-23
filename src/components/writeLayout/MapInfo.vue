@@ -301,8 +301,4 @@
 </script>
 
 <style scoped>
-  /*表格字体大小*/
-  .TableFontCss >>> .ivu-table{
-    font-size: 14px;
-  }
 </style>

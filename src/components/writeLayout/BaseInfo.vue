@@ -308,24 +308,5 @@
 </script>
 
 <style scoped>
-  /*发文号特殊样式*/
-  .baseWriteInputSpec {
-    width: 265px;
-    float: right;
-  }
 
-  .dispatchCss /deep/ .ivu-form-item-label {
-    padding-left: 30px;
-    font-size: 14px;
-  }
-
-  /*禁用的颜色高亮为黑色*/
-  .colorBack /deep/ .ivu-input[disabled], fieldset[disabled] .ivu-input {
-    color: black !important;
-  }
-
-  /*如果位置有变，错误的显示信息需要改变大小*/
-  .FormItemClass >>> .ivu-form-item-error-tip {
-    padding-top: 35px !important;
-  }
 </style>
