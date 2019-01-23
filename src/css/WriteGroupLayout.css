@@ -3,9 +3,9 @@
   width: 300px;
   float: right;
 }
-/*文件级信息著录框的样式*/
-.fileWriteInput {
-  width: 220px;
+/*（基本信息界面）发文号特殊样式*/
+.baseWriteInputSpec {
+  width: 265px;
   float: right;
 }
 /*专业信息特性著录框的样式*/
@@ -16,6 +16,18 @@
 /*专业信息著录界面的样式*/
 .profButtonView{
   margin-top: 20px;
+}
+/*专业信息建设地址样式（以下4个）*/
+.profSpecCss {
+  width: 160px;
+}
+.buildingAddressCss {
+  font-size: 14px;
+  padding-top: 5px;
+  padding-left: 10px;
+}
+.buildingAddressCss2 {
+  font-size: 14px;
 }
 /*专业信息表格样式*/
 .profSpecTableCss{
@@ -40,40 +52,34 @@
 .profButtonFloat{
   float: right;
 }
-/*档案著录界面档号卡片提示样式*/
-.tips {
+/*D21,D22的著录框-独特样式*/
+.D212WriteInput {
+  width: 280px;
   float: right;
-  text-align: center;
+}
+/*D31公建配套的著录框-独特样式*/
+.D31WriteInput{
+  width: 220px;
+  float: right;
+}
+/*D31报建项目详细，D61验收建筑层数与面积输入框-独特样式*/
+.D31D61NumWriteInput {
+  width: 100px;
+  float: right;
+}
+/*D31,D61表格显示样式*/
+.routeView {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+/*D61的公建配套输入框-独特样式*/
+.D61WriteInput {
+  width: 200px;
+  float: right;
+}
+/*文件级信息著录框的样式*/
+.fileWriteInput {
+  width: 220px;
+  float: right;
 }
 
-/*著录界面的页面字体大小*/
-.WriteLayoutFont{
-  font-size: 15px;
-}
-/*著录框的label，字段名大小*/
-.formClass /deep/ .ivu-form-item-label{
-  text-align: left;
-  font-size: 15px;
-}
-/*著录框的字体大小*/
-.formClass /deep/ .ivu-input{
-  font-size: 15px;
-}
-
-.FormItemClass {
-  margin-left: 10px;
-}
-
-/*档号管理界面样式*/
-.archToolCss{
-  font-size: 15px;
-  text-align: center;
-  padding-top: 5px;
-  /*字体变粗*/
-  font-weight: 700;
-}
-.archToolTableCss{
-  font-size: 15px;
-  font-weight: 700;
-  padding-left: 15px;
-}

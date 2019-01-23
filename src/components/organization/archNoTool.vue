@@ -44,7 +44,7 @@
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col class="TableFontCss">
             <Table ref="table" border :columns="columns" :data="ArchNoData" v-if="ArchNoData != null"
                    @on-select-all="selectAllData" @on-select="selectData" @on-row-dblclick="updateRowData"
                    @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
@@ -576,13 +576,4 @@
 </script>
 
 <style scoped>
-  /*禁用的颜色高亮为黑色*/
-  .colorBack /deep/ .ivu-input[disabled], fieldset[disabled] .ivu-input {
-    color: black !important;
-  }
-
-  /*如果位置有变，错误的显示信息需要改变大小*/
-  .FormItemClass >>> .ivu-form-item-error-tip {
-    padding-top: 5px !important;
-  }
 </style>

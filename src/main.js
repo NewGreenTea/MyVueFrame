@@ -7,6 +7,7 @@ import iview from 'iview'
 import 'iview/dist/styles/iview.css'
 import './css/WriteGroupLayout.css'
 import './css/myGlobal.css'
+import './css/writeGroupLayout.less'
 
 
 // IE 浏览器支持全部变量Vuex，异步请求axios等，不然报错
