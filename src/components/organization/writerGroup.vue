@@ -557,9 +557,15 @@
             'page': this.needToDoPage,
             'pageSize': this.needToDoPageSize
           }
-        }).then(res => {
-          this.needToDoData = res.data.data.list;
-          this.needToDoCount = res.data.data.total;
+        })
+          .then(res => {
+          if(res.data.data.list.length === 0){
+            this.$Message.info('没有找到！')
+          }else{
+            this.needToDoData = res.data.data.list;
+            this.needToDoCount = res.data.data.total;
+          }
+          this.keyword = '';
           this.$refs.selectStatue.clearSingleSelect();
         })
       },

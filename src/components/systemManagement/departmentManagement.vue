@@ -10,7 +10,7 @@
     </Row>
     <br/>
     <Row>
-      <Col span="22" offset="1">
+      <Col span="22" offset="1" class="TableFontCss">
         <Table class="table" border :columns="columns" :data="tableData" :loading="loading"
                @on-row-dblclick="showEditModel"></Table>
       </Col>
@@ -24,7 +24,7 @@
       </Col>
     </Row>
     <Modal v-model="addModal" :title="addModalTitle" ok-text="添加" @on-ok="addDepartment" cancel-text="关闭">
-      <Form v-model="addInfo" label-position="left" :label-width="addLabelWidth">
+      <Form v-model="addInfo" label-position="left" :label-width="addLabelWidth" class="formClass">
         <FormItem label="部门名称">
           <Input type="text" v-model="addInfo.departName"></Input>
         </FormItem>
@@ -48,7 +48,7 @@
       </Form>
     </Modal>
     <Modal v-model="editModal" :title="editModalTitle" ok-text="修改" @on-ok="updateDepartment" cancel-text="关闭">
-      <Form v-model="editInfo" label-position="left" :label-width="editLabelWidth">
+      <Form v-model="editInfo" label-position="left" :label-width="editLabelWidth" class="formClass">
         <FormItem label="部门名称">
           <Input type="text" v-model="editInfo.departName"></Input>
         </FormItem>

@@ -1,5 +1,5 @@
 <template>
-  <div style="overflow-scrolling: auto;font-size: 14px;">
+  <div style="font-size: 14px;height: 600px">
     <!-- 档案档号搜索条件 -->
     <Row>
       <Col span="20" offset="1">

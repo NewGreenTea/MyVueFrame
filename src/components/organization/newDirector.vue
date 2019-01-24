@@ -728,9 +728,14 @@
           this.spinShow = true;
           this.axios.post(this.pageUrl, this.qs.stringify(this.urlParams, {indices: false}))
             .then(res => {
-              this.DistributeArchData = res.data.data.list;
-              this.archDataCount = res.data.data.total;
-              this.searchData = true;
+              if(res.data.data.list.length === 0){
+                this.$Message.info('没有找到！')
+              }else{
+                this.DistributeArchData = res.data.data.list;
+                this.archDataCount = res.data.data.total;
+                this.searchData = true;
+              }
+
               this.keyDate = '';
               this.archStatues = '';
               this.keyword = '';

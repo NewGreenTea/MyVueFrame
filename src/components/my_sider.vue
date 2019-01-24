@@ -56,7 +56,7 @@
         <MenuItem name="4-1">
           <router-link to="/index/viewcont/userManagement" tag="p"><p @click="userManagement">用户管理</p></router-link>
         </MenuItem>
-        <MenuItem name="4-2">权限管理</MenuItem>
+        <!--<MenuItem name="4-2">权限管理</MenuItem>-->
         <MenuItem name="4-3">
           <router-link to="/index/viewcont/departmentManagement" tag="p"><p @click="departmentManagement">部门管理</p></router-link>
         </MenuItem>
@@ -68,31 +68,31 @@
           <router-link to="/index/viewcont/archNoTool" tag="p"><p @click="archNoManagement">档号管理</p></router-link>
         </MenuItem>
       </Submenu>
-      <Submenu name="5">
-        <template slot="title">
-          <Icon type="ios-cog" size="16px"/>
-          开发测试
-        </template>
-        <MenuItem name="5-1">
-          <router-link to="/index/viewcont/flowCreated"><p>业务创建</p></router-link>
-        </MenuItem>
-        <MenuItem name="5-2">
-          <router-link to="/index/viewcont/Assignment"><p>任务</p></router-link>
-        </MenuItem>
-        <MenuItem name="5-3">
-          <router-link to="/index/viewcont/Assignment"><p>数据管理</p></router-link>
-        </MenuItem>
-        <MenuItem name="5-4">
-          <router-link to="/index/viewcont/archManagement"><p>档案管理</p></router-link>
-        </MenuItem>
-        <MenuItem name="5-5">
-          <!--<p @click="ArchTypeLauout">-->
-          <router-link to="/index/viewcont"><p>档案类型</p></router-link>
-        </MenuItem>
-        <MenuItem name="5-6">
-          <router-link to="/index/viewcont/echarts"><p>测试ECHARTS</p></router-link>
-        </MenuItem>
-      </Submenu>
+      <!--<Submenu name="5">-->
+        <!--<template slot="title">-->
+          <!--<Icon type="ios-cog" size="16px"/>-->
+          <!--开发测试-->
+        <!--</template>-->
+        <!--<MenuItem name="5-1">-->
+          <!--<router-link to="/index/viewcont/flowCreated"><p>业务创建</p></router-link>-->
+        <!--</MenuItem>-->
+        <!--<MenuItem name="5-2">-->
+          <!--<router-link to="/index/viewcont/Assignment"><p>任务</p></router-link>-->
+        <!--</MenuItem>-->
+        <!--<MenuItem name="5-3">-->
+          <!--<router-link to="/index/viewcont/Assignment"><p>数据管理</p></router-link>-->
+        <!--</MenuItem>-->
+        <!--<MenuItem name="5-4">-->
+          <!--<router-link to="/index/viewcont/archManagement"><p>档案管理</p></router-link>-->
+        <!--</MenuItem>-->
+        <!--<MenuItem name="5-5">-->
+          <!--&lt;!&ndash;<p @click="ArchTypeLauout">&ndash;&gt;-->
+          <!--<router-link to="/index/viewcont"><p>档案类型</p></router-link>-->
+        <!--</MenuItem>-->
+        <!--<MenuItem name="5-6">-->
+          <!--<router-link to="/index/viewcont/echarts"><p>测试ECHARTS</p></router-link>-->
+        <!--</MenuItem>-->
+      <!--</Submenu>-->
     </Menu>
   </div>
 </template>
@@ -102,7 +102,7 @@
     data() {
       return {
         //开启手风琴模式，只能打开菜单的一个
-        menuAccordion: true
+        menuAccordion: false
       }
     },
     methods: {

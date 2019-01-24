@@ -6,6 +6,7 @@ import router from './router'
 import iview from 'iview'
 import 'iview/dist/styles/iview.css'
 import './css/WriteGroupLayout.css'
+import './css/systemComponent.css'
 import './css/myGlobal.css'
 import './css/writeGroupLayout.less'
 

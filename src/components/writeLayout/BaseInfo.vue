@@ -181,7 +181,7 @@
           registerNo: this.BaseParams.registerNo, // 读取出来
           archNo: this.BaseParams.archNo, // 读取出来
           archTitle: '',
-          company: '',
+          company: '广州市国土资源和规划委员会',
           date: '',
           inputDate: this.BaseParams.archInputDate,
           archPage: '',
@@ -285,7 +285,7 @@
       },
       reset() {
         this.baseArch.archTitle = '';
-        this.baseArch.company = '';
+        this.baseArch.company = '广州市国土资源和规划委员会';
         this.baseArch.date = '';
         this.keyDate = '';
         this.baseArch.archPage = '';

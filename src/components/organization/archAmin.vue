@@ -36,7 +36,7 @@
         <!--<FormItem>-->
           <!--<Button @click="ArchNOTool" shape="circle">档号设置</Button>-->
         <!--</FormItem>-->
-        <Button @click="test">测试</Button>
+        <!--<Button @click="test">测试</Button>-->
       </Form>
     </Col>
     <!-- 显示导进来的Excel的内容（并且是把档号补充完整的） -->
@@ -195,10 +195,10 @@
         this.$refs.importForm.resetFields();
         this.tableData = [];
       },
-      test(){
-        alert(this.$route.fullPath)
-        this.$router.push({name: 'archAdmin',path:this.$route.fullPath})
-      }
+      // test(){
+      //   alert(this.$route.fullPath)
+      //   this.$router.push({name: 'archAdmin',path:this.$route.fullPath})
+      // }
     }
   }
 </script>
