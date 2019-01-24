@@ -1,9 +1,9 @@
 <template>
-  <Row>
+  <Row style="font-size: 14px">
     <!-- 搜索 -->
     <Row>
       <Col span="22" offset="1">
-        <Form>
+        <Form class="formClass-right">
           <Row>
             <Col span="6">
               <FormItem>
@@ -28,7 +28,7 @@
 
     <!-- 加载档案数据表格 -->
     <Col span="22" offset="1" align="center">
-      <Table ref="table" border :columns="WAColumn" :data="WriterArchData"
+      <Table class="TableFontCss" ref="table" border :columns="WAColumn" :data="WriterArchData"
              @on-select-all="selectAllData"
              @on-select="selectData"
              @on-select-cancel="cancelData"

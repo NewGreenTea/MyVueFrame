@@ -1,9 +1,9 @@
 <template>
-  <Row style="margin: 0px 0px 50px;">
+  <Row style="margin: 0px 0px 50px;font-size: 14px;">
     <!-- 搜索条件 -->
     <Row>
       <Col span="22" offset="1">
-        <Form inline :label-width="80" label-position="left">
+        <Form inline :label-width="120" class="formClass-right">
           <FormItem label="档案状态：">
             <Select v-model="statusdata" placeholder="全部" @on-change="search" style="width:200px">
               <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -36,7 +36,7 @@
                 </div>
                <div>
                  <FormItem label="档案一级状态：">
-                   <Select v-model="tstatusdata" placeholder="全部" @on-change="search" style="width:200px">
+                   <Select v-model="tstatusdata" placeholder="全部" @on-change="search" style="width:300px">
                      <Option v-for="item in tstatusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                    </Select>
                  </FormItem>
@@ -62,7 +62,7 @@
     <!-- 加载档案数据表格 -->
     <Row>
     <Col span="22" offset="1" align="center">
-      <Table ref="table" border :columns="WAColumn" :data="WriterArchData"
+      <Table class="TableFontCss" ref="table" border :columns="WAColumn" :data="WriterArchData"
              @on-select-all="selectAllData"
              @on-select="selectData"
              @on-select-cancel="cancelData"
