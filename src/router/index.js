@@ -24,6 +24,7 @@ import archPrint from '../components/archPrint'
 import BaseInfo from './../components/writeLayout/BaseInfo'
 import ProfInfo from './../components/writeLayout/ProfInfo'
 import FileInfo from './../components/writeLayout/FileInfo'
+import createISO from '../components/organization/createISO'
 
 Vue.use(Router);
 
@@ -166,6 +167,16 @@ export default new Router({
             name: 'archPrint',
             components: {
               archPrint: archPrint
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
+            },
+          },
+          { // ISO制作
+            path: '/index/viewcont/createISO',
+            name: 'createISO',
+            components: {
+              createISO: createISO
             },
             meta:{
               keepAlive:true //需要被缓存的组件
