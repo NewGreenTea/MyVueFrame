@@ -296,7 +296,32 @@
           data: param
         }).then(res=>{
           this.isoloading=false;
-          console.log(res);
+          if(res.data[res.data.length-1].isonum == '' || res.data[res.data.length-1].isonum == null){
+            this.$Message.warning("输入的单个ISO文件大小不足以放下一份案卷！")
+            return false;
+          }
+          this.$Modal.confirm({
+            title: '请确认以下待生成ISO的信息',
+            content: '<p style="font-size: 15px">预计生成 ['+res.data[res.data.length-1].isonum+'] 份ISO文件</p>' +
+                     '<p style="font-size: 15px">最后一份ISO文件大小为：'+res.data[res.data.length-1].lastisosize+'GB</p>',
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => {
+              axios({
+                method: 'post',
+                url: '/api/arch/createISO',
+                data: JSON.stringify(res.data),
+                headers:{
+                  'Content-Type':'application/json'
+                }
+              }).then(res=>{
+                
+              })
+            },
+            onCancel: () => {
+              return false;
+            }
+          });
         }).catch(error => {
           this.isoloading=false;
         })
