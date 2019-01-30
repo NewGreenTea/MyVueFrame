@@ -272,6 +272,7 @@
         this.currentPage = 1;
         this.writeLayout(this.currentPage, this.pageSize);
       },
+      /*计算iso生成数量*/
       calculateSize(){
         if(this.tempData.length<=0){
           this.$Message.warning("请选择需要操作的记录")
@@ -297,9 +298,13 @@
         }).then(res=>{
           this.isoloading=false;
           if(res.data[res.data.length-1].isonum == '' || res.data[res.data.length-1].isonum == null){
+            this.tempData=[];
+            this.$refs.table.selectAll(false);
             this.$Message.warning("输入的单个ISO文件大小不足以放下一份案卷！")
             return false;
           }
+
+          /*开始生成iso*/
           this.$Modal.confirm({
             title: '请确认以下待生成ISO的信息',
             content: '<p style="font-size: 15px">预计生成 ['+res.data[res.data.length-1].isonum+'] 份ISO文件</p>' +
@@ -307,6 +312,7 @@
             okText: '确认',
             cancelText: '取消',
             onOk: () => {
+              this.showing();
               axios({
                 method: 'post',
                 url: '/api/arch/createISO',
@@ -315,18 +321,40 @@
                   'Content-Type':'application/json'
                 }
               }).then(res=>{
-                
+                this.$Spin.hide();
+                let successNum=this.tempData.length-res.data.length;
+                let errorList='总操作数量：'+this.tempData.length+' 条'+'\n';
+                errorList+='成功：'+successNum+' 条'+'\n';
+                errorList+='失败：'+res.data.length+' 条'+'\n';
+                if(res.data.length>0){
+                  errorList+='失败原因如下：'+'\n';
+                  for (let i=0;i<res.data.length;i++){
+                    errorList+=(i+1)+'.'+res.data[i]+'\n'
+                  }
+                }
+                this.tempData=[];
+                this.$refs.table.selectAll(false);
+                this.$Notice.open({
+                  title: 'ISO生成信息汇总  '+dateFormate(new Date()),
+                  desc: '',
+                  duration: 0,
+                  render: h => {
+                    return h('pre', errorList)
+                  }
+                });
               })
             },
             onCancel: () => {
+              this.tempData=[];
+              this.$refs.table.selectAll(false);
               return false;
             }
           });
         }).catch(error => {
+          this.tempData=[];
+          this.$refs.table.selectAll(false);
           this.isoloading=false;
         })
-        this.tempData=[];
-        this.$refs.table.selectAll(false);
       },
       createISO(){
         this.showing();
@@ -374,7 +402,7 @@
                   size: 36
                 }
               }),
-              h('div', '正在进行档案组卷，请勿刷新页面')
+              h('div', '正在生成ISO，请勿刷新页面')
             ])
           }
         });
@@ -458,5 +486,8 @@
     margin: 10px 5px;
     padding: 5px;
     border: 1px #c64e53 dashed;
+  }
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
   }
 </style>

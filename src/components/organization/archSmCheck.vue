@@ -385,23 +385,6 @@
         handleSerach(){
           this.currentPage = 1;
           this.writeLayout(this.currentPage,this.pageSize);
-        },
-        //显示加载动画
-        showing(){
-          this.$Spin.show({
-            render: (h) => {
-              return h('div', [
-                h('Icon', {
-                  'class': 'demo-spin-icon-load',
-                  props: {
-                    type: 'ios-loading',
-                    size: 36
-                  }
-                }),
-                h('div', '组卷中')
-              ])
-            }
-          });
         }
       },
       mounted : function () {
