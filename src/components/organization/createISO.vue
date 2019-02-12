@@ -300,7 +300,7 @@
           if(res.data[res.data.length-1].isonum == '' || res.data[res.data.length-1].isonum == null){
             this.tempData=[];
             this.$refs.table.selectAll(false);
-            this.$Message.warning("输入的单个ISO文件大小不足以放下一份案卷！")
+            this.$Message.warning("输入的单个ISO文件大小不足以放下一份案卷！");
             return false;
           }
 
