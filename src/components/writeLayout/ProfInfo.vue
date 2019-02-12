@@ -226,22 +226,20 @@
           street: '',
           no: ''
         },
-        rules: {
-          no: [
-            {validator: isIntegerNotMust, trigger: 'blur'}
-          ]
-        },
         //控制显示
         showMapInfo: false,
         showAreaHisNo: false,
         showProjectNo: false,
-        //专业信息基本信息校验规则
+        //专业信息校验规则
         rules: {
           buildCompany: [
             {validator: notNull, trigger: 'blur'}
           ],
           buildProject: [
             {validator: notNull, trigger: 'blur'}
+          ],
+          no: [
+            {validator: isIntegerNotMust, trigger: 'blur'}
           ]
         }
       }
@@ -290,14 +288,35 @@
       realSave() { // 特性档案的著录专业信息存储方法
         this.$refs.profForm.validate((valid) => {
           if (valid) {
-            this.axios.post('/api/profInfo/addProfInfo', this.profArch, {
-              //判断字段是否为null，是则转为空字符串
-              transformRequest: [function (data) {
-                return CommonFunction.dataIsNull(data)
-              }]
+            this.axios.post('/api/profInfo/addBuildAddress', this.buildingAddressInfo, ArchRequestConfig).then(res => {
+              this.axios.post('/api/profInfo/addProfInfo', this.profArch, {
+                //判断字段是否为null，是则转为空字符串
+                transformRequest: [function (data) {
+                  return CommonFunction.dataIsNull(data)
+                }]
+              }).then(res => {
+                //把专业信息的字段反写给档案信息的基本信息中的标题
+                let road,street,no;
+                if(this.buildingAddressInfo.road !== ''){
+                  road=this.buildingAddressInfo.road+'路'
+                }else{
+                  road=''
+                }
+                if(this.buildingAddressInfo.street !== ''){
+                  street=this.buildingAddressInfo.street+'街'
+                }else{
+                  street=''
+                }
+                if(this.buildingAddressInfo.no !== ''){
+                  no=this.buildingAddressInfo.no+'号'
+                }else{
+                  no=''
+                }
+                let BaseTitle = this.profArch.buildCompany + this.profArch.buildProject + this.buildingAddressInfo.area+'区'
+                  + road + street + no;
+                this.axios.post('/api/baseInfo/updateBaseTitle', this.qs.stringify({archID: this.ProfParams.archId,title: BaseTitle}))
+              });
             });
-
-            this.axios.post('/api/profInfo/addBuildAddress', this.buildingAddressInfo, ArchRequestConfig);
 
             if (this.mapInfoData !== []) {
               this.axios.post('/api/profInfo/addMapInfo', JSON.stringify(this.mapInfoData), ArchRequestConfig);
@@ -319,11 +338,12 @@
         // 判断档案有无特性著录项
         if (this.$refs.specialView !== null && this.$refs.specialView !== undefined) {
           this.$refs.profForm.validate((valid) => {
-              if (valid) {
-                this.$refs.specialView.saveArch();  //即调用realSave方法,但是里面包含个性信息保存操作
-              }else{
-                this.$Message.error('著录信息有误！');
-              }})
+            if (valid) {
+              this.$refs.specialView.saveArch();  //即调用realSave方法,但是里面包含个性信息保存操作
+            } else {
+              this.$Message.error('著录信息有误！');
+            }
+          })
         }
         else {
           this.realSave()

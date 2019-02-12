@@ -49,67 +49,66 @@
             <Row :gutter="16">
               <Col>
                 <Row :gutter="16">
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="序号" prop="fileIndex">
-                      <Input placeholder="..." v-model="fileArch.fileIndex" class="colorBack fileWriteInput"/>
-                    </FormItem>
-                  </Col>
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="文件编号">
-                      <Input placeholder="..." v-model="fileArch.fileNo" class="colorBack fileWriteInput"/>
-                    </FormItem>
-                  </Col>
-                  <Col span="8">
+                  <Col span="10">
                     <FormItem class="FormItemClass" label="档号">
-                      <Input placeholder="..." v-model="fileArch.archNo" class="colorBack fileWriteInput" disabled/>
+                      <Input placeholder="..." v-model="fileArch.archNo" class="colorBack" disabled/>
+                    </FormItem>
+                  </Col>
+                  <Col span="10" offset="4">
+                    <FormItem class="FormItemClass" label="序号" prop="fileIndex">
+                      <Input placeholder="..." v-model="fileArch.fileIndex" class="colorBack"/>
                     </FormItem>
                   </Col>
                 </Row>
               </Col>
 
               <Col>
+                <FormItem class="FormItemClass" label="文件编号" prop="fileNo">
+                  <Input placeholder="..." v-model="fileArch.fileNo" class="colorBack"/>
+                </FormItem>
+              </Col>
+
+              <Col>
+                <FormItem class="FormItemClass" label="责任者">
+                  <Input placeholder="..." v-model="fileArch.liableId"/>
+                </FormItem>
+              </Col>
+
+              <Col>
                 <FormItem class="FormItemClass" label="文件题名" prop="fileTitle">
-                  <Input placeholder="..." v-model="fileArch.fileTitle" style="width: 100%;float: right"/>
+                  <Input placeholder="..." v-model="fileArch.fileTitle"/>
+                </FormItem>
+              </Col>
+
+              <Col>
+                <FormItem class="FormItemClass selectFontCss" label="文件材料分类" prop="fileType">
+                  <i-select placeholder="属性" v-model="fileArch.fileType">
+                    <i-option :key="item" v-for="item in fileType" :value="item">{{item}}</i-option>
+                  </i-select>
                 </FormItem>
               </Col>
 
               <Col>
                 <Row :gutter="16">
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="页号" prop="pageNo">
-                      <Input placeholder="..." v-model="fileArch.pageNo" class="fileWriteInput"/>
-                    </FormItem>
-                  </Col>
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="文件材料分类" prop="fileType">
-                      <i-select placeholder="属性" class="fileWriteInput" v-model="fileArch.fileType">
-                        <i-option :key="item" v-for="item in fileType" :value="item">{{item}}</i-option>
-                      </i-select>
-                    </FormItem>
-                  </Col>
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="日期" prop="fileDate">
-                      <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="fileWriteInput" type="date"
+                  <Col span="10">
+                    <FormItem class="FormItemClass" label="日期">
+                      <DatePicker placeholder="Select date" format="yyyy-MM-dd" type="date"
                                   @on-change="fileArch.fileDate=$event" v-model="fileArch.fileDate"></DatePicker>
+                    </FormItem>
+                  </Col>
+
+                  <Col span="10" offset="4">
+                    <FormItem class="FormItemClass" label="页号" prop="pageNo">
+                      <Input placeholder="..." v-model="fileArch.pageNo"/>
                     </FormItem>
                   </Col>
                 </Row>
               </Col>
 
               <Col>
-                <Row :gutter="16">
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="责任者">
-                      <Input placeholder="..." v-model="fileArch.liableId" class="fileWriteInput"/>
-                    </FormItem>
-                  </Col>
-                  <Col span="16">
-                    <FormItem class="FormItemClass" label="备注">
-                      <Input placeholder="..." v-model="fileArch.remark" style="width: 100%;float: right"
-                             type='textarea'/>
-                    </FormItem>
-                  </Col>
-                </Row>
+                <FormItem class="FormItemClass" label="备注">
+                  <Input placeholder="..." v-model="fileArch.remark" type='textarea'/>
+                </FormItem>
               </Col>
             </Row>
           </Form>
@@ -129,67 +128,66 @@
             <Row :gutter="16">
               <Col>
                 <Row :gutter="16">
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="序号" prop="fileIndex">
-                      <Input placeholder="..." v-model="fileArch.fileIndex" class="colorBack fileWriteInput"/>
-                    </FormItem>
-                  </Col>
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="文件编号" prop="fileNo">
-                      <Input placeholder="..." v-model="fileArch.fileNo" class="colorBack fileWriteInput"/>
-                    </FormItem>
-                  </Col>
-                  <Col span="8">
+                  <Col span="10">
                     <FormItem class="FormItemClass" label="档号">
-                      <Input placeholder="..." v-model="fileArch.archNo" class="colorBack fileWriteInput" disabled/>
+                      <Input placeholder="..." v-model="fileArch.archNo" class="colorBack" disabled/>
+                    </FormItem>
+                  </Col>
+                  <Col span="10" offset="4">
+                    <FormItem class="FormItemClass" label="序号" prop="fileIndex">
+                      <Input placeholder="..." v-model="fileArch.fileIndex" class="colorBack"/>
                     </FormItem>
                   </Col>
                 </Row>
               </Col>
 
               <Col>
+                <FormItem class="FormItemClass" label="文件编号" prop="fileNo">
+                  <Input placeholder="..." v-model="fileArch.fileNo" class="colorBack"/>
+                </FormItem>
+              </Col>
+
+              <Col>
+                <FormItem class="FormItemClass" label="责任者">
+                  <Input placeholder="..." v-model="fileArch.liableId"/>
+                </FormItem>
+              </Col>
+
+              <Col>
                 <FormItem class="FormItemClass" label="文件题名" prop="fileTitle">
-                  <Input placeholder="..." v-model="fileArch.fileTitle" style="width: 100%;float: right"/>
+                  <Input placeholder="..." v-model="fileArch.fileTitle"/>
+                </FormItem>
+              </Col>
+
+              <Col>
+                <FormItem class="FormItemClass selectFontCss" label="文件材料分类" prop="fileType">
+                  <i-select placeholder="属性" v-model="fileArch.fileType">
+                    <i-option :key="item" v-for="item in fileType" :value="item">{{item}}</i-option>
+                  </i-select>
                 </FormItem>
               </Col>
 
               <Col>
                 <Row :gutter="16">
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="页号" prop="pageNo">
-                      <Input placeholder="..." v-model="fileArch.pageNo" class="fileWriteInput"/>
-                    </FormItem>
-                  </Col>
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="文件材料分类" prop="fileType">
-                      <i-select placeholder="属性" class="fileWriteInput" v-model="fileArch.fileType">
-                        <i-option :key="item" v-for="item in fileType" :value="item">{{item}}</i-option>
-                      </i-select>
-                    </FormItem>
-                  </Col>
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="日期" prop="fileDate">
-                      <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="fileWriteInput" type="date"
+                  <Col span="10">
+                    <FormItem class="FormItemClass" label="日期">
+                      <DatePicker placeholder="Select date" format="yyyy-MM-dd" type="date"
                                   @on-change="fileArch.fileDate=$event" v-model="fileArch.fileDate"></DatePicker>
+                    </FormItem>
+                  </Col>
+
+                  <Col span="10" offset="4">
+                    <FormItem class="FormItemClass" label="页号" prop="pageNo">
+                      <Input placeholder="..." v-model="fileArch.pageNo"/>
                     </FormItem>
                   </Col>
                 </Row>
               </Col>
 
               <Col>
-                <Row :gutter="16">
-                  <Col span="8">
-                    <FormItem class="FormItemClass" label="责任者">
-                      <Input placeholder="..." v-model="fileArch.liableId" class="fileWriteInput"/>
-                    </FormItem>
-                  </Col>
-                  <Col span="16">
-                    <FormItem class="FormItemClass" label="备注">
-                      <Input placeholder="..." v-model="fileArch.remark" style="width: 100%;float: right"
-                             type='textarea'/>
-                    </FormItem>
-                  </Col>
-                </Row>
+                <FormItem class="FormItemClass" label="备注">
+                  <Input placeholder="..." v-model="fileArch.remark" type='textarea'/>
+                </FormItem>
               </Col>
             </Row>
           </Form>
@@ -212,7 +210,7 @@
     props: ['FileParams'],
     data() {
       return {
-        labelWidth: 100,
+        labelWidth: 150,
         loading: true,
         tableHeight: '500',
         columns: [
@@ -260,7 +258,7 @@
             title: '日期',
             key: 'fileDate',
             render: (h, params) => {
-              let datadate = CommonFunction.dateFormate(new Date(params.row.fileDate))
+              let datadate = CommonFunction.dateFormate(new Date(params.row.fileDate));
               return h('div', datadate)
             }
           }
@@ -295,9 +293,6 @@
           ],
           fileType: [
             {validator: notNull, trigger: 'blur'}
-          ],
-          fileDate: [
-            {validator: notNull, trigger: 'change'}
           ]
         },
         fileArch: {
@@ -368,6 +363,7 @@
                     this.$refs.addForm.resetFields();
                     this.loadFileArch();
                     this.addFileIndex +=1;
+                    this.saveFileInfo()
                   }else{
                     this.$Message.error('添加失败！');
                   }
@@ -682,5 +678,9 @@
 </script>
 
 <style scoped>
+  /*著录错误的显示信息的位置*/
+  .FormItemClass >>> .ivu-form-item-error-tip {
+    padding-top: 8px;
+  }
 
 </style>

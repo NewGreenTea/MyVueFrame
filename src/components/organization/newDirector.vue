@@ -1,58 +1,8 @@
 <template>
   <div>
-    <!-- 任务界面 -->
-    <Row style="margin-bottom: 20px">
-      <Col span="4">
-        <!-- 任务显示按钮 -->
-        <Row>
-          <Col offset="2">
-            <Button @click="showBatchAssignment" style="width: 150px;font-size: 15px;"
-                    :class="{'buttonSelect': butOnSelect.activeIndex === 1}">批次任务
-            </Button>
-          </Col>
-          <Col offset="2">
-            <Button @click="showHisAssignment" style="width: 150px;font-size: 15px;"
-                    :class="{'buttonSelect': butOnSelect.activeIndex === 2}">历史批次任务
-            </Button>
-          </Col>
-          <Col offset="2">
-            <Button @click="showDistAssignment" style="width: 150px;font-size: 15px;"
-                    :class="{'buttonSelect': butOnSelect.activeIndex === 3}">已分配任务
-            </Button>
-          </Col>
-        </Row>
-      </Col>
-
-      <!-- 批次任务 -->
-      <Col span="19" v-if="showATData" class="TableFontCss">
-        <Table border :columns="AssignmentColumn" :data="AssignmentData"></Table>
-        <Page :current="assCurrentPage" :total="assDataCount" :page-size="assPageSize" show-elevator show-total
-              show-sizer @on-change="destPage1" @on-page-size-change="changePageSize1" :page-size-opts="assPSO"/>
-      </Col>
-      <!-- 历史批次任务 -->
-      <Col span="19" v-if="showHTData" class="TableFontCss">
-        <Table border :columns="AssignmentHisColumn" :data="AssignmentHisData"></Table>
-        <Page :current="assCurrentPage" :total="assDataCount" :page-size="assPageSize" show-elevator show-total
-              show-sizer @on-change="destPage1" @on-page-size-change="changePageSize1" :page-size-opts="assPSO"/>
-      </Col>
-      <!-- 已分配任务 -->
-      <Col span="19" v-if="showDTData" class="TableFontCss">
-        <Table border :columns="AssignmentDisColumn" :data="AssignmentDisData"></Table>
-        <Page :current="assCurrentPage" :total="assDataCount" :page-size="assPageSize" show-elevator show-total
-              show-sizer @on-change="destPage1" @on-page-size-change="changePageSize1" :page-size-opts="assPSO"/>
-      </Col>
-      <!-- 查看已分配任务信息情况对话框 -->
-      <Modal v-model="showModal" :title="distributeATitle" width="1000px">
-        <div>
-          <Table border :columns="showDAColumn" :data="showDAData"></Table>
-        </div>
-      </Modal>
-    </Row>
-
     <!-- 分配界面：头部 -->
     <Row>
-      <Col span="24">
-        <hr>
+      <Col>
         <div style="text-align:center">
           <h2>分配任务</h2>
         </div>
@@ -175,203 +125,11 @@
 </template>
 
 <script>
+  import {ArchStatueChange} from './../../js/global'
   export default {
     name: "newDirector",
     data() {
       return {
-        //批次任务表格格式
-        AssignmentColumn: [
-          {
-            title: '序号',
-            width: 70,
-            render: (h, params) => {
-              return h('span', params.index + (this.assCurrentPage - 1) * this.assPageSize + 1);
-            }
-          },
-          {
-            title: '任务id',
-            key: 'batchId'
-          },
-          {
-            title: '任务名',
-            render: (h, params) => {
-              return h('p', '分配档案')
-            }
-          },
-          {
-            title: '库房管理员',
-            key: 'importerName'
-          },
-          {
-            title: '开始时间',
-            key: 'createdDate'
-          },
-          {
-            title: '状态',
-            key: 'statue',
-            render: (h, params) => {
-              let statue = assignmentStatue(params.row.statue);
-              return h('p', statue)
-            }
-          },
-          {
-            title: '操作',
-            render: (h, params) => {
-              return h('div', [
-                h('Button', {
-                  props: {type: 'primary', size: 'small'},
-                  on: {
-                    click: () => {
-                      //请求批次任务先查询该批次是否分配完成
-                      this.axios.post('/api/importArch/checkBatchAssignment', this.qs.stringify({batchID: params.row.batchId}))
-                        .then(res => {
-                          if (res.data.code === 0) {
-                            this.$Message.info('此任务已经分配完成！')
-                          }
-                        });
-                      //查看该批次的档案列表信息
-                      this.pageUrl = '/api/importArch/archStatue';
-                      this.currentPage = 1;
-                      this.urlParams = {'batchID': params.row.batchId, 'pageNum': null, 'pageSize': this.pageSize};
-                      this.spinShow = true;
-                      this.axios.get(this.pageUrl, {params: this.urlParams})
-                        .then(res => {
-                          this.$Message.info('已加载到分配面板上');
-                          this.DistributeArchData = res.data.data.list;
-                          this.archDataCount = res.data.data.total;
-                          this.searchData = false;
-                          this.spinShow = false;
-                        })
-                    }
-                  }
-                }, '分配')
-              ])
-            }
-          }
-        ],
-        //历史批次任务表格格式
-        AssignmentHisColumn: [
-          {
-            title: '序号',
-            width: 70,
-            render: (h, params) => {
-              return h('span', params.index + (this.assCurrentPage - 1) * this.assPageSize + 1);
-            }
-          },
-          {
-            title: '任务id',
-            key: 'batchId'
-          },
-          {
-            title: '任务名',
-            render: (h, params) => {
-              return h('p', '分配档案')
-            }
-          },
-          {
-            title: '开始时间',
-            key: 'createdDate'
-          },
-          {
-            title: '结束时间',
-            key: 'completeDate'
-          },
-          {
-            title: '状态',
-            key: 'statue',
-            render: (h, params) => {
-              let statue = assignmentStatue(params.row.statue);
-              return h('p', statue)
-            }
-          },
-          {
-            title: '操作',
-            render: (h, params) => {
-              return h('div', [
-                h('Button',
-                  {
-                    props: {type: 'primary', size: 'small'},
-                    on: {
-                      click: () => {
-                        //查看该批次的档案列表信息
-                        this.pageUrl = '/api/importArch/archStatue';
-                        this.currentPage = 1;
-                        this.urlParams = {'batchID': params.row.batchId, 'pageNum': null, 'pageSize': this.pageSize};
-                        this.spinShow = true;
-                        this.axios.get(this.pageUrl, {params: this.urlParams})
-                          .then(res => {
-                            this.$Message.info('已加载到分配面板上');
-                            this.DistributeArchData = res.data.data.list;
-                            this.archDataCount = res.data.data.total;
-                            this.searchData = false;
-                            this.spinShow = false;
-                          })
-                      }
-                    }
-                  }, '查看')
-              ])
-            }
-          }
-        ],
-        //分配任务表格格式
-        AssignmentDisColumn: [
-          {
-            title: '序号',
-            width: 70,
-            render: (h, params) => {
-              return h('span', params.index + (this.assCurrentPage - 1) * this.assPageSize + 1);
-            }
-          },
-          {
-            title: '任务id',
-            key: 'assignmentId'
-          },
-          {
-            title: '任务名',
-            render: (h, params) => {
-              return h('p', '著录档案')
-            }
-          },
-          {
-            title: '开始时间',
-            key: 'startTime'
-          },
-          {
-            title: '结束时间',
-            key: 'endTime'
-          },
-          {
-            title: '操作',
-            render: (h, params) => {
-              return h('div', [
-                h('Button',
-                  {
-                    props: {type: 'primary', size: 'small'},
-                    on: {
-                      click: () => {
-                        this.distributeATitle = '任务名：' + params.row.assignmentId;
-                        this.showModal = true;
-                        this.axios.post('/api/importArch/detailDistAssignment', this.qs.stringify({assignmentID: params.row.assignmentId}))
-                          .then(res => {
-                            this.showDAData = res.data.data
-                          })
-                      }
-                    }
-                  }, '查看')
-              ])
-            }
-          }
-        ],
-        //任务表格数据
-        AssignmentData: [],
-        //历史任务表格数据
-        AssignmentHisData: [],
-        //分配任务表格数据
-        AssignmentDisData: [],
-        //控制显示任务表格
-        showATData: false,
-        showHTData: false,
-        showDTData: false,
         // 刷新著录组的状态
         hackReset: true,
         //分配档案的工作组
@@ -407,7 +165,7 @@
           {
             title: '状态',
             render: (h, params) => {
-              let twoStatue = statueTwoDes(params.row.archVO.twoStatue);
+              let twoStatue = ArchStatueChange.statueTwoDes(params.row.archVO.twoStatue);
               return h('p', twoStatue)
             }
           },
@@ -488,58 +246,6 @@
         taskWG: '',
         //分配时，保存的档案id组
         taskArchID: [],
-        //控制显示已分配任务情况对话框
-        showModal: false,
-        //已分配任务情况对话框标题
-        distributeATitle: '',
-        //已分配任务详细情况表格格式
-        showDAColumn: [
-          {
-            title: '序号',
-            width: 60,
-            type: 'index'
-          },
-          {
-            title: '档号', //档案id
-            render: (h, params) => {
-              return h('p', params.row.archVO.archNo)
-            }
-          },
-          {
-            title: '状态',
-            render: (h, params) => {
-              let twoStatue = statueTwoDes(params.row.archVO.twoStatue);
-              return h('p', twoStatue)
-            }
-          },
-          {
-            title: '库房管理员',
-            render: (h, params) => {
-              return h('p', params.row.importerName)
-            }
-          },
-          {
-            title: '分配人',
-            render: (h, params) => {
-              return h('p', params.row.distributor)
-            }
-          },
-          {
-            title: '负责组',
-            render: (h, params) => {
-              return h('p', params.row.writeGroup)
-            }
-          }
-        ],
-        //已分配任务详细情况数据
-        showDAData: [],
-        //任务分页参数配置
-        assCurrentPage: 1,
-        assDataCount: 0,
-        assPageSize: 2,
-        assPSO: [1, 2, 3, 5, 8, 10, 20],
-        assPageUrl: '',
-        assUrlParams: {},
         //***搜索条件***
         archStatues: '',
         keyword: '',
@@ -548,11 +254,7 @@
         //vue 组件属性
         InputClear: true,
         //加载动画
-        spinShow: false,
-        //点击任务按钮变色
-        butOnSelect: {
-          activeIndex: 0
-        }
+        spinShow: false
       }
     },
     methods: {
@@ -572,75 +274,22 @@
           this.archDataCount = res.data.data.total;
           this.spinShow = false;
         });
-
       },
-      //加载档案批次任务
-      showBatchAssignment() {
-        if (this.showATData === true) {
-          this.showATData = false;
-          this.butOnSelect.activeIndex = 0;
-        } else {
-          this.showHTData = false;
-          this.showDTData = false;
-          this.showATData = true;
-          this.butOnSelect.activeIndex = 1;
-          this.assCurrentPage = 1;
-          this.assPageUrl = '/api/importArch/checkAssignment';
-          this.assUrlParams = {
-            'batchStatue': 0,
-            'pageNum': 1,
-            'pageSize': this.assPageSize
-          };
-          this.axios.get(this.assPageUrl, {params: this.assUrlParams}).then(res => {
-            this.AssignmentData = res.data.data.list;
-            this.assDataCount = res.data.data.total
-          });
-        }
-      },
-      //查询历史批次任务
-      showHisAssignment() {
-        if (this.showHTData === true) {
-          this.showHTData = false;
-          this.butOnSelect.activeIndex = 0;
-        } else {
-          this.showATData = false;
-          this.showDTData = false;
-          this.showHTData = true;
-          this.butOnSelect.activeIndex = 2;
-          this.assCurrentPage = 1;
-          this.assPageUrl = '/api/importArch/checkAssignment';
-          this.assUrlParams = {
-            'batchStatue': 1,
-            'pageNum': 1,
-            'pageSize': this.assPageSize
-          };
-          this.axios.get(this.assPageUrl, {params: this.assUrlParams}).then(res => {
-            this.AssignmentHisData = res.data.data.list;
-            this.assDataCount = res.data.data.total
-          });
-        }
-      },
-      //查看分配的任务
-      showDistAssignment() {
-        if (this.showDTData === true) {
-          this.showDTData = false;
-          this.butOnSelect.activeIndex = 0;
-        } else {
-          this.showATData = false;
-          this.showHTData = false;
-          this.showDTData = true;
-          this.butOnSelect.activeIndex = 3;
-          this.assCurrentPage = 1;
-          this.assPageUrl = '/api/importArch/checkDistAssignment';
-          this.assUrlParams = {
-            'pageNum': 1,
-            'pageSize': this.assPageSize
-          };
-          this.axios.get(this.assPageUrl, {params: this.assUrlParams}).then(res => {
-            this.AssignmentDisData = res.data.data.list;
-            this.assDataCount = res.data.data.total
-          });
-
+      //任务界面请求打开分配界面时，加载任务数据
+      loadAssignmentsData() {
+        if(this.getAssignmentsData.pageUrl !== null){
+          this.spinShow = true;
+          this.pageUrl = this.getAssignmentsData.pageUrl;
+          this.urlParams = this.getAssignmentsData.urlParams;
+          this.axios.get(this.pageUrl, {params: this.urlParams})
+            .then(res => {
+              this.$Message.info('已加载到分配面板上');
+              this.DistributeArchData = res.data.data.list;
+              this.archDataCount = res.data.data.total;
+              this.searchData = false;
+              this.spinShow = false;
+              this.$store.commit('setAssignmentsData',{url:null,params:null})
+            })
         }
       },
       // 选好档案数据和著录工作组即可进行分配任务
@@ -655,7 +304,7 @@
               //判断档案二级状态是否是“待分配”状态
               if (this.tempArchData[i].twoStatue !== 0) { //不是
                 WGisNull = false;
-                alert('档号：“' + this.tempArchData[i].archNo + '”已经分配了');
+                this.$Message.info('档号：“' + this.tempArchData[i].archNo + '”已经分配了');
                 break
               } else { // 是
                 archDataID.push(this.tempArchData[i].archId);
@@ -665,31 +314,17 @@
           }
           else {
             WGisNull = false;
-            alert('未选择档案数据!')
+            this.$Message.error('未选择档案数据!')
           }
         }
         else {
           WGisNull = false;
-          alert('未选择著录组!')
+          this.$Message.error('未选择著录组!')
         }
         //逻辑值正确触发分配
         if (WGisNull === true) {
           let temp = JSON.stringify(this.taskArchID);
-          let userID;
-          if (this.$store.state.userID === '') {
-            if (window.localStorage.getItem('userID') === '') {
-              this.axios.post('/api/user/get').then(res => {
-                userID = res.data.data.id
-              })
-            }
-            else {
-              userID = window.localStorage.getItem('userID');
-            }
-          } else {
-            userID = this.$store.state.userID;
-          }
           this.axios.post('/api/importArch/distribute', this.qs.stringify({
-            distributorID: userID,
             writeGroupID: this.taskWG,
             ids: temp
           })).then(res => {
@@ -705,7 +340,6 @@
             this.taskWG = '';
             this.tempArchData = [];
             this.taskArchID = [];
-            this.pageUrl = '/api/importArch/archStatue';
             this.returnAll();
           })
         }
@@ -750,7 +384,7 @@
       },
       //筛选条件：选择档案二级状态后
       choseTwoStatue(value) {
-        this.archStatues = statueTwoCode(value)
+        this.archStatues = ArchStatueChange.statueTwoCode(value)
       },
       //返回所有档案未分配数据
       returnAll() {
@@ -822,105 +456,16 @@
           }
         }
       },
-      //*******任务表格分页方法******
-      destPage1(index) {
-        this.assCurrentPage = index;
-        this.assUrlParams.pageNum = index;
-        this.axios.get(this.assPageUrl, {params: this.assUrlParams}).then(res => {
-          if (this.assPageUrl === '/api/importArch/checkDistAssignment') {
-            this.AssignmentDisData = res.data.data.list;
-          } else if (this.assUrlParams.batchStatue === 1) {
-            this.AssignmentHisData = res.data.data.list;
-          } else if (this.assUrlParams.batchStatue === 0) {
-            this.AssignmentData = res.data.data.list;
-          }
-          this.assDataCount = res.data.data.total
-        });
-      },
-      changePageSize1(index) {
-        this.assPageSize = index;
-        this.assUrlParams.pageSize = index;
-        this.axios.get(this.assPageUrl, {params: this.assUrlParams}).then(res => {
-          if (this.assPageUrl === '/api/importArch/checkAssignment') {
-            this.AssignmentHisData = res.data.data.list;
-          } else if (this.assPageUrl === '/api/importArch/checkAssignment') {
-            this.AssignmentData = res.data.data.list;
-          } else if (this.assPageUrl === '/api/importArch/checkDistAssignment') {
-            this.AssignmentDisData = res.data.data.list;
-          }
-          this.assDataCount = res.data.data.total
-        });
-      }
     },
     mounted() {
-      //this.loadDistributeArchData();
+      this.loadAssignmentsData();
       this.loadWorkGroup()
+    },
+    computed: {
+      getAssignmentsData(){
+        return this.$store.state.AssignmentsData
+      }
     }
-  }
-
-  //任务状态解释说明
-  function assignmentStatue(statue) {
-    let statueDes;
-    if (statue === 0) {
-      statueDes = '未完成'
-    } else {
-      statueDes = '已完成'
-    }
-    return statueDes;
-  }
-
-  //档案二级状态解释说明
-  function statueTwoDes(statue) {
-    let statueName;
-    if (statue === 0) {
-      statueName = '待分配'
-    } else if (statue === 1) {
-      statueName = '已分配（待著录）'
-    } else if (statue === 2) {
-      statueName = '著录中'
-    } else if (statue === 3) {
-      statueName = '已著录（待质检）'
-    } else if (statue === 4) {
-      statueName = '质检中'
-    } else if (statue === 5) {
-      statueName = '质检通过（待上传）'
-    } else if (statue === 6) {
-      statueName = '质检不通过'
-    } else if (statue === 7) {
-      statueName = '上传中'
-    } else if (statue === 8) {
-      statueName = '已上传（组卷中）'
-    } else if (statue === 9) {
-      statueName = '组卷完成'
-    }
-    return statueName
-  }
-
-  //档案二级状态转换对应后台
-  function statueTwoCode(statue) {
-    let statueName;
-    if (statue === '待分配') {
-      statueName = 0
-    } else if (statue === '已分配（待著录）') {
-      statueName = 1
-    } else if (statue === '著录中') {
-      statueName = 2
-    } else if (statue === '已著录（待质检）') {
-      statueName = 3
-    } else if (statue === '质检中') {
-      statueName = 4
-    } else if (statue === '质检通过（待上传）') {
-      statueName = 5
-    } else if (statue === '质检不通过') {
-      statueName = 6
-    } else if (statue === '上传中') {
-      statueName = 7
-    } else if (statue === '已上传（组卷中）') {
-      statueName = 8
-    } else if (statue === '组卷完成') {
-      statueName = 9
-    }
-    return statueName
   }
 </script>
 

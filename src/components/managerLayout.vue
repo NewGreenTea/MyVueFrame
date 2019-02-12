@@ -46,20 +46,22 @@ export default {
     }
   },
   methods: {
+    //菜单点击打开的浏览界面数组
     indexContLayout (data) {
-      this.tabs = this.getTabViewPath
+      this.tabs = this.getTabViewPath;
       this.$nextTick(() => {
-        this.tabs = this.getTabViewPath
-        this.tabCrruent = data
+        this.tabs = this.getTabViewPath;
+        this.tabCrruent = data;
         this.showContent = true
       })
     },
+    //菜单点击 -> 重定向到已打开的浏览界面
     redirectCont (data) {
-      this.tabs = this.getTabViewPath
-      this.showContent = false
+      this.tabs = this.getTabViewPath;
+      this.showContent = false;
       this.$nextTick(() => {
-        this.tabs = this.getTabViewPath
-        this.tabCrruent = data
+        this.tabs = this.getTabViewPath;
+        this.tabCrruent = data;
         this.showContent = true
       })
     }

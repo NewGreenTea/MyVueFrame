@@ -85,10 +85,27 @@
                   <Input placeholder="..." v-model="D61NumAreaInfo.totalArea" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
+              <Col span="1">
+                <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
+              </Col>
             </Row>
           </Col>
         </Row>
       </Form>
+      <div v-if="modalAdd !== []">
+        <Row v-for="(item,index) in modalAdd" :key="index" style="margin: 3px 0px" :gutter="16">
+          <Col span="3"><p class="addDataCss">{{item.projectName===''?'-':item.projectName}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.buildingNum===''?'-':item.buildingNum}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.overgroundFloor===''?'-':item.overgroundFloor}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.undergroundFloor===''?'-':item.undergroundFloor}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.overgroundArea===''?'-':item.overgroundArea}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.undergroundArea===''?'-':item.undergroundArea}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.totalArea===''?'-':item.totalArea}}</p></Col>
+          <Col span="1" offset="1">
+            <a @click="modalAddDelete(index)" style="color: red;font-size: 14px;">-</a>
+          </Col>
+        </Row>
+      </div>
     </Modal>
 
     <Modal width="1000px" :loading="loading" v-model="UpdateModal" :mask-closable="false" title="修改验收建筑层数与面积"
@@ -120,7 +137,7 @@
               </Col>
             </Row>
 
-            <Row>
+            <Row :gutter="16">
               <Col span="3">
                 <FormItem class="FormItemClass">
                   <Tooltip :content="D61NumAreaInfo.projectName" max-width="100" class="D31D61NumWriteInput">
@@ -202,6 +219,7 @@
           },
           {
             title: '序号',
+            width: 70,
             type: 'index'
           },
           {
@@ -255,7 +273,9 @@
           totalArea: [
             {validator: isDecimalNotMust, trigger: 'blur'}
           ]
-        }
+        },
+        //
+        modalAdd: []
       }
     },
     methods: {
@@ -337,9 +357,9 @@
                   this.UpdateAddData[i].undergroundArea === this.tempData[0].undergroundArea &&
                   this.UpdateAddData[i].totalArea === this.tempData[0].totalArea) {
                   this.UpdateAddData.splice(i, 1);
-                  this.UpdateAddData.unshift(temp);
+                  this.UpdateAddData.push(temp);
                   this.tableData.splice(i, 1);
-                  this.tableData.unshift(temp);
+                  this.tableData.push(temp);
                   check = false
                 }
               }
@@ -354,7 +374,7 @@
                   }).then(res => {
                     this.tableData = res.data.data;
                     for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
-                      this.tableData.unshift(this.UpdateAddData[i])
+                      this.tableData.push(this.UpdateAddData[i])
                     }
                   })
                 });
@@ -444,26 +464,64 @@
         temp.overgroundArea = this.D61NumAreaInfo.overgroundArea;
         temp.undergroundArea = this.D61NumAreaInfo.undergroundArea;
         temp.totalArea = this.D61NumAreaInfo.totalArea;
+        let result = false;
         this.$refs.addForm.validate((valid) => {
           if (valid) {
-            if (!CommonFunction.isEmpty(temp.projectName) ||
-              !CommonFunction.isEmpty(temp.buildingNum) ||
-              !CommonFunction.isEmpty(temp.overgroundFloor) ||
-              !CommonFunction.isEmpty(temp.undergroundFloor) ||
-              !CommonFunction.isEmpty(temp.overgroundArea) ||
-              !CommonFunction.isEmpty(temp.undergroundArea) ||
-              !CommonFunction.isEmpty(temp.totalArea)) {
-              if (this.D6123SpecParams.isUpdate === true) {
-                this.UpdateAddData.unshift(temp);
-                this.tableData.unshift(temp)
+            if(this.modalAdd.length === 0) {
+              if (!CommonFunction.isEmpty(temp.projectName) ||
+                !CommonFunction.isEmpty(temp.buildingNum) ||
+                !CommonFunction.isEmpty(temp.overgroundFloor) ||
+                !CommonFunction.isEmpty(temp.undergroundFloor) ||
+                !CommonFunction.isEmpty(temp.overgroundArea) ||
+                !CommonFunction.isEmpty(temp.undergroundArea) ||
+                !CommonFunction.isEmpty(temp.totalArea)) {
+                if (this.D6123SpecParams.isUpdate === true) {
+                  this.UpdateAddData.push(temp);
+                  this.tableData.push(temp)
+                }
+                else {
+                  this.NumAreaInfoData.push(temp);
+                  this.tableData = this.NumAreaInfoData;
+                  this.$emit('saveNumAreaInfoData', this.tableData)
+                }
+                result = true;
               }
-              else {
-                this.NumAreaInfoData.unshift(temp);
-                this.tableData = this.NumAreaInfoData;
-                this.$emit('saveNumAreaInfoData', this.tableData)
+            }
+            else {
+              if (CommonFunction.isEmpty(temp.projectName) &&
+                CommonFunction.isEmpty(temp.buildingNum) &&
+                CommonFunction.isEmpty(temp.overgroundFloor) &&
+                CommonFunction.isEmpty(temp.undergroundFloor) &&
+                CommonFunction.isEmpty(temp.overgroundArea) &&
+                CommonFunction.isEmpty(temp.undergroundArea) &&
+                CommonFunction.isEmpty(temp.totalArea)) {
+                if (this.D6123SpecParams.isUpdate === true) {
+                  for(let i=0;i<this.modalAdd.length;i++){
+                    this.UpdateAddData.push(this.modalAdd[i]);
+                    this.tableData.push(this.modalAdd[i])
+                  }
+                }
+                else {
+                  for(let i=0;i<this.modalAdd.length;i++){
+                    this.NumAreaInfoData.push(this.modalAdd[i]);
+                  }
+                  this.tableData = this.NumAreaInfoData;
+                  this.$emit('saveNumAreaInfoData', this.tableData)
+                }
+                result = true;
+              }else{
+                this.$Message.error('局历史审批文件编号请添加到列表里！');
+                setTimeout(() => {
+                  this.loading = false;
+                  this.$nextTick(() => {
+                    this.loading = true;
+                  });
+                }, 1000);
               }
-              this.AddModal = false
-            } else {
+            }
+            if(result === true){
+              this.modalAdd = [];
+              this.formReset();
               this.AddModal = false
             }
           }
@@ -476,9 +534,49 @@
             }, 1000);
           }
         });
-        this.D61NumAreaInfo.id = '';
-        this.D61NumAreaInfo.archId = '';
-        this.formReset()
+      },
+      //
+      modalAddData(){
+        let temp = {
+          id: null,
+          archId: '',
+          projectName: '',
+          buildingNum: '',
+          overgroundFloor: '',
+          undergroundFloor: '',
+          overgroundArea: '',
+          undergroundArea: '',
+          totalArea: ''
+        };
+        temp.id = this.D61NumAreaInfo.id;
+        temp.archId = this.archId;
+        temp.projectName = this.D61NumAreaInfo.projectName;
+        temp.buildingNum = this.D61NumAreaInfo.buildingNum;
+        temp.overgroundFloor = this.D61NumAreaInfo.overgroundFloor;
+        temp.undergroundFloor = this.D61NumAreaInfo.undergroundFloor;
+        temp.overgroundArea = this.D61NumAreaInfo.overgroundArea;
+        temp.undergroundArea = this.D61NumAreaInfo.undergroundArea;
+        temp.totalArea = this.D61NumAreaInfo.totalArea;
+        this.$refs.addForm.validate((valid) => {
+          if (valid) {
+            if (!CommonFunction.isEmpty(temp.projectName) ||
+              !CommonFunction.isEmpty(temp.buildingNum) ||
+              !CommonFunction.isEmpty(temp.overgroundFloor) ||
+              !CommonFunction.isEmpty(temp.undergroundFloor) ||
+              !CommonFunction.isEmpty(temp.overgroundArea) ||
+              !CommonFunction.isEmpty(temp.undergroundArea) ||
+              !CommonFunction.isEmpty(temp.totalArea)) {
+              this.modalAdd.push(temp);
+              this.formReset()
+            }
+          }else{
+            this.$Message.error('验收建筑层数与面积不能为空');
+          }
+        })
+      },
+      //
+      modalAddDelete(index){
+        this.modalAdd.splice(index,1)
       },
       cancelMInfo() {
         if (Object.keys(this.tempData).length === 0) {
@@ -579,5 +677,7 @@
 </script>
 
 <style scoped>
-
+  .addDataCss{
+    padding-left: 5px;
+  }
 </style>
