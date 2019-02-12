@@ -3,15 +3,16 @@
     <!-- 搜索 -->
     <Row>
       <Col span="22" offset="1">
-        <Form class="formClass-right">
-          <Row>
-            <Col span="6">
-              <FormItem>
-                <Input search enter-button placeholder="请输入档号，发文号进行搜索" v-model="keyword" style="width: 400px"
-                       @keyup.enter.native="handleSerach()" @on-search="handleSerach()"/>
-              </FormItem>
-            </Col>
-          </Row>
+        <Form inline :label-width="120" class="formClass-right">
+          <FormItem label="质检状况：">
+            <Select v-model="statusdata" placeholder="待扫描质检" @on-change="search" style="width:200px">
+              <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+          </FormItem>
+          <FormItem>
+            <Input search enter-button placeholder="请输入档号，发文号进行搜索" v-model="keyword" style="width: 400px"
+                   @keyup.enter.native="handleSerach()" @on-search="handleSerach()"/>
+          </FormItem>
         </Form>
       </Col>
     </Row>
@@ -19,10 +20,10 @@
     <!--按钮-->
     <Row style="margin: 0px 0px 10px">
       <Col span="1" offset="1">
-        <Button v-on:click="smpass()" size="large"  type="success">扫描质检通过</Button>
+        <Button v-on:click="smpass()" size="large" :disabled="aPassB"  type="success">扫描质检通过</Button>
       </Col>
       <Col span="15" offset="1">
-        <Button v-on:click="smfail()" size="large"  type="error">扫描质检不通过</Button>
+        <Button v-on:click="smfail()" size="large" :disabled="aNotPassB"  type="error">扫描质检不通过</Button>
       </Col>
     </Row>
 
@@ -76,29 +77,35 @@
           WAColumn: [
             {
               type: 'selection',
-              width: 60,
+              width: 48,
               align: 'center',
               key: 'archId'
             },
             {
               title: '序号',
               type: 'index',
-              width: 70
+              align: 'center',
+              width: 65
             },
             {
               title: '档号',
+              align: 'center',
               key: 'archNo'
             },
             {
               title: '发文号',
+              align: 'center',
               key: 'dispatchDocNo'
             },
             {
               title: '立案号',
+              align: 'center',
               key: 'registerNo'
             },
             {
               title: '档案一级状态',
+              align: 'center',
+              width: 135,
               key: 'oneStatue',
               render: (h, params) => {
                 let statue = onestatueDes(params.row.oneStatue)
@@ -107,6 +114,8 @@
             },
             {
               title: '档案二级状态',
+              align: 'center',
+              width: 135,
               key: 'twoStatue',
               render: (h, params) => {
                 let statue = twostatueDes(params.row.twoStatue)
@@ -114,21 +123,56 @@
               }
             },
             {
-              title: '创建人',
-              key: 'importername'
-            },
-            {
               title: '导入日期',
+              align: 'center',
+              width: 155,
               key: 'importDate',
               render: (h, params) => {
-                // 对日期的格式进行转换（‘Tue Nov 06 2018 00:00:00 GMT+0800’=》‘yyyy-MM-dd’）
                 let datadate = dateFormate(new Date(params.row.importDate))
                 return h('div', datadate)
               }
             },
             {
+              title: '质检人',
+              align: 'center',
+              width: 100,
+              key: 'checker'
+            },
+            {
               title: '质检状况',
+              align: 'center',
+              width: 143,
+              key: 'bz',
+              tooltip:true,
+              render:(h, params) => {
+                if(params.row.twoStatue==4){
+                  return h('div','待扫描质检');
+                }else if(params.row.twoStatue==6) {
+                  let bztext=params.row.bz;
+                  if(bztext.length>20){
+                    bztext
+                  }
+                  return h('div',[
+                    h('Tooltip', {
+                      props: {
+                        content:params.row.bz,
+                        placement:"top",
+                        'max-width':'100px'
+                      }
+                    },[
+                      h('span',params.row.bz.length>6 ? params.row.bz.substring(0,6)+'...' : params.row.bz)
+                    ])
+                  ]);
+                }else{
+                  return h('div', '扫描质检通过')
+                }
+              }
+            },
+            {
+              title: '质检操作',
               key: 'archId',
+              align: 'center',
+              width: 140,
               render: (h, params) => {
                 return h('div', [
                   h('Button',
@@ -137,7 +181,8 @@
                         type: 'success', size: 'small'
                       },
                       style: {
-                        marginRight: '5px'
+                        marginRight: '5px',
+                        display:this.passB?"inline-block":"none"
                       },
                       on: {
                         click: () => {
@@ -161,7 +206,8 @@
                         type: 'error', size: 'small'
                       },
                       style: {
-                        marginRight: '5px'
+                        marginRight: '5px',
+                        display:this.notPassB?"inline-block":"none"
                       },
                       on: {
                         click: () => {
@@ -174,6 +220,27 @@
                 ])
               }
             }
+          ],
+          /*按钮控件*/
+          passB:true,
+          notPassB:true,
+          aPassB:false,
+          aNotPassB:false,
+          //二级状态下拉选框
+          statusdata:4,
+          statusList:[
+            {
+              value:'4',
+              label:'待扫描质检'
+            },
+            {
+              value:'6',
+              label:'扫描质检不通过'
+            },
+            {
+              value:'11',
+              label:'扫描质检通过'
+            }
           ]
         }
       },
@@ -184,6 +251,7 @@
           param.append('pageNum', currentPage);
           param.append('pageSize', pageSize);
           param.append('searchItem', this.keyword);
+          param.append('twoStatue', this.statusdata);
           axios({
             method: 'post',
             url: '/api/arch/getsmcheckArchInfo',
@@ -191,6 +259,22 @@
           }).then(res=>{
             this.WriterArchData = res.data.data.list;
             this.totalCount = res.data.data.total;
+            if(this.statusdata==11){
+              this.passB=false;
+              this.notPassB=false;
+              this.aPassB=true;
+              this.aNotPassB=true;
+            }else if(this.statusdata==6){
+              this.passB=true;
+              this.notPassB=false;
+              this.aPassB=false;
+              this.aNotPassB=true;
+            }else if(this.statusdata==4){
+              this.passB=true;
+              this.notPassB=true;
+              this.aPassB=false;
+              this.aNotPassB=false;
+            }
           })
         },
         //页码改变
@@ -204,6 +288,10 @@
           this.pageSize = index
           this.writeLayout(this.currentPage, this.pageSize);
           this.tempData=[];
+        },
+        search() {
+          this.currentPage = 1;
+          this.writeLayout(this.currentPage, this.pageSize);
         },
         //不通过备注
         inputok : function(){
@@ -297,23 +385,6 @@
         handleSerach(){
           this.currentPage = 1;
           this.writeLayout(this.currentPage,this.pageSize);
-        },
-        //显示加载动画
-        showing(){
-          this.$Spin.show({
-            render: (h) => {
-              return h('div', [
-                h('Icon', {
-                  'class': 'demo-spin-icon-load',
-                  props: {
-                    type: 'ios-loading',
-                    size: 36
-                  }
-                }),
-                h('div', '组卷中')
-              ])
-            }
-          });
         }
       },
       mounted : function () {
