@@ -9,9 +9,20 @@
         <MenuItem name="1-1">
           <router-link to="/index/viewcont/archAdmin" tag="p"><p @click="archAdminLauout">导入清单</p></router-link>
         </MenuItem>
-        <MenuItem name="1-2">
-          <router-link to="/index/viewcont/director" tag="p"><p @click="directorLauout">任务分配</p></router-link>
-        </MenuItem>
+        <!--<MenuItem name="1-2">-->
+        <!--<router-link to="/index/viewcont/director" tag="p"><p @click="directorLauout">档案分配</p></router-link>-->
+        <Submenu name="6" class="twoLvMenu">
+          <template slot="title">
+            档案分配
+          </template>
+          <MenuItem name="6-1">
+            <router-link to="/index/viewcont/assignmentManage" tag="p" :showAssignment="ShowOrDistribute"><p @click="assignmentLauout">任务管理</p></router-link>
+          </MenuItem>
+          <MenuItem name="6-2">
+            <router-link to="/index/viewcont/director" tag="p" :showAssignment="ShowOrDistribute"><p @click="distributeLauout">分配任务</p></router-link>
+          </MenuItem>
+        </Submenu>
+        <!--</MenuItem>-->
         <MenuItem name="1-3">
           <router-link to="/index/viewcont/writerGroup" tag="p"><p @click="writerLauout">著录</p></router-link>
         </MenuItem>
@@ -29,9 +40,6 @@
         </MenuItem>
         <MenuItem name="1-8">
           <router-link to="/index/viewcont/archPrint" tag="p"><p @click="printLauout">打印</p></router-link>
-        </MenuItem>
-        <MenuItem name="1-9">
-          <router-link to="/index/viewcont/createISO" tag="p"><p @click="createISO">制作ISO</p></router-link>
         </MenuItem>
       </Submenu>
       <Submenu name="2">
@@ -72,29 +80,29 @@
         </MenuItem>
       </Submenu>
       <!--<Submenu name="5">-->
-        <!--<template slot="title">-->
-          <!--<Icon type="ios-cog" size="16px"/>-->
-          <!--开发测试-->
-        <!--</template>-->
-        <!--<MenuItem name="5-1">-->
-          <!--<router-link to="/index/viewcont/flowCreated"><p>业务创建</p></router-link>-->
-        <!--</MenuItem>-->
-        <!--<MenuItem name="5-2">-->
-          <!--<router-link to="/index/viewcont/Assignment"><p>任务</p></router-link>-->
-        <!--</MenuItem>-->
-        <!--<MenuItem name="5-3">-->
-          <!--<router-link to="/index/viewcont/Assignment"><p>数据管理</p></router-link>-->
-        <!--</MenuItem>-->
-        <!--<MenuItem name="5-4">-->
-          <!--<router-link to="/index/viewcont/archManagement"><p>档案管理</p></router-link>-->
-        <!--</MenuItem>-->
-        <!--<MenuItem name="5-5">-->
-          <!--&lt;!&ndash;<p @click="ArchTypeLauout">&ndash;&gt;-->
-          <!--<router-link to="/index/viewcont"><p>档案类型</p></router-link>-->
-        <!--</MenuItem>-->
-        <!--<MenuItem name="5-6">-->
-          <!--<router-link to="/index/viewcont/echarts"><p>测试ECHARTS</p></router-link>-->
-        <!--</MenuItem>-->
+      <!--<template slot="title">-->
+      <!--<Icon type="ios-cog" size="16px"/>-->
+      <!--开发测试-->
+      <!--</template>-->
+      <!--<MenuItem name="5-1">-->
+      <!--<router-link to="/index/viewcont/flowCreated"><p>业务创建</p></router-link>-->
+      <!--</MenuItem>-->
+      <!--<MenuItem name="5-2">-->
+      <!--<router-link to="/index/viewcont/Assignment"><p>任务</p></router-link>-->
+      <!--</MenuItem>-->
+      <!--<MenuItem name="5-3">-->
+      <!--<router-link to="/index/viewcont/Assignment"><p>数据管理</p></router-link>-->
+      <!--</MenuItem>-->
+      <!--<MenuItem name="5-4">-->
+      <!--<router-link to="/index/viewcont/archManagement"><p>档案管理</p></router-link>-->
+      <!--</MenuItem>-->
+      <!--<MenuItem name="5-5">-->
+      <!--&lt;!&ndash;<p @click="ArchTypeLauout">&ndash;&gt;-->
+      <!--<router-link to="/index/viewcont"><p>档案类型</p></router-link>-->
+      <!--</MenuItem>-->
+      <!--<MenuItem name="5-6">-->
+      <!--<router-link to="/index/viewcont/echarts"><p>测试ECHARTS</p></router-link>-->
+      <!--</MenuItem>-->
       <!--</Submenu>-->
     </Menu>
   </div>
@@ -105,7 +113,9 @@
     data() {
       return {
         //开启手风琴模式，只能打开菜单的一个
-        menuAccordion: false
+        menuAccordion: false,
+        //控制显示任务管理还是分配任务
+        ShowOrDistribute: ''
       }
     },
     methods: {
@@ -129,16 +139,6 @@
           this.$store.dispatch('AddTabView', temp)
         }
       },
-      createISO() {
-        let path = this.getTabViewPath;
-        let temp = {name: 'createISO', path: '/index/viewcont/createISO', desName: '制作ISO'};
-        if (recopy(path, 'createISO', '/index/viewcont/createISO')) {
-          this.$emit('showIndexCont', 'createISO')
-        } else {
-          this.$emit('showIndexCont', 'createISO'); // 子向父组件传值
-          this.$store.dispatch('AddTabView', temp)
-        }
-      },
       printLauout() {
         let path = this.getTabViewPath;
         let temp = {name: 'archPrint', path: '/index/viewcont/archPrint', desName: '打印'};
@@ -149,9 +149,21 @@
           this.$store.dispatch('AddTabView', temp)
         }
       },
-      directorLauout() {
+      assignmentLauout() {
+        this.ShowOrDistribute = 'show';
         let path = this.getTabViewPath;
-        let temp = {name: 'director', path: '/index/viewcont/director', desName: '任务分配'};
+        let temp = {name: 'assignmentManage', path: '/index/viewcont/assignmentManage', desName: '任务管理'};
+        if (recopy(path, 'assignmentManage', '/index/viewcont/assignmentManage')) {
+          this.$emit('showIndexCont', 'assignmentManage')
+        } else {
+          this.$emit('showIndexCont', 'assignmentManage'); // 子向父组件传值
+          this.$store.dispatch('AddTabView', temp)
+        }
+      },
+      distributeLauout(){
+        this.ShowOrDistribute = 'distribute';
+        let path = this.getTabViewPath;
+        let temp = {name: 'director', path: '/index/viewcont/director', desName: '分配任务'};
         if (recopy(path, 'director', '/index/viewcont/director')) {
           this.$emit('showIndexCont', 'director')
         } else {
@@ -270,5 +282,4 @@
 </script>
 
 <style scoped>
-
 </style>

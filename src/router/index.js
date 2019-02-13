@@ -20,11 +20,11 @@ import departmentManagement from '../components/systemManagement/departmentManag
 import postManagement from '../components/systemManagement/postManagement'
 import archSmCheck from '../components/organization/archSmCheck'
 import archPrint from '../components/archPrint'
+import assignmentManage from '../components/organization/assignmentManage'
 //著录时需要的界面（writerGroup）
 import BaseInfo from './../components/writeLayout/BaseInfo'
 import ProfInfo from './../components/writeLayout/ProfInfo'
 import FileInfo from './../components/writeLayout/FileInfo'
-import createISO from '../components/organization/createISO'
 
 Vue.use(Router);
 
@@ -67,7 +67,17 @@ export default new Router({
               keepAlive:true //需要被缓存的组件
             }
           },
-          { // 分配
+          { // 任务管理 -2019/01/28
+            path: '/index/viewcont/assignmentManage',
+            name: 'assignmentManage',
+            components: {
+              assignmentManage: assignmentManage
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
+            },
+          },
+          { // 档案分配 -2019/01/28
             path: '/index/viewcont/director',
             name: 'director',
             components: {
@@ -167,16 +177,6 @@ export default new Router({
             name: 'archPrint',
             components: {
               archPrint: archPrint
-            },
-            meta:{
-              keepAlive:true //需要被缓存的组件
-            },
-          },
-          { // ISO制作
-            path: '/index/viewcont/createISO',
-            name: 'createISO',
-            components: {
-              createISO: createISO
             },
             meta:{
               keepAlive:true //需要被缓存的组件
