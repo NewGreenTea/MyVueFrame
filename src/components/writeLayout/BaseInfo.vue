@@ -9,10 +9,10 @@
       </Col>
       <Col span="18">
         <Form class="formClass" :model="baseArch" :rules="rules" ref="BaseInfoForm">
-          <Row>
+          <Row :gutter="16">
             <!--立案号,档号,案卷类别-->
             <Col>
-              <Row>
+              <Row :gutter="16">
                 <Col span="8">
                   <FormItem class="FormItemClass" label="立案号">
                     <Input placeholder="..." v-model="baseArch.registerNo" class="baseWriteInput"/>
@@ -35,7 +35,7 @@
 
             <!--案卷标题-->
             <Col>
-              <FormItem class="FormItemClass" label="案卷标题" prop="archTitle">
+              <FormItem class="FormItemClass" label="案卷标题">
                 <Input placeholder="..." v-model="baseArch.archTitle" style="width: 92%;float: right"/>
               </FormItem>
             </Col>
@@ -49,7 +49,7 @@
 
             <!--编制日期,进管日期,保管期限-->
             <Col>
-              <Row>
+              <Row :gutter="16">
                 <Col span="8">
                   <FormItem class="FormItemClass" label="编制日期" prop="date">
                     <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="baseWriteInput"
@@ -72,7 +72,7 @@
 
             <!--发文号：文种类别,年份,流水号-->
             <Col>
-              <Row>
+              <Row :gutter="16">
                 <Col span="8">
                   <FormItem class="FormItemClass" prop="dispatchNoType" label="发文号: ">
                     <Input placeholder="发文号：文种类别" v-model="baseArch.dispatchNoType" class="baseWriteInput"/>
@@ -84,7 +84,7 @@
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <Row>
+                  <Row :gutter="16">
                     <Col span="22">
                       <FormItem class="FormItemClass dispatchCss" prop="dispatchNoNum" label="]">
                         <Input placeholder="发文号：流水号" v-model="baseArch.dispatchNoNum" class="baseWriteInputSpec"/>
@@ -100,9 +100,9 @@
             </Col>
 
             <Col>
-              <Row>
+              <Row :gutter="16">
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="公开属性">
+                  <FormItem class="FormItemClass selectFontCss" label="公开属性">
                     <i-select placeholder="属性" class="baseWriteInput" v-model="baseArch.publicProperty">
                       <i-option :key="item" v-for="item in pubProperty" :value="item">{{item}}</i-option>
                     </i-select>
@@ -122,7 +122,7 @@
             </Col>
 
             <Col>
-              <Row>
+              <Row :gutter="16">
                 <Col span="8">
                   <FormItem class="FormItemClass" label="经办人">
                     <Input placeholder="..." v-model="baseArch.operator" class="baseWriteInput"/>
