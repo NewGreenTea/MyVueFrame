@@ -16,10 +16,11 @@
 .tips {
   float: right;
   text-align: center;
+  margin-right: 30px;
 }
 /*著录界面的表单单个输入框样式*/
 .FormItemClass {
-  margin-left: 10px;
+  /*margin-left: 10px;*/
 }
 /*著录界面的页面字体大小*/
 .WriteLayoutFont {
