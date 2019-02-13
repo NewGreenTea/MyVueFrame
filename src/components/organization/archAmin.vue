@@ -27,14 +27,14 @@
           <DatePicker v-model="SQform.inputDate" type="date" format="yyyy-MM-dd" placeholder="日期"
                       style="width: 150px"></DatePicker>
         </FormItem>
-        <FormItem prop="batch">
+        <FormItem>
           <Upload ref="upload" action="/api/importArch/handelExcel" :showUploadList="false" :on-success="importList"
-                  :data="{district:SQform.district}">
+                  :data="{district:SQform.district}" :before-upload="beforeUpload">
             <i-button type="primary">导入清单</i-button>
           </Upload>
         </FormItem>
         <!--<FormItem>-->
-          <!--<Button @click="ArchNOTool" shape="circle">档号设置</Button>-->
+        <!--<Button @click="ArchNOTool" shape="circle">档号设置</Button>-->
         <!--</FormItem>-->
         <!--<Button @click="test">测试</Button>-->
       </Form>
@@ -64,6 +64,8 @@
 </template>
 
 <script>
+  import {notNull} from '../../js/validate'
+
   export default {
     name: 'archAmin',
     data() {
@@ -107,6 +109,18 @@
           lianhao: '',
           fawenhao: '',
           archNO: ''
+        },
+        //表单校验规则
+        rules: {
+          batch: [
+            {validator: notNull, trigger: 'blur'}
+          ],
+          date: [
+            {validator: notNull, trigger: 'change'}
+          ],
+          inputDate: [
+            {validator: notNull, trigger: 'change'}
+          ]
         }
       }
     },
@@ -115,48 +129,39 @@
         let date = new Date();
         this.SQform.date = date
       },
+      beforeUpload() {
+        this.$refs.importForm.validate((valid) => {
+          if (!valid) {
+            this.$Message.error('请填写必要导入信息！');
+          }
+        });
+        return !!(this.SQform.inputDate !== '' && this.SQform.date !== '' && this.SQform.batch);
+      },
       // 清单的处理
       importList(response, file, fileList) {
         this.tableData = [];
-        if (this.SQform.date !== '' && this.SQform.batch !== '') {
-          if(response.data !== '') {
-            for (let j = 0; j < response.data.successData.length; j++) {
-              this.tableData.push(response.data.successData[j])
+        if (response.data !== '') {
+          for (let j = 0; j < response.data.successData.length; j++) {
+            this.tableData.push(response.data.successData[j])
+          }
+          if (response.data.failData.length !== 0) { //含有部分有问题的档案
+            let message = '';
+            for (let j = 0; j < response.data.failData.length; j++) {
+              message = message + response.data.failData[j] + '<br>';
             }
-            if (response.data.failData.length !== 0) {
-              let message = '';
-              for (let j = 0; j < response.data.failData.length; j++) {
-                message = message + response.data.failData[j] + '<br>';
-              }
-              this.$Notice.error({
-                title: '错误信息：',
-                desc: message,
-                duration: 0
-              });
-            }
-          }else{
             this.$Notice.error({
               title: '错误信息：',
-              desc: response.msg,
+              desc: message,
               duration: 0
             });
-            this.$refs.importForm.resetFields();
           }
-        } else {
-          if (this.SQform.date === '') {
-            this.showMessage = true;
-            this.message = '日期未选择';
-            setTimeout(() => {
-              this.showMessage = false
-            }, 1000)
-          }
-          if (this.SQform.batch === '') {
-            this.showMessage = true;
-            this.message = '批次未填写';
-            setTimeout(() => {
-              this.showMessage = false
-            }, 1000)
-          }
+        } else { //全是有问题的档案
+          this.$Notice.error({
+            title: '错误信息：',
+            desc: response.msg,
+            duration: 0
+          });
+          this.$refs.importForm.resetFields();
         }
       },
       //导入确认
@@ -168,6 +173,7 @@
           }
           return str
         }
+
         // 对日期的格式进行转换（‘Tue Nov 06 2018 00:00:00 GMT+0800’=》‘yyyy-MM-dd’）
         let tempDate = this.SQform.date;
         let newDate = tempDate.getFullYear() + '-' + timeAdd0((tempDate.getMonth() + 1).toString()) + '-' + timeAdd0(tempDate.getDate().toString());
@@ -191,14 +197,10 @@
         })
       },
       //清空按钮，清空导入清单数据
-      clearList(){
+      clearList() {
         this.$refs.importForm.resetFields();
         this.tableData = [];
-      },
-      // test(){
-      //   alert(this.$route.fullPath)
-      //   this.$router.push({name: 'archAdmin',path:this.$route.fullPath})
-      // }
+      }
     }
   }
 </script>
