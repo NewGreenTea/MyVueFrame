@@ -1169,7 +1169,7 @@
           archID: this.baseArch.archId,
           result: '通过'
         })).then(res => {
-          this.$Message.success(res.data.msg);
+          this.$Message.success('质检完成！');
           this.goBack();
         })
       },
@@ -1185,7 +1185,7 @@
           reason: this.reason
         })).then(res => {
           this.showModal = false;
-          this.$Message.success(res.data.msg);
+          this.$Message.success('操作完成');
           this.goBack();
         })
       },
