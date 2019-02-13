@@ -23,7 +23,8 @@
                       档案状态：
                     </Col>
                     <Col span="12">
-                      <Select placeholder="状态" @on-change="oneSelect" :clearable="true" @on-clear="oneClear" ref="selectStatue">
+                      <Select placeholder="状态" @on-change="oneSelect" :clearable="true" @on-clear="oneClear"
+                              ref="selectStatue">
                         <Option :key="item" v-for="item in twoStatues" :value="item">{{item}}</Option>
                       </Select>
                     </Col>
@@ -120,6 +121,7 @@
 </template>
 
 <script>
+  import {ArchStatueChange} from './../../js/global'
   import BaseInfo from "../writeLayout/BaseInfo";
   import FileInfo from "../writeLayout/FileInfo";
   import ProfInfo from "../writeLayout/ProfInfo";
@@ -185,7 +187,7 @@
             width: 140,
             key: 'twoStatue',
             render: (h, params) => {
-              let statue = statueTwoDes(params.row.twoStatue);
+              let statue = ArchStatueChange.lowerStatueTwoDes(params.row.twoStatue);
               return h('div', statue)
             }
           },
@@ -389,7 +391,7 @@
           {
             title: '档号状态',
             render: (h, params) => {
-              return h('p', statueTwoDes(params.row.archVO.twoStatue))
+              return h('p', ArchStatueChange.lowerStatueTwoDes(params.row.archVO.twoStatue))
             }
           },
           {
@@ -415,7 +417,7 @@
                 } else {
                   if (params.row.archVO.twoStatue === 3) {
                     return h('p', '')
-                  } else {
+                  } else if(params.row.archVO.twoStatue === 6 || params.row.archVO.twoStatue < 3){
                     return h('Button', {
                       props: {
                         type: 'primary', size: 'small'
@@ -426,26 +428,35 @@
                       on: {
                         click: () => {
                           this.spinShow = true;
-                          // 修改档案状态，变为已著录/待质检的状态
-                          this.axios.post('/api/loadArch/writeComplete', this.qs.stringify({archID: params.row.archId}))
-                          .then(res => {
-                            this.loadGroupArch();
-                            this.axios.get('/api/loadArch/getTpyeArch', {
-                              params: {
-                                type: this.archTypeName,
-                                page: this.currentPage,
-                                pageSize: this.pageSize
-                              }
-                            }).then(res => {
-                              this.tableData = res.data.data.list;
-                              this.totalCount = res.data.data.total;
+                          //检测基本信息的文件页数和文件级信息文件编号是否相等
+                          this.axios.post('/api/loadArch/checkArchFilePage', this.qs.stringify({archID: params.row.archId})).then(res => {
+                            if (res.data.code === 1) {
+                              this.$Message.error(res.data.msg);
                               this.spinShow = false;
-                            })
-                            })
+                            } else {
+                              // 修改档案状态，变为已著录/待质检的状态
+                              this.axios.post('/api/loadArch/writeComplete', this.qs.stringify({archID: params.row.archId}))
+                                .then(res => {
+                                  this.loadGroupArch();
+                                  this.axios.get('/api/loadArch/getTpyeArch', {
+                                    params: {
+                                      type: this.archTypeName,
+                                      page: this.currentPage,
+                                      pageSize: this.pageSize
+                                    }
+                                  }).then(res => {
+                                    this.tableData = res.data.data.list;
+                                    this.totalCount = res.data.data.total;
+                                    this.spinShow = false;
+                                  })
+                                })
+                            }
+                          })
                         }
                       }
                     }, '确认完成');
-                    return h('p', params.row.archVO.twoStatue)
+                  }else{
+                    return h('Button',{}, '查看')
                   }
                 }
               }
@@ -460,9 +471,10 @@
         //用户信息id
         userID: this.$store.state.userID,
         //查询档案二级状态码
-        archStatueCode: 1,
+        archStatueCode: '1',
         //档号查询关键字
         keyword: '',
+        pageKeyword: '',
         //查看待档案著录数据表格的加载动画
         spinShow: false
       }
@@ -545,32 +557,35 @@
         this.archStatueCode = statueTwoCode(value);
       },
       //清空搜索条件中的状态条件
-      oneClear(){
+      oneClear() {
         this.archStatueCode = ''
       },
       //搜索条件中的点击搜索按钮
       searchArch() {
+        this.pageKeyword = this.keyword;
         this.axios.get('/api/loadArch/getGroupArch', {
           params: {
             'archStatue': this.archStatueCode,
-            'keyword': this.keyword,
+            'keyword': this.pageKeyword,
             'page': this.needToDoPage,
             'pageSize': this.needToDoPageSize
           }
         })
           .then(res => {
-          if(res.data.data.list.length === 0){
-            this.$Message.info('没有找到！')
-          }else{
-            this.needToDoData = res.data.data.list;
-            this.needToDoCount = res.data.data.total;
-          }
-          this.keyword = '';
-          this.$refs.selectStatue.clearSingleSelect();
-        })
+            if (res.data.data.list.length === 0) {
+              this.$Message.info('没有找到！');
+              this.needToDoData=[];
+              this.needToDoCount =0;
+            } else {
+              this.needToDoData = res.data.data.list;
+              this.needToDoCount = res.data.data.total;
+            }
+            this.keyword = '';
+            //this.$refs.selectStatue.clearSingleSelect();
+          })
       },
       //查询所有该登录者的待著录数据
-      allWriteArch(){
+      allWriteArch() {
         this.$refs.selectStatue.clearSingleSelect();
         this.archStatueCode = 1;
         this.needToDoPage = 1;
@@ -593,7 +608,7 @@
         this.axios.get('/api/loadArch/getGroupArch', {
           params: {
             'archStatue': this.archStatueCode,
-            'keyword': this.keyword,
+            'keyword': this.pageKeyword,
             'page': this.needToDoPage,
             'pageSize': this.needToDoPageSize
           }
@@ -610,7 +625,7 @@
         this.axios.get('/api/loadArch/getGroupArch', {
           params: {
             'archStatue': this.archStatueCode,
-            'keyword': this.keyword,
+            'keyword': this.pageKeyword,
             'page': this.needToDoPage,
             'pageSize': this.needToDoPageSize
           }
@@ -656,19 +671,6 @@
     }
   }
 
-  //档案二级状态解释说明
-  function statueTwoDes(statue) {
-    let statueName = null;
-    if (statue === 1) {
-      statueName = '待著录'
-    } else if (statue === 3) {
-      statueName = '已著录'
-    } else if (statue === 6) {
-      statueName = '不通过'
-    }
-    return statueName
-  }
-
   //档案二级状态名转状态码
   function statueTwoCode(statue) {
     let statueName = null;
@@ -703,6 +705,7 @@
   .view {
     display: block
   }
+
   .hidd {
     display: none
   }
