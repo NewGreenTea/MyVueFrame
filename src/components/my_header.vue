@@ -10,7 +10,7 @@
     <content style="width: 100%">
       <Row>
 
-        <Col span="1" style="float: right;text-align: right;padding-right: 40px">
+        <Col span="2" style="float: right;text-align: right;padding-right: 40px">
           <Dropdown>
             <a href="#">
               <p style="text-align: center;font-weight: 600;font-size: 15px">{{loginUser}}</p>
