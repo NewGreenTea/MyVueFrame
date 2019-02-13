@@ -41,6 +41,9 @@
         <MenuItem name="1-8">
           <router-link to="/index/viewcont/archPrint" tag="p"><p @click="printLauout">打印</p></router-link>
         </MenuItem>
+        <MenuItem name="1-9">
+          <router-link to="/index/viewcont/createISO" tag="p"><p @click="createISOLauout">制作ISO</p></router-link>
+        </MenuItem>
       </Submenu>
       <Submenu name="2">
         <template slot="title">
@@ -146,6 +149,16 @@
           this.$emit('showIndexCont', 'archPrint')
         } else {
           this.$emit('showIndexCont', 'archPrint'); // 子向父组件传值
+          this.$store.dispatch('AddTabView', temp)
+        }
+      },
+      createISOLauout() {
+        let path = this.getTabViewPath;
+        let temp = {name: 'createISO', path: '/index/viewcont/createISO', desName: '制作ISO'};
+        if (recopy(path, 'createISO', '/index/viewcont/createISO')) {
+          this.$emit('showIndexCont', 'createISO')
+        } else {
+          this.$emit('showIndexCont', 'createISO'); // 子向父组件传值
           this.$store.dispatch('AddTabView', temp)
         }
       },
