@@ -2,7 +2,7 @@
   <div>
     <Row >
       <Col>
-      <div style="visibility: hidden;height: 200px;"></div>
+        <div style="visibility: hidden;height: 200px;"></div>
       </Col>
       <Col>
         <div style="height: 200px;background-color: silver"></div>
@@ -87,7 +87,7 @@
               if (res.data.code === 0) { //code=0 表示OK
                 this.axios.post('/api/user/get').then(res => {
                   this.$store.dispatch('SetUserID', res.data.data.id); // 在前端记录登录者的用户ID
-                  this.$store.dispatch('SetUserName', this.formInline.user); // 在前端保持登录者的用户名
+                  this.$store.dispatch('SetUserName', res.data.data.nickname); // 在前端保持登录者的用户名
                 });
                 this.$router.push('/index/viewcont')
               } else {
