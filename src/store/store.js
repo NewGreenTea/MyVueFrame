@@ -11,7 +11,17 @@ export default new Vuex.Store({
     autoUploadParam: false, // 上传模式
     visitViewPath: [], // 标签路径（导航用）
     visitCurrnetPath: '', // 定位到当前页
-    fileNum: -1 // 上传文件数量(暂时不用)
+    fileNum: -1, // 上传文件数量(暂时不用)
+    //任务数据（跨页面传数据） 2019/01/30
+    AssignmentsData: {
+      pageUrl:null,
+      urlParams: null
+    },
+    //当前任务浏览
+    AssignmentsVisit:{
+      pageUrl:null,
+      urlParams: null
+    }
   },
   mutations: {
     //（设置）保存用户id
@@ -81,6 +91,17 @@ export default new Vuex.Store({
     },
     fileDec (state, num) { // 上传文件数量减少
       state.fileNum = state.fileNum - num
+    },
+    //---------------------2019/01/30-------------------------
+    //任务数据
+    setAssignmentsData(state, {url, params}){
+      state.AssignmentsData.pageUrl = url;
+      state.AssignmentsData.urlParams = params;
+    },
+    //任务当前浏览数据
+    setAssignmentsVisit(state, {url, params}){
+      state.AssignmentsVisit.pageUrl = url;
+      state.AssignmentsVisit.urlParams = params;
     }
   },
   actions: {
@@ -128,9 +149,15 @@ export default new Vuex.Store({
     },
     FileDec (context, num) {
       context.commit('fileDec', num)
+    },
+    //-------------2019/01/30--------------------
+    SetAssignmentData(context,url,params){
+      context.commit('setAssignmentData', url, params)
     }
   },
   getters: {
-    visitViewPath: state => state.visitViewPath
+    visitViewPath: state => state.visitViewPath,
+    AssignmentsData: state => state.AssignmentsData,
+    AssignmentsVisit: state => state.AssignmentsVisit
   }
 })
