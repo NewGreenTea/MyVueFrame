@@ -21,64 +21,77 @@
     <Modal v-model="AddModal" :loading="loading" :mask-closable="false" title="添加局历史审批文件编号"
            @on-ok="addAHNoData" @on-cancel="addcancel" width="800px">
       <Form :model="areaHisNoInfo" :rules="rules" ref="addForm">
-        <Row>
-          <Col span="8">
+        <Row :gutter="16">
+          <Col span="7">
             <p class="profSpecTableCss">文种类别</p>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <p class="profSpecTableCss">年份</p>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <p class="profSpecTableCss">流水号</p>
           </Col>
         </Row>
 
-        <Row>
-          <Col span="8">
+        <Row :gutter="16">
+          <Col span="7">
             <FormItem prop="hisType" class="FormItemClass">
               <Input placeholder="..." v-model="areaHisNoInfo.hisType" class="fileWriteInput"/>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <FormItem prop="hisYear" class="FormItemClass">
               <Input placeholder="..." v-model="areaHisNoInfo.hisYear" class="fileWriteInput"/>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <FormItem prop="hisNum" class="FormItemClass">
               <Input placeholder="..." v-model="areaHisNoInfo.hisNum" class="fileWriteInput"/>
             </FormItem>
           </Col>
+          <Col span="1">
+            <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
+          </Col>
         </Row>
       </Form>
+      <div v-if="modalAdd !== []">
+        <Row v-for="(item,index) in modalAdd" :key="index" style="margin: 3px 0px" :gutter="16">
+          <Col span="7"><p class="addDataCss">{{item.hisType===''?'-':item.hisType}}</p></Col>
+          <Col span="7"><p class="addDataCss">{{item.hisYear===''?'-':item.hisYear}}</p></Col>
+          <Col span="7"><p class="addDataCss">{{item.hisNum===''?'-':item.hisNum}}</p></Col>
+          <Col span="1" offset="1">
+            <a @click="modalAddDelete(index)" style="color: red;font-size: 14px;">-</a>
+          </Col>
+        </Row>
+      </div>
     </Modal>
     <Modal v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改局历史审批文件编号"
            @on-ok="updateAHNoData" @on-cancel="cancleUpdate" width="800px">
       <Form :model="areaHisNoInfo" ref="updateForm" :rules="rules">
-        <Row>
-          <Col span="8">
+        <Row :gutter="16">
+          <Col span="7">
             <p class="profSpecTableCss">文种类别</p>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <p class="profSpecTableCss">年份</p>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <p class="profSpecTableCss">流水号</p>
           </Col>
         </Row>
 
-        <Row>
-          <Col span="8">
+        <Row :gutter="16">
+          <Col span="7">
             <FormItem class="FormItemClass">
               <Input placeholder="..." v-model="areaHisNoInfo.hisType" class="fileWriteInput"/>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <FormItem prop="hisYear" class="FormItemClass">
               <Input placeholder="..." v-model="areaHisNoInfo.hisYear" class="fileWriteInput"/>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <FormItem prop="hisNum" class="FormItemClass">
               <Input placeholder="..." v-model="areaHisNoInfo.hisNum" class="fileWriteInput"/>
             </FormItem>
@@ -156,7 +169,9 @@
         archId: this.specViewParams.archId,
         // 添加弹窗显示控制
         AddModal: false,
-        UpdateModal: false
+        UpdateModal: false,
+        //弹窗的多添加保存数据
+        modalAdd: []
       }
     },
     methods: {
@@ -225,9 +240,9 @@
                   && this.UpdateAddData[i].hisYear === this.tempData[0].hisYear
                   && this.UpdateAddData[i].hisNum === this.tempData[0].hisNum) {
                   this.UpdateAddData.splice(i, 1);
-                  this.UpdateAddData.unshift(temp);
+                  this.UpdateAddData.push(temp);
                   this.tableData.splice(i, 1);
-                  this.tableData.unshift(temp);
+                  this.tableData.push(temp);
                   check = false;
                   this.formReset()
                 }
@@ -259,7 +274,7 @@
                     }
                     //更新后，添加‘准备添加’的数据
                     for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
-                      this.tableData.unshift(this.UpdateAddData[i])
+                      this.tableData.push(this.UpdateAddData[i])
                     }
                   });
                   this.areaHisNoInfo.id = '';
@@ -329,23 +344,57 @@
         temp.hisType = this.areaHisNoInfo.hisType;
         temp.hisYear = this.areaHisNoInfo.hisYear;
         temp.hisNum = this.areaHisNoInfo.hisNum;
+        let result = false;
         this.$refs.addForm.validate((valid) => {
           if (valid) {
-            if (!CommonFunction.isEmpty(temp.hisType) ||
-              !CommonFunction.isEmpty(temp.hisYear) ||
-              !CommonFunction.isEmpty(temp.hisNum)) {
-              if (this.specViewParams.isUpdate === true) {
-                this.UpdateAddData.unshift(temp);
-                this.tableData.unshift(temp)
+            if (this.modalAdd.length === 0) { //判断弹窗添加数据是否有数据
+              //没数据
+              if (!CommonFunction.isEmpty(temp.hisType) ||
+                !CommonFunction.isEmpty(temp.hisYear) ||
+                !CommonFunction.isEmpty(temp.hisNum)) {
+                if (this.specViewParams.isUpdate === true) {
+                  this.UpdateAddData.push(temp);
+                  this.tableData.push(temp)
+                }
+                else {
+                  this.areaHisNoData.push(temp);
+                  this.tableData = this.areaHisNoData;
+                  this.$emit('saveAreaHisNoData', this.tableData)
+                }
+                result = true
               }
-              else {
-                this.areaHisNoData.unshift(temp);
-                this.tableData = this.areaHisNoData;
-                this.$emit('saveAreaHisNoData', this.tableData)
+            }else{ //有数据
+              if (CommonFunction.isEmpty(temp.hisType) &&
+                CommonFunction.isEmpty(temp.hisYear) &&
+                CommonFunction.isEmpty(temp.hisNum)) {
+                if (this.specViewParams.isUpdate === true) {
+                  for(let i=0;i<this.modalAdd.length;i++){
+                    this.UpdateAddData.push(this.modalAdd[i]);
+                    this.tableData.push(this.modalAdd[i])
+                  }
+                }
+                else {
+                  for(let i=0;i<this.modalAdd.length;i++){
+                    this.areaHisNoData.push(this.modalAdd[i]);
+                  }
+                  this.tableData = this.areaHisNoData;
+                  this.$emit('saveAreaHisNoData', this.tableData)
+                }
+                result = true
+              }else{
+                this.$Message.error('局历史审批文件编号请添加到列表里！');
+                setTimeout(() => {
+                  this.loading = false;
+                  this.$nextTick(() => {
+                    this.loading = true;
+                  });
+                }, 1000);
               }
-              this.AddModal = false
             }
-            else {
+            if(result === true){
+              //重置
+              this.modalAdd=[];
+              this.formReset();
               this.AddModal = false
             }
           }
@@ -358,9 +407,6 @@
             }, 1000);
           }
         });
-        this.areaHisNoInfo.id = '';
-        this.areaHisNoInfo.archId = '';
-        this.formReset();
       },
       cancelAHNo() {
         if (Object.keys(this.tempData).length === 0) {
@@ -409,6 +455,37 @@
           this.tempData = []
         }
       },
+      //弹窗多添加事件2019/01/29
+      modalAddData(){
+        let temp={
+          id: null,
+          archId: '',
+          hisType: '',
+          hisYear: '',
+          hisNum: ''
+        };
+        temp.id = this.areaHisNoInfo.id;
+        temp.archId = this.archId;
+        temp.hisType = this.areaHisNoInfo.hisType;
+        temp.hisYear = this.areaHisNoInfo.hisYear;
+        temp.hisNum = this.areaHisNoInfo.hisNum;
+        this.$refs.addForm.validate((valid) => {
+          if(valid){
+            if (!CommonFunction.isEmpty(temp.hisType)
+              || !CommonFunction.isEmpty(temp.hisYear)
+              || !CommonFunction.isEmpty(temp.hisNum)){
+              this.modalAdd.push(temp);
+              this.formReset();
+            }else{
+              this.$Message.error('局历史审批文件编号不能为空');
+            }
+          }
+        })
+      },
+      //弹窗删除事件2019/01/29
+      modalAddDelete(index){
+        this.modalAdd.splice(index, 1)
+      },
       // 选择单条记录
       selectData(selection, row) {
         this.tempData.push(row)
@@ -433,6 +510,7 @@
         this.tempData = []
       },
       addcancel() {
+        this.modalAdd = [];
         this.$refs.addForm.resetFields()
       },
       formReset() {

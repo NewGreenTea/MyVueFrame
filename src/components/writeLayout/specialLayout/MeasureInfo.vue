@@ -18,19 +18,38 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal width="1000px" v-model="AddModal" :mask-closable="false" title="添加记录册编号"
+    <Modal width="1000px" v-model="AddModal" :loading="loading" :mask-closable="false" title="添加记录册编号"
            @on-ok="add61MIData" @on-cancel="addcancle">
       <Form class="formClass" :model="MeasureInfo">
         <FormItem class="FormItemClass" label="记录册编号">
-          <Input placeholder="..." v-model="MeasureInfo.remarkNo"/>
+          <Row>
+            <Col span="16" offset="3">
+              <Input placeholder="..." v-model="MeasureInfo.remarkNo"/>
+            </Col>
+            <Col span="1">
+              <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
+            </Col>
+          </Row>
         </FormItem>
       </Form>
+      <div v-if="modalAdd !== []">
+        <Row v-for="(item,index) in modalAdd" :key="index" style="margin: 3px 0px">
+          <Col span="17" offset="5" class="addDataCss">{{item.remarkNo}}</Col>
+          <Col span="1">
+            <a @click="modalAddDelete(index)" style="color: red;font-size: 14px;">-</a>
+          </Col>
+        </Row>
+      </div>
     </Modal>
-    <Modal width="1000px" v-model="UpdateModal" :mask-closable="false" title="修改记录册编号"
+    <Modal width="1000px" v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改记录册编号"
            @on-ok="update61MIData" @on-cancel="cancleUpdate">
       <Form class="formClass" :model="MeasureInfo">
         <FormItem class="FormItemClass" label="记录册编号">
-          <Input placeholder="..." v-model="MeasureInfo.remarkNo"/>
+          <Row>
+            <Col span="16" offset="3">
+              <Input placeholder="..." v-model="MeasureInfo.remarkNo"/>
+            </Col>
+          </Row>
         </FormItem>
       </Form>
     </Modal>
@@ -69,6 +88,7 @@
           },
           {
             title: '序号',
+            width: 70,
             type: 'index'
           },
           {
@@ -77,13 +97,21 @@
           }
         ],
         AddModal: false,
-        UpdateModal: false
+        UpdateModal: false,
+        loading: true,
+        //
+        modalAdd: []
       }
     },
     methods: {
       loadDMI(data) {
         if (this.D6123SpecParams.isUpdate === true) {
-          this.axios.get('/api/profETC/getMeasureInfo', {params: {archId: this.D6123SpecParams.archId, ArchInfo: data}}).then(
+          this.axios.get('/api/profETC/getMeasureInfo', {
+            params: {
+              archId: this.D6123SpecParams.archId,
+              ArchInfo: data
+            }
+          }).then(
             res => {
               this.tableData = res.data.data
             })
@@ -125,9 +153,9 @@
           for (let i = 0; i < this.UpdateAddData.length; i++) {
             if (this.UpdateAddData[i].remarkNo === this.tempData[0].remarkNo) {
               this.UpdateAddData.splice(i, 1);
-              this.UpdateAddData.unshift(temp);
+              this.UpdateAddData.push(temp);
               this.tableData.splice(i, 1);
-              this.tableData.unshift(temp);
+              this.tableData.push(temp);
               check = false
             }
           }
@@ -156,7 +184,7 @@
                 }
                 //更新后，添加‘准备添加’的数据
                 for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
-                  this.tableData.unshift(this.UpdateAddData[i])
+                  this.tableData.push(this.UpdateAddData[i])
                 }
               })
             });
@@ -174,12 +202,12 @@
       updatePMI() {
         this.axios.all([this.axios.post('/api/profETC/add' + this.archType + 'MI', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
           this.axios.post('/api/profETC/delete' + this.archType + 'MI', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
-        .then(this.axios.spread((res1,res2) => {
-          this.UpdateAddData = [];
-          this.UpdateDeleteData = [];
-          //todo,有错报错
-          this.loadDMI(this.D6123SpecParams.archType);
-        }))
+          .then(this.axios.spread((res1, res2) => {
+            this.UpdateAddData = [];
+            this.UpdateDeleteData = [];
+            //todo,有错报错
+            this.loadDMI(this.D6123SpecParams.archType);
+          }))
       },
       updateRowData(row, index) {
         if (this.D6123SpecParams.isUpdate === true) {
@@ -206,22 +234,80 @@
         };
         temp.archId = this.archId;
         temp.remarkNo = this.MeasureInfo.remarkNo;
+        let result = false;
+        if (this.modalAdd.length === 0) {
+          if (!CommonFunction.isEmpty(this.MeasureInfo.remarkNo)) {
+            if (this.D6123SpecParams.isUpdate === true) {
+              this.UpdateAddData.push(temp);
+              this.tableData.push(temp)
+            }
+            else {
+              this.MeasureInfoData.push(temp);
+              this.tableData = this.MeasureInfoData;
+              this.$emit('saveMeasureInfoData', this.tableData)
+            }
+            result = true;
+          } else {
+            this.$Message.error('记录册编号不能为空！');
+            setTimeout(() => {
+              this.loading = false;
+              this.$nextTick(() => {
+                this.loading = true;
+              });
+            }, 1000);
+          }
+        } else {
+          if (CommonFunction.isEmpty(this.MeasureInfo.remarkNo)) {
+            if (this.D6123SpecParams.isUpdate === true) {
+              for (let i = 0; i < this.modalAdd.length; i++) {
+                this.UpdateAddData.push(this.modalAdd[i]);
+                this.tableData.push(this.modalAdd[i])
+              }
+            } else {
+              for (let i = 0; i < this.modalAdd.length; i++) {
+                this.MeasureInfoData.push(this.modalAdd[i])
+              }
+              this.tableData = this.MeasureInfoData;
+              this.$emit('savePubBuildInfoData', this.tableData);
+            }
+            result = true;
+          } else {
+            this.$Message.error('记录册编号请添加到列表里！');
+            setTimeout(() => {
+              this.loading = false;
+              this.$nextTick(() => {
+                this.loading = true;
+              });
+            }, 1000);
+          }
+        }
+        if (result === true) {
+          this.MeasureInfo.id = '';
+          this.MeasureInfo.archId = '';
+          this.MeasureInfo.remarkNo = '';
+          this.modalAdd = [];
+          this.AddModal = false
+        }
+      },
+      //
+      modalAddData() {
+        let temp = {
+          id: null,
+          archId: '',
+          remarkNo: ''
+        };
+        temp.archId = this.archId;
+        temp.remarkNo = this.MeasureInfo.remarkNo;
         if (!CommonFunction.isEmpty(this.MeasureInfo.remarkNo)) {
-          if (this.D6123SpecParams.isUpdate === true) {
-            this.UpdateAddData.unshift(temp);
-            this.tableData.unshift(temp)
-          }
-          else {
-            this.MeasureInfoData.unshift(temp);
-            this.tableData = this.MeasureInfoData;
-            this.$emit('saveMeasureInfoData', this.tableData)
-          }
+          this.modalAdd.push(temp);
+          this.MeasureInfo.remarkNo = '';
         } else {
           this.$Message.error('记录册编号不能为空');
         }
-        this.MeasureInfo.id = '';
-        this.MeasureInfo.archId = '';
-        this.MeasureInfo.remarkNo = '';
+      },
+      //
+      modalAddDelete(index) {
+        this.modalAdd.splice(index, 1)
       },
       cancelMInfo() {
         if (Object.keys(this.tempData).length === 0) {
@@ -281,12 +367,13 @@
         this.MeasureInfo.id = '';
         this.MeasureInfo.archId = '';
         this.MeasureInfo.remarkNo = '';
+        this.modalAdd = []
       }
     },
     beforeMount() {
 
     },
-    mounted(){
+    mounted() {
       this.loadDMI(this.D6123SpecParams.archType)
     }
   }

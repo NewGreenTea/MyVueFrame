@@ -23,37 +23,51 @@
       <Form class="formClass" :model="UseAreaInfo" ref="addForm" :rules="rules">
         <Row>
           <Col>
-            <Row>
-              <Col span="8">
+            <Row :gutter="16">
+              <Col span="7">
                 <p class="profSpecTableCss">用地性质</p>
               </Col>
-              <Col span="8">
+              <Col span="7">
                 <p class="profSpecTableCss">用地代码</p>
               </Col>
-              <Col span="8">
+              <Col span="7">
                 <p class="profSpecTableCss">分类用地面积</p>
               </Col>
             </Row>
-            <Row>
-              <Col span="8">
+            <Row :gutter="16">
+              <Col span="7">
                 <FormItem class="FormItemClass">
                   <Input placeholder="..." v-model="UseAreaInfo.areaNature" class="D212WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
+              <Col span="7">
                 <FormItem class="FormItemClass" prop="areaCode">
                   <Input placeholder="..." v-model="UseAreaInfo.areaCode" class="D212WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
+              <Col span="7">
                 <FormItem class="FormItemClass" prop="typeArea">
                   <Input placeholder="..." v-model="UseAreaInfo.typeArea" class="D212WriteInput"/>
                 </FormItem>
+              </Col>
+              <Col span="1">
+                <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
               </Col>
             </Row>
           </Col>
         </Row>
       </Form>
+
+      <div v-if="modalAdd !== []">
+        <Row v-for="(item,index) in modalAdd" :key="index" style="margin: 3px 0px" :gutter="16">
+          <Col span="7"><p class="addDataCss">{{item.areaNature===''?'-':item.areaNature}}</p></Col>
+          <Col span="7"><p class="addDataCss">{{item.areaCode===''?'-':item.areaCode}}</p></Col>
+          <Col span="7"><p class="addDataCss">{{item.typeArea===''?'-':item.typeArea}}</p></Col>
+          <Col span="1" offset="1">
+            <a @click="modalAddDelete(index)" style="color: red;font-size: 14px;">-</a>
+          </Col>
+        </Row>
+      </div>
     </Modal>
 
     <Modal width="1000px" v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改用地性质详细著录"
@@ -61,29 +75,29 @@
       <Form class="formClass" :model="UseAreaInfo" ref="updateForm" :rules="rules">
         <Row>
           <Col>
-            <Row>
-              <Col span="8">
+            <Row :gutter="16">
+              <Col span="7">
                 <p class="profSpecTableCss">用地性质</p>
               </Col>
-              <Col span="8">
+              <Col span="7">
                 <p class="profSpecTableCss">用地代码</p>
               </Col>
-              <Col span="8">
+              <Col span="7">
                 <p class="profSpecTableCss">分类用地面积</p>
               </Col>
             </Row>
-            <Row>
-              <Col span="8">
+            <Row :gutter="16">
+              <Col span="7">
                 <FormItem class="FormItemClass">
                   <Input placeholder="..." v-model="UseAreaInfo.areaNature" class="D212WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
+              <Col span="7">
                 <FormItem class="FormItemClass" prop="areaCode">
                   <Input placeholder="..." v-model="UseAreaInfo.areaCode" class="D212WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="8">
+              <Col span="7">
                 <FormItem class="FormItemClass" prop="typeArea">
                   <Input placeholder="..." v-model="UseAreaInfo.typeArea" class="D212WriteInput"/>
                 </FormItem>
@@ -97,7 +111,6 @@
 </template>
 
 <script>
-  import {notNull,isDecimalNotMust} from '../../../js/validate'
   import {CommonFunction, ArchRequestConfig} from '../../../js/global'
 
   export default {
@@ -105,15 +118,8 @@
     props: ['D212SpecParams'],
     data() {
       return {
-        loading: false,
-        rules: {
-          areaCode: [
-            {validator: notNull, trigger: 'blur'}
-          ],
-          typeArea: [
-            {validator: isDecimalNotMust, trigger: 'blur'}
-          ]
-        },
+        loading: true,
+        rules: {},
         //档案分类
         archType: this.D212SpecParams.archType,
         //保存数据
@@ -156,7 +162,9 @@
           }
         ],
         AddModal: false,
-        UpdateModal: false
+        UpdateModal: false,
+        //
+        modalAdd: []
       }
     },
     methods: {
@@ -217,9 +225,9 @@
                   this.UpdateAddData[i].areaCode === this.tempData[0].areaCode &&
                   this.UpdateAddData[i].typeArea === this.tempData[0].typeArea) {
                   this.UpdateAddData.splice(i, 1);
-                  this.UpdateAddData.unshift(temp);
+                  this.UpdateAddData.push(temp);
                   this.tableData.splice(i, 1);
-                  this.tableData.unshift(temp);
+                  this.tableData.push(temp);
                   check = false;
                   this.formReset()
                 }
@@ -251,7 +259,7 @@
                     }
                     //更新后，添加‘准备添加’的数据
                     for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
-                      this.tableData.unshift(this.UpdateAddData[i])
+                      this.tableData.push(this.UpdateAddData[i])
                     }
                   });
                   this.UseAreaInfo.id = '';
@@ -319,27 +327,61 @@
         temp.areaNature = this.UseAreaInfo.areaNature;
         temp.areaCode = this.UseAreaInfo.areaCode;
         temp.typeArea = this.UseAreaInfo.typeArea;
+        let result = false;
         this.$refs.addForm.validate((valid) => {
           if (valid) {
-            if (!CommonFunction.isEmpty(temp.areaNature) ||
-              !CommonFunction.isEmpty(temp.areaCode) ||
-              !CommonFunction.isEmpty(temp.typeArea)) {
-              if (this.D212SpecParams.isUpdate === true) {
-                this.UpdateAddData.unshift(temp);
-                this.tableData.unshift(temp)
+            //无数据
+            if (this.modalAdd.length === 0) {
+              if (!CommonFunction.isEmpty(temp.areaNature) ||
+                !CommonFunction.isEmpty(temp.areaCode) ||
+                !CommonFunction.isEmpty(temp.typeArea)) {
+                if (this.D212SpecParams.isUpdate === true) {
+                  this.UpdateAddData.push(temp);
+                  this.tableData.push(temp)
+                }
+                else {
+                  this.UseAreaInfoData.push(temp);
+                  this.tableData = this.UseAreaInfoData;
+                  this.$emit('saveUseAreaInfoData', this.tableData)
+                }
+                result = true
+              }
+            }
+            else { //有数据
+              if (CommonFunction.isEmpty(temp.areaNature) &&
+                CommonFunction.isEmpty(temp.areaCode) &&
+                CommonFunction.isEmpty(temp.typeArea)) {
+                if (this.D212SpecParams.isUpdate === true) {
+                  for (let i = 0; i < this.modalAdd.length; i++) {
+                    this.UpdateAddData.push(this.modalAdd[i]);
+                    this.tableData.push(this.modalAdd[i])
+                  }
+                }
+                else {
+                  for (let i = 0; i < this.modalAdd.length; i++) {
+                    this.UseAreaInfoData.push(this.modalAdd[i]);
+                  }
+                  this.tableData = this.UseAreaInfoData;
+                  this.$emit('saveUseAreaInfoData', this.tableData)
+                }
+                result = true
               }
               else {
-                this.UseAreaInfoData.unshift(temp);
-                this.tableData = this.UseAreaInfoData;
-                this.$emit('saveUseAreaInfoData', this.tableData)
+                this.$Message.error('用地性质详细著录请添加到列表里！');
+                setTimeout(() => {
+                  this.loading = false;
+                  this.$nextTick(() => {
+                    this.loading = true;
+                  });
+                }, 1000);
               }
+            }
+            if (result === true) {
+              this.modalAdd = [];
               this.AddModal = false;
               this.UseAreaInfo.id = '';
               this.UseAreaInfo.archId = '';
-              this.formReset()
-            }
-            else {
-              // this.AddModal = false
+              this.formReset();
             }
           }
           else {
@@ -351,6 +393,36 @@
             }, 1000);
           }
         });
+      },
+      //
+      modalAddData() {
+        let temp = {
+          id: null,
+          archId: '',
+          areaNature: '',
+          areaCode: '',
+          typeArea: ''
+        };
+        temp.archId = this.archId;
+        temp.areaNature = this.UseAreaInfo.areaNature;
+        temp.areaCode = this.UseAreaInfo.areaCode;
+        temp.typeArea = this.UseAreaInfo.typeArea;
+        this.$refs.addForm.validate((valid) => {
+          if (valid) {
+            if (!CommonFunction.isEmpty(temp.areaNature) ||
+              !CommonFunction.isEmpty(temp.areaCode) ||
+              !CommonFunction.isEmpty(temp.typeArea)) {
+              this.modalAdd.push(temp);
+              this.formReset()
+            } else {
+              this.$Message.error('用地性质详细著录不能为空！')
+            }
+          }
+        })
+      },
+      //
+      modalAddDelete(index) {
+        this.modalAdd.splice(index, 1)
       },
       cancelMInfo() {
         if (Object.keys(this.tempData).length === 0) {
@@ -415,6 +487,7 @@
         this.tempData = []
       },
       addcancle() {
+        this.modalAdd = [];
         this.$refs.addForm.resetFields()
       },
       formReset() {

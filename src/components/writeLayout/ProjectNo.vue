@@ -21,65 +21,78 @@
     <Modal v-model="AddModal" :loading="loading" :mask-closable="false" title="添加建设工程规划许可证号"
            @on-ok="addPNoData" @on-cancel="addcancle" width="800px">
       <Form :model="projectNoInfo" ref="addForm" :rules="rules">
-        <Row>
-          <Col span="8">
+        <Row :gutter="16">
+          <Col span="7">
             <p class="profSpecTableCss">文种类别</p>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <p class="profSpecTableCss">年份</p>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <p class="profSpecTableCss">流水号</p>
           </Col>
         </Row>
 
-        <Row>
-          <Col span="8">
-            <FormItem>
+        <Row :gutter="16">
+          <Col span="7">
+            <FormItem prop="projType">
               <Input placeholder="..." v-model="projectNoInfo.projType" class="fileWriteInput"/>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <FormItem prop="projYear" class="FormItemClass">
               <Input placeholder="..." v-model="projectNoInfo.projYear" class="fileWriteInput"/>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <FormItem prop="projNum" class="FormItemClass">
               <Input placeholder="..." v-model="projectNoInfo.projNum" class="fileWriteInput"/>
             </FormItem>
           </Col>
+          <Col span="1">
+            <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
+          </Col>
         </Row>
       </Form>
+      <div v-if="modalAdd !== []">
+        <Row v-for="(item,index) in modalAdd" :key="index" style="margin: 3px 0px" :gutter="16">
+          <Col span="7"><p class="addDataCss">{{item.projType===''?'-':item.projType}}</p></Col>
+          <Col span="7"><p class="addDataCss">{{item.projYear===''?'-':item.projYear}}</p></Col>
+          <Col span="7"><p class="addDataCss">{{item.projNum===''?'-':item.projNum}}</p></Col>
+          <Col span="1" offset="1">
+            <a @click="modalAddDelete(index)" style="color: red;font-size: 14px;">-</a>
+          </Col>
+        </Row>
+      </div>
     </Modal>
 
     <Modal v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改建设工程规划许可证号"
            @on-ok="updatePNoData" @on-cancel="cancleUpdate" width="800px">
       <Form :model="projectNoInfo" ref="updateForm" :rules="rules">
-        <Row>
-          <Col span="8">
+        <Row :gutter="16">
+          <Col span="7">
             <p class="profSpecTableCss">文种类别</p>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <p class="profSpecTableCss">年份</p>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <p class="profSpecTableCss">流水号</p>
           </Col>
         </Row>
 
-        <Row>
-          <Col span="8">
+        <Row :gutter="16">
+          <Col span="7">
             <FormItem>
               <Input placeholder="..." v-model="projectNoInfo.projType" class="fileWriteInput"/>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <FormItem prop="projYear" class="FormItemClass">
               <Input placeholder="..." v-model="projectNoInfo.projYear" class="fileWriteInput"/>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <FormItem prop="projNum" class="FormItemClass">
               <Input placeholder="..." v-model="projectNoInfo.projNum" class="fileWriteInput"/>
             </FormItem>
@@ -92,7 +105,7 @@
 
 <script>
   import {isIntegerNotMust} from '../../js/validate'
-  import {CommonFunction,ArchRequestConfig} from '../../js/global'
+  import {CommonFunction, ArchRequestConfig} from '../../js/global'
 
   export default {
     name: "ProjectNo",
@@ -157,7 +170,9 @@
         archId: this.specViewParams.archId,
         // 添加弹窗显示控制
         AddModal: false,
-        UpdateModal: false
+        UpdateModal: false,
+        //弹窗的多添加保存数据
+        modalAdd: []
       }
     },
     methods: {
@@ -198,6 +213,7 @@
         }
       },
       addcancle() {
+        this.modalAdd = [];  //todo 注意点
         this.$refs.addForm.resetFields()
       },
       cancleUpdate() {
@@ -228,9 +244,9 @@
                 if (this.UpdateAddData[i].projType === this.tempData[0].projType && this.UpdateAddData[i].projYear === this.tempData[0].projYear
                   && this.UpdateAddData[i].projNum === this.tempData[0].projNum) {
                   this.UpdateAddData.splice(i, 1);
-                  this.UpdateAddData.unshift(temp);
+                  this.UpdateAddData.push(temp);
                   this.tableData.splice(i, 1);
-                  this.tableData.unshift(temp);
+                  this.tableData.push(temp);
                   check = false;
                   this.formReset()
                 }
@@ -262,7 +278,7 @@
                       }
                       //更新后，添加‘准备添加’的数据
                       for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
-                        this.tableData.unshift(this.UpdateAddData[i])
+                        this.tableData.push(this.UpdateAddData[i])
                       }
                     });
                     this.projectNoInfo.id = null;
@@ -329,23 +345,58 @@
         temp.projType = this.projectNoInfo.projType;
         temp.projYear = this.projectNoInfo.projYear;
         temp.projNum = this.projectNoInfo.projNum;
+        let result = false;
         this.$refs.addForm.validate((valid) => {
           if (valid) {
-            if (!CommonFunction.isEmpty(temp.projType)
-              || !CommonFunction.isEmpty(temp.projYear)
-              || !CommonFunction.isEmpty(temp.projNum)) {
-              if (this.specViewParams.isUpdate === true) {
-                //把最后新加的放在第一位
-                this.UpdateAddData.unshift(temp);
-                this.tableData.unshift(temp)
+            if (this.modalAdd.length === 0) { //判断弹窗添加数据是否有数据
+              if (!CommonFunction.isEmpty(temp.projType)
+                || !CommonFunction.isEmpty(temp.projYear)
+                || !CommonFunction.isEmpty(temp.projNum)) {
+                //没有弹窗数据
+                if (this.specViewParams.isUpdate === true) {
+                  //把最后新加的放在第一位
+                  this.UpdateAddData.push(temp);
+                  this.tableData.push(temp)
+                }
+                else {
+                  this.projectNoData.push(temp);
+                  this.tableData = this.projectNoData;
+                  this.$emit('saveProjectNoData', this.tableData)
+                }
+                result = true
               }
-              else {
-                this.projectNoData.unshift(temp);
-                this.tableData = this.projectNoData;
-                this.$emit('saveProjectNoData', this.tableData)
+            } else { //有弹窗数据
+              if (CommonFunction.isEmpty(temp.projType)
+                && CommonFunction.isEmpty(temp.projYear)
+                && CommonFunction.isEmpty(temp.projNum)) {
+                if (this.specViewParams.isUpdate === true) {
+                  for(let i=0;i<this.modalAdd.length;i++){
+                    this.UpdateAddData.push(this.modalAdd[i]);
+                    this.tableData.push(this.modalAdd[i])
+                  }
+                }else{
+                  for(let i=0;i<this.modalAdd.length;i++){
+                    this.projectNoData.push(this.modalAdd[i]);
+                  }
+                  this.tableData = this.projectNoData;
+                  this.$emit('saveProjectNoData', this.tableData)
+                }
+                result = true
+              }else{
+                this.$Message.error('建设工程规划许可证号请添加到列表里！');
+                setTimeout(() => {
+                  this.loading = false;
+                  this.$nextTick(() => {
+                    this.loading = true;
+                  });
+                }, 1000);
               }
+            }
+            if (result === true) {
+              //重置
               this.projectNoInfo.id = '';
               this.projectNoInfo.archId = '';
+              this.modalAdd=[];
               this.formReset();
               this.AddModal = false
             }
@@ -408,6 +459,37 @@
           this.tempData = []
         }
       },
+      //弹窗多添加事件2019/01/29
+      modalAddData() {
+        let temp = {
+          id: null,
+          archId: '',
+          projType: '',
+          projYear: '',
+          projNum: ''
+        };
+        temp.id = this.projectNoInfo.id;
+        temp.archId = this.archId;
+        temp.projType = this.projectNoInfo.projType;
+        temp.projYear = this.projectNoInfo.projYear;
+        temp.projNum = this.projectNoInfo.projNum;
+        this.$refs.addForm.validate((valid) => {
+          if(valid){
+            if (!CommonFunction.isEmpty(temp.projType)
+              || !CommonFunction.isEmpty(temp.projYear)
+              || !CommonFunction.isEmpty(temp.projNum)){
+              this.modalAdd.push(temp);
+              this.formReset();
+            }else{
+              this.$Message.error('建设工程规划许可证号不能为空');
+            }
+          }
+        })
+      },
+      //弹窗删除事件2019/01/29
+      modalAddDelete(index) {
+        this.modalAdd.splice(index, 1)
+      },
       // 选择单条记录
       selectData(selection, row) {
         this.tempData.push(row)
@@ -431,6 +513,7 @@
       cancelAllData(selection) {
         this.tempData = []
       },
+      //重置表单
       formReset() {
         this.projectNoInfo.projType = '';
         this.projectNoInfo.projYear = '';

@@ -23,45 +23,61 @@
       <Form class="formClass" :model="D31PubBuildInfo" ref="addForm" :rules="rules">
         <Row>
           <Col>
-            <Row>
-              <Col span="6">
+            <Row :gutter="16">
+              <Col span="5">
                 <p class="profSpecTableCss">功能名称</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">设计面积</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">规划面积</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">备注</p>
               </Col>
             </Row>
-            <Row>
-              <Col span="6">
+            <Row :gutter="16">
+              <Col span="5">
                 <FormItem class="FormItemClass">
-                  <Input placeholder="..." v-model="D31PubBuildInfo.functionName" class="D31WriteInput"/>
+                  <Tooltip :content="D31PubBuildInfo.functionName" max-width="300" class="D31WriteInput">
+                    <Input placeholder="..." v-model="D31PubBuildInfo.functionName" class="D31WriteInput"/>
+                  </Tooltip>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass" prop="designArea">
                   <Input placeholder="..." v-model="D31PubBuildInfo.designArea" class="D31WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass" prop="planArea">
                   <Input placeholder="..." v-model="D31PubBuildInfo.planArea" class="D31WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass">
                   <Input placeholder="..." v-model="D31PubBuildInfo.etc" class="D31WriteInput"/>
                 </FormItem>
+              </Col>
+              <Col span="1">
+                <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
               </Col>
             </Row>
           </Col>
         </Row>
       </Form>
+      <div v-if="modalAdd !== []">
+        <Row v-for="(item,index) in modalAdd" :key="index" style="margin: 3px 0px" :gutter="16">
+          <Col span="5"><p class="addDataCss">{{item.functionName===''?'-':item.functionName}}</p></Col>
+          <Col span="5"><p class="addDataCss">{{item.designArea===''?'-':item.designArea}}</p></Col>
+          <Col span="5"><p class="addDataCss">{{item.planArea===''?'-':item.planArea}}</p></Col>
+          <Col span="5"><p class="addDataCss">{{item.etc===''?'-':item.etc}}</p></Col>
+          <Col span="1" offset="1">
+            <a @click="modalAddDelete(index)" style="color: red;font-size: 14px;">-</a>
+          </Col>
+        </Row>
+      </div>
     </Modal>
 
     <Modal width="1000px" :loading="loading" v-model="UpdateModal" :mask-closable="false" title="修改公建配套"
@@ -69,37 +85,39 @@
       <Form class="formClass" :model="D31PubBuildInfo" ref="updateForm" :rules="rules">
         <Row>
           <Col>
-            <Row>
-              <Col span="6">
+            <Row :gutter="16">
+              <Col span="5">
                 <p class="profSpecTableCss">功能名称</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">设计面积</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">规划面积</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">备注</p>
               </Col>
             </Row>
-            <Row>
-              <Col span="6">
+            <Row :gutter="16">
+              <Col span="5">
                 <FormItem class="FormItemClass">
-                  <Input placeholder="..." v-model="D31PubBuildInfo.functionName" class="D31WriteInput"/>
+                  <Tooltip :content="D31PubBuildInfo.functionName" max-width="300" class="D31WriteInput">
+                    <Input placeholder="..." v-model="D31PubBuildInfo.functionName" class="D31WriteInput"/>
+                  </Tooltip>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass" prop="designArea">
                   <Input placeholder="..." v-model="D31PubBuildInfo.designArea" class="D31WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass" prop="planArea">
                   <Input placeholder="..." v-model="D31PubBuildInfo.planArea" class="D31WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass">
                   <Input placeholder="..." v-model="D31PubBuildInfo.etc" class="D31WriteInput"/>
                 </FormItem>
@@ -174,7 +192,9 @@
           planArea: [
             {validator: isDecimalNotMust, trigger: 'blur'}
           ]
-        }
+        },
+        //
+        modalAdd: []
       }
     },
     methods: {
@@ -214,6 +234,7 @@
         this.$refs.D31Table.selectAll(false)
       },
       addcancle() {
+        this.modalAdd = [];
         this.$refs.addForm.resetFields();
         this.formReset();
       },
@@ -244,9 +265,9 @@
                   this.UpdateAddData[i].planArea === this.tempData[0].planArea &&
                   this.UpdateAddData[i].etc === this.tempData[0].etc) {
                   this.UpdateAddData.splice(i, 1);
-                  this.UpdateAddData.unshift(temp);
+                  this.UpdateAddData.push(temp);
                   this.tableData.splice(i, 1);
-                  this.tableData.unshift(temp);
+                  this.tableData.push(temp);
                   check = false;
                   this.formReset()
                 }
@@ -277,7 +298,7 @@
                     }
                     //更新后，添加‘准备添加’的数据
                     for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
-                      this.tableData.unshift(this.UpdateAddData[i])
+                      this.tableData.push(this.UpdateAddData[i])
                     }
                   })
                 });
@@ -303,14 +324,14 @@
       },
       updatePMI() {
         this.axios.all([
-        this.axios.post('/api/profETC/addD31PubBuildInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
-        this.axios.post('/api/profETC/deleteD31PubBuildInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
-          .then(this.axios.spread((res1,res2) => {
-          this.UpdateAddData = [];
-          this.UpdateDeleteData = [];
-          //todo,有错报错，没错提示并跳转
+          this.axios.post('/api/profETC/addD31PubBuildInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
+          this.axios.post('/api/profETC/deleteD31PubBuildInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
+          .then(this.axios.spread((res1, res2) => {
+            this.UpdateAddData = [];
+            this.UpdateDeleteData = [];
+            //todo,有错报错，没错提示并跳转
             this.loadBPI()
-        }))
+          }))
       },
       updateRowData(row, index) {
         if (this.D31SpecParams.isUpdate === true) {
@@ -353,23 +374,57 @@
         temp.designArea = this.D31PubBuildInfo.designArea;
         temp.planArea = this.D31PubBuildInfo.planArea;
         temp.etc = this.D31PubBuildInfo.etc;
-        this.$refs.updateForm.validate((valid) => {    //todo 更新检测
+        let result = false;
+        this.$refs.updateForm.validate((valid) => {
           if (valid) {
-            if (!CommonFunction.isEmpty(temp.functionName) ||
-              !CommonFunction.isEmpty(temp.designArea) ||
-              !CommonFunction.isEmpty(temp.planArea)) {
-              if (this.D31SpecParams.isUpdate === true) {
-                this.UpdateAddData.unshift(temp);
-                this.tableData.unshift(temp)
+            if (this.modalAdd.length === 0) {
+              if (!CommonFunction.isEmpty(temp.functionName) ||
+                !CommonFunction.isEmpty(temp.designArea) ||
+                !CommonFunction.isEmpty(temp.planArea)) {
+                if (this.D31SpecParams.isUpdate === true) {
+                  this.UpdateAddData.push(temp);
+                  this.tableData.push(temp)
+                }
+                else {
+                  this.PubBuildInfoData.push(temp);
+                  this.tableData = this.PubBuildInfoData;
+                  this.$emit('savePubBuildInfoData', this.tableData)
+                }
+                result = true;
               }
-              else {
-                this.PubBuildInfoData.unshift(temp);
-                this.tableData = this.PubBuildInfoData;
-                this.$emit('savePubBuildInfoData', this.tableData)
+            } else {
+              if (CommonFunction.isEmpty(temp.functionName) &&
+                CommonFunction.isEmpty(temp.designArea) &&
+                CommonFunction.isEmpty(temp.planArea) &&
+                CommonFunction.isEmpty(temp.etc)) {
+                if (this.D31SpecParams.isUpdate === true) {
+                  for (let i = 0; i < this.modalAdd.length; i++) {
+                    this.UpdateAddData.push(this.modalAdd[i]);
+                    this.tableData.push(this.modalAdd[i])
+                  }
+                }
+                else {
+                  for (let i = 0; i < this.modalAdd.length; i++) {
+                    this.PubBuildInfoData.push(this.modalAdd[i]);
+                  }
+                  this.tableData = this.PubBuildInfoData;
+                  this.$emit('savePubBuildInfoData', this.tableData)
+                }
+                result = true;
+              } else {
+                this.$Message.error('公建配套请添加到列表里！');
+                setTimeout(() => {
+                  this.loading = false;
+                  this.$nextTick(() => {
+                    this.loading = true;
+                  });
+                }, 1000);
               }
-              this.AddModal = false
             }
-            else {
+            if (result === true) {
+              //重置
+              this.modalAdd = [];
+              this.formReset();
               this.AddModal = false
             }
           }
@@ -382,9 +437,6 @@
             }, 1000);
           }
         });
-        this.D31PubBuildInfo.id = '';
-        this.D31PubBuildInfo.archId = '';
-        this.formReset()
       },
       cancelMInfo() {
         if (Object.keys(this.tempData).length === 0) {
@@ -432,6 +484,39 @@
           }
           this.tempData = []
         }
+      },
+      //
+      modalAddData() {
+        let temp = {
+          id: null,
+          archId: '',
+          functionName: '',
+          designArea: '',
+          planArea: '',
+          etc: ''
+        };
+        temp.id = this.D31PubBuildInfo.id;
+        temp.archId = this.archId;
+        temp.functionName = this.D31PubBuildInfo.functionName;
+        temp.designArea = this.D31PubBuildInfo.designArea;
+        temp.planArea = this.D31PubBuildInfo.planArea;
+        temp.etc = this.D31PubBuildInfo.etc;
+        this.$refs.updateForm.validate((valid) => {
+          if (valid) {
+            if (!CommonFunction.isEmpty(temp.functionName) ||
+              !CommonFunction.isEmpty(temp.designArea) ||
+              !CommonFunction.isEmpty(temp.planArea)) {
+              this.modalAdd.push(temp);
+              this.formReset();
+            } else {
+              this.$Message.error('公建配套不能为空');
+            }
+          }
+        })
+      },
+      //
+      modalAddDelete(index) {
+        this.modalAdd.splice(index, 1)
       },
       selectData(selection, row) {
         this.tempData.push(row)

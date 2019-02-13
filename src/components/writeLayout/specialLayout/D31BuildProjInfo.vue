@@ -23,8 +23,8 @@
       <Form class="formClass" :model="D31BuildProjInfo" ref="addForm" :rules="rules">
         <Row>
           <Col>
-            <Row>
-              <Col span="3">
+            <Row :gutter="16">
+              <Col span="4">
                 <p class="profSpecTableCss">申报项目名称</p>
               </Col>
               <Col span="3">
@@ -47,10 +47,12 @@
               </Col>
             </Row>
 
-            <Row>
-              <Col span="3">
+            <Row :gutter="16">
+              <Col span="4">
                 <FormItem class="FormItemClass">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.projectName" class="D31D61NumWriteInput"/>
+                  <Tooltip :content="D31BuildProjInfo.projectName" max-width="300" class="D31D61NumWriteInput">
+                    <Input placeholder="..." v-model="D31BuildProjInfo.projectName" class="D31D61NumWriteInput"/>
+                  </Tooltip>
                 </FormItem>
               </Col>
               <Col span="3">
@@ -83,10 +85,27 @@
                   <Input placeholder="..." v-model="D31BuildProjInfo.totalArea" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
+              <Col span="1">
+                <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
+              </Col>
             </Row>
           </Col>
         </Row>
       </Form>
+      <div v-if="modalAdd !== []">
+        <Row v-for="(item,index) in modalAdd" :key="index" style="margin: 3px 0px" :gutter="16">
+          <Col span="4"><p class="addDataCss">{{item.projectName===''?'-':item.projectName}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.buildingNum===''?'-':item.buildingNum}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.overgroundFloor===''?'-':item.overgroundFloor}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.undergroundFloor===''?'-':item.undergroundFloor}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.overgroundArea===''?'-':item.overgroundArea}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.overgroundFloor===''?'-':item.undergroundArea}}</p></Col>
+          <Col span="3"><p class="addDataCss">{{item.undergroundFloor===''?'-':item.totalArea}}</p></Col>
+          <Col span="1" offset="1">
+            <a @click="modalAddDelete(index)" style="color: red;font-size: 14px;">-</a>
+          </Col>
+        </Row>
+      </div>
     </Modal>
 
     <Modal width="1000px" :loading="loading" v-model="UpdateModal" :mask-closable="false" title="修改报建项目详细"
@@ -94,8 +113,8 @@
       <Form class="formClass" :model="D31BuildProjInfo" ref="updateForm" :rules="rules">
         <Row>
           <Col>
-            <Row>
-              <Col span="3">
+            <Row :gutter="16">
+              <Col span="4">
                 <p class="profSpecTableCss">申报项目名称</p>
               </Col>
               <Col span="3">
@@ -118,10 +137,12 @@
               </Col>
             </Row>
 
-            <Row>
-              <Col span="3">
+            <Row :gutter="16">
+              <Col span="4">
                 <FormItem class="FormItemClass">
-                  <Input placeholder="..." v-model="D31BuildProjInfo.projectName" class="D31D61NumWriteInput"/>
+                  <Tooltip :content="D31BuildProjInfo.projectName" max-width="300" class="D31D61NumWriteInput">
+                    <Input placeholder="..." v-model="D31BuildProjInfo.projectName" class="D31D61NumWriteInput"/>
+                  </Tooltip>
                 </FormItem>
               </Col>
               <Col span="3">
@@ -251,7 +272,9 @@
           totalArea: [
             {validator: isDecimalNotMust, trigger: 'blur'}
           ]
-        }
+        },
+        //弹窗的多添加保存数据
+        modalAdd: []
       }
     },
     methods: {
@@ -333,9 +356,9 @@
                   this.UpdateAddData[i].undergroundArea === this.tempData[0].undergroundArea &&
                   this.UpdateAddData[i].totalArea === this.tempData[0].totalArea) {
                   this.UpdateAddData.splice(i, 1);
-                  this.UpdateAddData.unshift(temp);
+                  this.UpdateAddData.push(temp);
                   this.tableData.splice(i, 1);
-                  this.tableData.unshift(temp);
+                  this.tableData.push(temp);
                   check = false;
                   this.formReset()
                 }
@@ -370,7 +393,7 @@
                     }
                     //更新后，添加‘准备添加’的数据
                     for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
-                      this.tableData.unshift(this.UpdateAddData[i])
+                      this.tableData.push(this.UpdateAddData[i])
                     }
                   })
                 });
@@ -397,13 +420,13 @@
       },
       updatePMI() {
         this.axios.all([this.axios.post('/api/profETC/addD31BuildProjInfo', JSON.stringify(this.UpdateAddData), ArchRequestConfig),
-        this.axios.post('/api/profETC/deleteD31BuildProjInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
-          .then(this.axios.spread((res1,res2) => {
-          this.UpdateAddData = [];
-          this.UpdateDeleteData = [];
-          //todo,有错报错，没错提示并跳转
+          this.axios.post('/api/profETC/deleteD31BuildProjInfo', JSON.stringify(this.UpdateDeleteData), ArchRequestConfig)])
+          .then(this.axios.spread((res1, res2) => {
+            this.UpdateAddData = [];
+            this.UpdateDeleteData = [];
+            //todo,有错报错，没错提示并跳转
             this.loadBPI()
-        }))
+          }))
       },
       updateRowData(row, index) {
         if (this.D31SpecParams.isUpdate === true) {
@@ -461,27 +484,66 @@
         temp.overgroundArea = this.D31BuildProjInfo.overgroundArea;
         temp.undergroundArea = this.D31BuildProjInfo.undergroundArea;
         temp.totalArea = this.D31BuildProjInfo.totalArea;
+        let result = false;
         this.$refs.addForm.validate((valid) => {
           if (valid) {
-            if (!CommonFunction.isEmpty(temp.projectName) ||
-              !CommonFunction.isEmpty(temp.buildingNum) ||
-              !CommonFunction.isEmpty(temp.overgroundFloor) ||
-              !CommonFunction.isEmpty(temp.undergroundFloor) ||
-              !CommonFunction.isEmpty(temp.overgroundArea) ||
-              !CommonFunction.isEmpty(temp.undergroundArea) ||
-              !CommonFunction.isEmpty(temp.totalArea)) {
-              if (this.D31SpecParams.isUpdate === true) {
-                this.UpdateAddData.unshift(temp);
-                this.tableData.unshift(temp)
+            if (this.modalAdd.length === 0) { //判断弹窗添加数据是否有数据
+              //没数据
+              if (!CommonFunction.isEmpty(temp.projectName) ||
+                !CommonFunction.isEmpty(temp.buildingNum) ||
+                !CommonFunction.isEmpty(temp.overgroundFloor) ||
+                !CommonFunction.isEmpty(temp.undergroundFloor) ||
+                !CommonFunction.isEmpty(temp.overgroundArea) ||
+                !CommonFunction.isEmpty(temp.undergroundArea) ||
+                !CommonFunction.isEmpty(temp.totalArea)) {
+                if (this.D31SpecParams.isUpdate === true) {
+                  this.UpdateAddData.push(temp);
+                  this.tableData.push(temp)
+                }
+                else {
+                  this.BuildProjInfoData.push(temp);
+                  this.tableData = this.BuildProjInfoData;
+                  this.$emit('saveBuildProjInfoData', this.tableData)
+                }
+                result = true
+              }
+            } else {//有数据
+              if (CommonFunction.isEmpty(temp.projectName) &&
+                CommonFunction.isEmpty(temp.buildingNum) &&
+                CommonFunction.isEmpty(temp.overgroundFloor) &&
+                CommonFunction.isEmpty(temp.undergroundFloor) &&
+                CommonFunction.isEmpty(temp.overgroundArea) &&
+                CommonFunction.isEmpty(temp.undergroundArea) &&
+                CommonFunction.isEmpty(temp.totalArea)) {
+                if (this.D31SpecParams.isUpdate === true) {
+                  for(let i=0;i<this.modalAdd.length;i++){
+                    this.UpdateAddData.push(this.modalAdd[i]);
+                    this.tableData.push(this.modalAdd[i])
+                  }
+                }
+                else {
+                  for(let i=0;i<this.modalAdd.length;i++){
+                    this.BuildProjInfoData.push(this.modalAdd[i]);
+                  }
+                  this.tableData = this.BuildProjInfoData;
+                  this.$emit('saveBuildProjInfoData', this.tableData)
+                }
+                result = true
               }
               else {
-                this.BuildProjInfoData.unshift(temp);
-                this.tableData = this.BuildProjInfoData;
-                this.$emit('saveBuildProjInfoData', this.tableData)
+                this.$Message.error('报建项目详细请添加到列表里！');
+                setTimeout(() => {
+                  this.loading = false;
+                  this.$nextTick(() => {
+                    this.loading = true;
+                  });
+                }, 1000);
               }
-              this.AddModal = false
             }
-            else {
+            if(result === true){
+              //重置
+              this.modalAdd=[];
+              this.formReset();
               this.AddModal = false
             }
           }
@@ -494,9 +556,6 @@
             }, 1000);
           }
         });
-        this.D31BuildProjInfo.id = '';
-        this.D31BuildProjInfo.archId = '';
-        this.formReset();
       },
       cancelMInfo() {
         if (Object.keys(this.tempData).length === 0) {
@@ -557,6 +616,49 @@
           this.tempData = []
         }
       },
+      //弹窗多添加事件2019/01/29
+      modalAddData() {
+        let temp = {
+          id: null,
+          archId: '',
+          projectName: '',
+          buildingNum: '',
+          overgroundFloor: '',
+          undergroundFloor: '',
+          overgroundArea: '',
+          undergroundArea: '',
+          totalArea: ''
+        };
+        temp.id = this.D31BuildProjInfo.id;
+        temp.archId = this.archId;
+        temp.projectName = this.D31BuildProjInfo.projectName;
+        temp.buildingNum = this.D31BuildProjInfo.buildingNum;
+        temp.overgroundFloor = this.D31BuildProjInfo.overgroundFloor;
+        temp.undergroundFloor = this.D31BuildProjInfo.undergroundFloor;
+        temp.overgroundArea = this.D31BuildProjInfo.overgroundArea;
+        temp.undergroundArea = this.D31BuildProjInfo.undergroundArea;
+        temp.totalArea = this.D31BuildProjInfo.totalArea;
+        this.$refs.addForm.validate((valid) => {
+          if (valid) {
+            if (!CommonFunction.isEmpty(temp.projectName) ||
+              !CommonFunction.isEmpty(temp.buildingNum) ||
+              !CommonFunction.isEmpty(temp.overgroundFloor) ||
+              !CommonFunction.isEmpty(temp.undergroundFloor) ||
+              !CommonFunction.isEmpty(temp.overgroundArea) ||
+              !CommonFunction.isEmpty(temp.undergroundArea) ||
+              !CommonFunction.isEmpty(temp.totalArea)) {
+              this.modalAdd.push(temp);
+              this.formReset();
+            } else {
+              this.$Message.error('报建项目详细不能为空');
+            }
+          }
+        })
+      },
+      //弹窗删除事件2019/01/29
+      modalAddDelete(index) {
+        this.modalAdd.splice(index, 1)
+      },
       selectData(selection, row) {
         this.tempData.push(row)
       },
@@ -579,6 +681,7 @@
         }
       },
       addcancle() {
+        this.modalAdd = [];
         this.$refs.addForm.resetFields();
         this.formReset()
       },

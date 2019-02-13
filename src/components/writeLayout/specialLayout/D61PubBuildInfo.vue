@@ -23,46 +23,62 @@
       <Form class="formClass" :model="D61PubBuildInfo" ref="addForm" :rules="rules">
         <Row>
           <Col>
-            <Row>
-              <Col span="6">
+            <Row :gutter="16">
+              <Col span="5">
                 <p class="profSpecTableCss">项目名称</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">独立用地面积</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">建筑面积</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">位置</p>
               </Col>
             </Row>
 
-            <Row>
-              <Col span="6">
+            <Row :gutter="16">
+              <Col span="5">
                 <FormItem class="FormItemClass">
-                  <Input placeholder="..." v-model="D61PubBuildInfo.projectName" class="D61WriteInput"/>
+                  <Tooltip :content="D61PubBuildInfo.projectName" max-width="300" class="D61WriteInput">
+                    <Input placeholder="..." v-model="D61PubBuildInfo.projectName" class="D61WriteInput"/>
+                  </Tooltip>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass" prop="independentArea">
                   <Input placeholder="..." v-model="D61PubBuildInfo.independentArea" class="D61WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass" prop="buildArea">
                   <Input placeholder="..." v-model="D61PubBuildInfo.buildArea" class="D61WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass">
                   <Input placeholder="..." v-model="D61PubBuildInfo.position" class="D61WriteInput"/>
                 </FormItem>
+              </Col>
+              <Col span="1">
+                <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
               </Col>
             </Row>
           </Col>
         </Row>
       </Form>
+      <div v-if="modalAdd !== []">
+        <Row v-for="(item,index) in modalAdd" :key="index" style="margin: 3px 0px" :gutter="16">
+          <Col span="5"><p class="addDataCss">{{item.projectName===''?'-':item.projectName}}</p></Col>
+          <Col span="5"><p class="addDataCss">{{item.independentArea===''?'-':item.independentArea}}</p></Col>
+          <Col span="5"><p class="addDataCss">{{item.buildArea===''?'-':item.buildArea}}</p></Col>
+          <Col span="5"><p class="addDataCss">{{item.position===''?'-':item.position}}</p></Col>
+          <Col span="1" offset="1">
+            <a @click="modalAddDelete(index)" style="color: red;font-size: 14px;">-</a>
+          </Col>
+        </Row>
+      </div>
     </Modal>
 
     <Modal width="1000px" :loading="loading" v-model="UpdateModal" :mask-closable="false" title="修改公建配套"
@@ -70,38 +86,40 @@
       <Form class="formClass" :model="D61PubBuildInfo" ref="updateForm" :rules="rules">
         <Row>
           <Col>
-            <Row>
-              <Col span="6">
+            <Row :gutter="16">
+              <Col span="5">
                 <p class="profSpecTableCss">项目名称</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">独立用地面积</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">建筑面积</p>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <p class="profSpecTableCss">位置</p>
               </Col>
             </Row>
 
-            <Row>
-              <Col span="6">
+            <Row :gutter="16">
+              <Col span="5">
                 <FormItem class="FormItemClass">
-                  <Input placeholder="..." v-model="D61PubBuildInfo.projectName" class="D61WriteInput"/>
+                  <Tooltip :content="D61PubBuildInfo.projectName" max-width="300" class="D61WriteInput">
+                    <Input placeholder="..." v-model="D61PubBuildInfo.projectName" class="D61WriteInput"/>
+                  </Tooltip>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass" prop="independentArea">
                   <Input placeholder="..." v-model="D61PubBuildInfo.independentArea" class="D61WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass" prop="buildArea">
                   <Input placeholder="..." v-model="D61PubBuildInfo.buildArea" class="D61WriteInput"/>
                 </FormItem>
               </Col>
-              <Col span="6">
+              <Col span="5">
                 <FormItem class="FormItemClass">
                   <Input placeholder="..." v-model="D61PubBuildInfo.position" class="D61WriteInput"/>
                 </FormItem>
@@ -147,6 +165,7 @@
           },
           {
             title: '序号',
+            width: 70,
             type: 'index'
           },
           {
@@ -176,7 +195,9 @@
           buildArea: [
             {validator: isDecimalNotMust, trigger: 'blur'}
           ]
-        }
+        },
+        //
+        modalAdd: []
       }
     },
     methods: {
@@ -189,13 +210,9 @@
         }
       },
       saveMInfo() {
+        this.formReset();
         this.D61PubBuildInfo.id = '';
         this.D61PubBuildInfo.archId = '';
-        this.D61PubBuildInfo.projectName = '';
-        this.D61PubBuildInfo.buildingNum = '';
-        this.D61PubBuildInfo.overgroundFloor = '';
-        this.D61PubBuildInfo.undergroundFloor = '';
-        this.D61PubBuildInfo.overgroundArea = '';
         this.AddModal = true
       },
       updateMInfo() {
@@ -233,7 +250,7 @@
         temp.buildArea = this.D61PubBuildInfo.buildArea;
         temp.position = this.D61PubBuildInfo.position;
         let check = true;
-        this.$refs.updateForm.validate((valid) => {    //todo 更新检测
+        this.$refs.updateForm.validate((valid) => {
           if (valid) {
             if (!CommonFunction.isEmpty(temp.projectName) ||
               !CommonFunction.isEmpty(temp.independentArea) ||
@@ -245,9 +262,9 @@
                   this.UpdateAddData[i].buildArea === this.tempData[0].buildArea &&
                   this.UpdateAddData[i].position === this.tempData[0].position) {
                   this.UpdateAddData.splice(i, 1);
-                  this.UpdateAddData.unshift(temp);
+                  this.UpdateAddData.push(temp);
                   this.tableData.splice(i, 1);
-                  this.tableData.unshift(temp);
+                  this.tableData.push(temp);
                   check = false;
                   this.formReset()
                 }
@@ -279,7 +296,7 @@
                     }
                     //更新后，添加‘准备添加’的数据
                     for (let i = (this.UpdateAddData.length - 1); i >= 0; i--) {
-                      this.tableData.unshift(this.UpdateAddData[i])
+                      this.tableData.push(this.UpdateAddData[i])
                     }
                   })
                 });
@@ -340,6 +357,7 @@
         }
       },
       addcancle() {
+        this.modalAdd = [];
         this.$refs.addForm.resetFields();
         this.formReset();
       },
@@ -358,24 +376,58 @@
         temp.independentArea = this.D61PubBuildInfo.independentArea;
         temp.buildArea = this.D61PubBuildInfo.buildArea;
         temp.position = this.D61PubBuildInfo.position;
-        this.$refs.updateForm.validate((valid) => {    //todo 更新检测
+        let result=false;
+        this.$refs.updateForm.validate((valid) => {
           if (valid) {
-            if (!CommonFunction.isEmpty(temp.projectName) ||
-              !CommonFunction.isEmpty(temp.independentArea) ||
-              !CommonFunction.isEmpty(temp.buildArea) ||
-              !CommonFunction.isEmpty(temp.position)) {
-              if (this.D6123SpecParams.isUpdate === true) {
-                this.UpdateAddData.unshift(temp);
-                this.tableData.unshift(temp)
+            if(this.modalAdd.length === 0) {
+              if (!CommonFunction.isEmpty(temp.projectName) ||
+                !CommonFunction.isEmpty(temp.independentArea) ||
+                !CommonFunction.isEmpty(temp.buildArea) ||
+                !CommonFunction.isEmpty(temp.position)) {
+                if (this.D6123SpecParams.isUpdate === true) {
+                  this.UpdateAddData.push(temp);
+                  this.tableData.push(temp)
+                }
+                else {
+                  this.PubBuildInfoData.push(temp);
+                  this.tableData = this.PubBuildInfoData;
+                  this.$emit('savePubBuildInfoData', this.tableData)
+                }
+                result = true;
               }
-              else {
-                this.PubBuildInfoData.unshift(temp);
-                this.tableData = this.PubBuildInfoData;
-                this.$emit('savePubBuildInfoData', this.tableData)
+            }else {
+              if (CommonFunction.isEmpty(temp.projectName) &&
+                CommonFunction.isEmpty(temp.independentArea) &&
+                CommonFunction.isEmpty(temp.buildArea) &&
+                CommonFunction.isEmpty(temp.position)) {
+                if (this.D6123SpecParams.isUpdate === true) {
+                  for(let i=0;i<this.modalAdd.length;i++){
+                    this.UpdateAddData.push(this.modalAdd[i]);
+                    this.tableData.push(this.modalAdd[i])
+                  }
+                }
+                else {
+                  for(let i=0;i<this.modalAdd.length;i++){
+                    this.PubBuildInfoData.push(this.modalAdd[i]);
+                  }
+                  this.tableData = this.PubBuildInfoData;
+                  this.$emit('savePubBuildInfoData', this.tableData)
+                }
+                result = true;
               }
-              this.AddModal = false
+              else{
+                this.$Message.error('公建配套请添加到列表里！');
+                setTimeout(() => {
+                  this.loading = false;
+                  this.$nextTick(() => {
+                    this.loading = true;
+                  });
+                }, 1000);
+              }
             }
-            else {
+            if(result === true){
+              this.modalAdd = [];
+              this.formReset();
               this.AddModal = false
             }
           }
@@ -388,9 +440,40 @@
             }, 1000);
           }
         });
-        this.D61PubBuildInfo.id = '';
-        this.D61PubBuildInfo.archId = '';
-        this.formReset()
+      },
+      //
+      modalAddData(){
+        let temp = {
+          id: null,
+          archId: '',
+          projectName: '',
+          independentArea: '',
+          buildArea: '',
+          position: ''
+        };
+        temp.id = this.D61PubBuildInfo.id;
+        temp.archId = this.archId;
+        temp.projectName = this.D61PubBuildInfo.projectName;
+        temp.independentArea = this.D61PubBuildInfo.independentArea;
+        temp.buildArea = this.D61PubBuildInfo.buildArea;
+        temp.position = this.D61PubBuildInfo.position;
+        this.$refs.updateForm.validate((valid) => {
+          if (valid) {
+            if (!CommonFunction.isEmpty(temp.projectName) ||
+              !CommonFunction.isEmpty(temp.independentArea) ||
+              !CommonFunction.isEmpty(temp.buildArea) ||
+              !CommonFunction.isEmpty(temp.position)) {
+              this.modalAdd.push(temp);
+              this.formReset()
+            }
+          }else{
+            this.$Message.error('公建配套不能为空');
+          }
+        })
+      },
+      //
+      modalAddDelete(index){
+        this.modalAdd.splice(index,1)
       },
       cancelMInfo() {
         if (Object.keys(this.tempData).length === 0) {
