@@ -24,21 +24,63 @@
       </Col>
 
       <Col span="19" class="TableFontCss buttonMargin">
-        <Table border :columns="Columns" :data="AssignmentData"></Table>
-        <Page :current="assCurrentPage" :total="assDataCount" :page-size="assPageSize" show-elevator show-total
-              show-sizer @on-change="destPage1" @on-page-size-change="changePageSize1" :page-size-opts="assPSO"
-              placement="top"/>
-        <Spin fix v-if="spinShow">
-          <Icon type="ios-loading" size=36 class="demo-spin-icon-load"></Icon>
-          <div>加载中</div>
-        </Spin>
+        <Row>
+          <Col>
+            <Form class="formClass-right">
+              <Row :gutter="16">
+                <Col span="6">
+                  <FormItem label="档号:" :label-width="100">
+                    <Input type="text" v-model="keyArchNo"/>
+                  </FormItem>
+                </Col>
+                <!-- 取消负责组 -->
+                <!--<Col span="5">-->
+                <!--<FormItem label="负责组:" :label-width="100">-->
+                <!--<Select placeholder="负责组" @on-change="choseSearchWrokGroup" ref="KeyWorkGroup" :clearable="InputClear">-->
+                <!--<Option :key="item.id" v-for="item in WorkGroup" :value="item.id">{{item.departName}}</Option>-->
+                <!--</Select>-->
+                <!--</FormItem>-->
+                <!--</Col>-->
+                <Col span="7">
+                  <FormItem label="开始时间:" :label-width="100">
+                    <DatePicker type="daterange" placement="bottom-end" placeholder="Select date"
+                                format="yyyy-MM-dd"
+                                :value="keyDate" @on-change="keyDate=$event"></DatePicker>
+                  </FormItem>
+                </Col>
+                <Col span="2">
+                  <FormItem>
+                    <Button type="primary" @click="keySearch">搜索</Button>
+                  </FormItem>
+                </Col>
+                <Col span="2">
+                  <FormItem>
+                    <Button @click="keyResetLoad">重置</Button>
+                  </FormItem>
+                </Col>
+              </Row>
+            </Form>
+          </Col>
+
+          <Col>
+            <Table border :columns="Columns" :data="AssignmentData" :height="600"></Table>
+            <Page :current="assCurrentPage" :total="assDataCount" :page-size="assPageSize" show-elevator show-total
+                  show-sizer @on-change="destPage1" @on-page-size-change="changePageSize1" :page-size-opts="assPSO"
+                  placement="top"/>
+            <Spin fix v-if="spinShow">
+              <Icon type="ios-loading" size=36 class="demo-spin-icon-load"></Icon>
+              <div>加载中</div>
+            </Spin>
+          </Col>
+        </Row>
       </Col>
     </Row>
 
     <!-- 查看已分配任务信息情况对话框 -->
     <Modal v-model="showModal" :title="distributeATitle" width="1000px" @on-cancel="modalClose" @on-ok="modalClose">
       <div class="TableFontCss">
-        <Table ref="distributeModalTable" border :columns="DisColumn" :data="showDAData" @on-select-all="selectAllData" @on-select="selectRowData"
+        <Table ref="distributeModalTable" border :columns="DisColumn" :data="showDAData" @on-select-all="selectAllData"
+               @on-select="selectRowData"
                @on-select-cancel="cancelRowData" @on-select-all-cancel="cancelAllData"></Table>
         <Row>
           <Col>
@@ -91,6 +133,7 @@
 
 <script>
   import {ArchStatueChange, CommonFunction} from './../../js/global'
+
   export default {
     name: "assignmentManage",
     data() {
@@ -677,11 +720,17 @@
         groupID: [],     //分配对应的组
         distributeUrl: '/api/importArch/detailDistAssignment', //查看分配任务表格数据的url
         distributeParams: [], //查看分配任务表格数据的url的参数
-        tempArchData:[], //多选修改档案状态的数据
+        tempArchData: [], //多选修改档案状态的数据
         InputClear: true,
         allUpdateStatue: '',
         allUpdateWrokGroup: '',
         showAllUpdate: false,
+        //搜索条件参数
+        keyArchNo: '', //档号关键词
+        keyWorkGroup: '', //负责组关键词
+        keyDate: '', //任务开始时间关键词
+        isSearch: false,
+        searchParam: {}
       }
     },
     methods: {
@@ -729,6 +778,7 @@
             this.assDataCount = res.data.data.total;
             this.spinShow = false;
           });
+          this.keyReset()
         }
       },
       //查询历史批次任务
@@ -756,6 +806,7 @@
             this.spinShow = false;
           });
         }
+        this.keyReset()
       },
       //查看分配的任务
       showDistAssignment() {
@@ -781,6 +832,7 @@
             this.spinShow = false;
           });
         }
+        this.keyReset()
       },
       //加载著录工作组信息
       loadWorkGroup() {
@@ -791,23 +843,41 @@
       //*******任务表格分页方法******
       destPage1(index) {
         this.assCurrentPage = index;
-        this.assUrlParams.pageNum = index;
         this.spinShow = true;
-        this.axios.get(this.assPageUrl, {params: this.assUrlParams}).then(res => {
-          this.AssignmentData = res.data.data.list;
-          this.assDataCount = res.data.data.total;
-          this.spinShow = false;
-        });
+        if(this.isSearch === true){
+          this.searchParam.pageNum = index;
+          this.axios.post('/api/manageArch/searchAssignment',this.qs.stringify(this.searchParam)).then(res => {
+            this.AssignmentData = res.data.data.list;
+            this.assDataCount = res.data.data.total;
+            this.spinShow = false;
+          })
+        }else{
+          this.assUrlParams.pageNum = index;
+          this.axios.get(this.assPageUrl, {params: this.assUrlParams}).then(res => {
+            this.AssignmentData = res.data.data.list;
+            this.assDataCount = res.data.data.total;
+            this.spinShow = false;
+          });
+        }
       },
       changePageSize1(index) {
         this.assPageSize = index;
-        this.assUrlParams.pageSize = index;
         this.spinShow = true;
-        this.axios.get(this.assPageUrl, {params: this.assUrlParams}).then(res => {
-          this.AssignmentData = res.data.data.list;
-          this.assDataCount = res.data.data.total;
-          this.spinShow = false;
-        });
+        if(this.isSearch === true){
+          this.searchParam.pageSize = index;
+          this.axios.post('/api/manageArch/searchAssignment',this.qs.stringify(this.searchParam)).then(res => {
+            this.AssignmentData = res.data.data.list;
+            this.assDataCount = res.data.data.total;
+            this.spinShow = false;
+          })
+        }else {
+          this.assUrlParams.pageSize = index;
+          this.axios.get(this.assPageUrl, {params: this.assUrlParams}).then(res => {
+            this.AssignmentData = res.data.data.list;
+            this.assDataCount = res.data.data.total;
+            this.spinShow = false;
+          });
+        }
       },
       //*****************************
       destPage(index) {
@@ -837,8 +907,8 @@
       //表格修改保存
       handleSave(row) {
         let archids = JSON.stringify(this.archID);
-        let twostatues=JSON.stringify(this.updateStatue);
-        let groupids=switchWrokGroupID(this.groupID, this.WorkGroup);
+        let twostatues = JSON.stringify(this.updateStatue);
+        let groupids = switchWrokGroupID(this.groupID, this.WorkGroup);
         this.axios.post('/api/manageArch/updateStatue',
           this.qs.stringify(
             {
@@ -858,55 +928,55 @@
         });
       },
       //多选修改档案状态
-      manyUpdate(){
+      manyUpdate() {
         this.$refs.distributeModalTable.selectAll(false);
-        if(this.DisColumn === this.showDAColumn2){
+        if (this.DisColumn === this.showDAColumn2) {
           this.DisColumn = this.showDAColumn;
           this.showAllUpdate = false;
-        }else{
+        } else {
           this.DisColumn = this.showDAColumn2;
           this.showAllUpdate = true;
         }
       },
       //选择修改档案状态
-      choseTwoStatue(value){
+      choseTwoStatue(value) {
         this.allUpdateStatue = ArchStatueChange.statueTwoCode(value)
       },
       //选择修改档案的负责组
-      choseUpdateWrokGroup(value){
+      choseUpdateWrokGroup(value) {
         this.allUpdateWrokGroup = value;
       },
-      allUpdate(){
-        if(this.tempArchData.length < 1){
+      allUpdate() {
+        if (this.tempArchData.length < 1) {
           this.$Message.warning('请选择修改的档案！')
-        }else{
+        } else {
           let archIds = [];
-          let twoStatues=[];
-          let groupIds=[];
-          for(let i=0;i<this.tempArchData.length;i++){
+          let twoStatues = [];
+          let groupIds = [];
+          for (let i = 0; i < this.tempArchData.length; i++) {
             archIds.push(this.tempArchData[i].archVO.archId);
             //档案状态是否变动
-            if(this.allUpdateStatue === ''){
+            if (this.allUpdateStatue === '') {
               twoStatues.push(this.tempArchData[i].archVO.twoStatue)
-            }else{
+            } else {
               twoStatues.push(this.allUpdateStatue);
             }
             //负责组是否变动
-            if(this.allUpdateWrokGroup === ''){
+            if (this.allUpdateWrokGroup === '') {
               groupIds.push(this.tempArchData[i].writeGroup);
-            }else{
+            } else {
               groupIds.push(this.allUpdateWrokGroup);
             }
           }
-          archIds=JSON.stringify(archIds);
-          groupIds=switchWrokGroupID(groupIds,this.WorkGroup);
-          twoStatues=JSON.stringify(twoStatues);
+          archIds = JSON.stringify(archIds);
+          groupIds = switchWrokGroupID(groupIds, this.WorkGroup);
+          twoStatues = JSON.stringify(twoStatues);
           //多个修改档案状态或负责组
-          this.axios.post('/api/manageArch/updateStatue',this.qs.stringify({
+          this.axios.post('/api/manageArch/updateStatue', this.qs.stringify({
             archID: archIds,
             twoStatue: twoStatues,
             groupID: groupIds
-          })).then(res=>{
+          })).then(res => {
             if (res.data.code === 0) {
               this.$Message.success('修改成功！')
             } else {
@@ -918,7 +988,7 @@
             this.$refs.ArchWorkGroup.clearSingleSelect();
             this.DisColumn = this.showDAColumn2;
             this.disSpinShow = true;
-            this.axios.post(this.distributeUrl,this.qs.stringify(this.distributeParams)).then(res=>{
+            this.axios.post(this.distributeUrl, this.qs.stringify(this.distributeParams)).then(res => {
               this.showDAData = res.data.data.list;
               this.disDataCount = res.data.data.total;
               this.disSpinShow = false;
@@ -948,10 +1018,131 @@
         }
       },
       //查看分配任务档案信息的对话框，点击确定或取消事件
-      modalClose(){
+      modalClose() {
         this.DisColumn = this.showDAColumn;
         this.showAllUpdate = false;
         this.tempArchData = []
+      },
+      //******任务模糊搜索***********
+      //负责组
+      // choseSearchWrokGroup(value){
+      //
+      // },
+      //搜索确定
+      keySearch() {
+        if (this.showATData === false && this.showHTData === false && this.showDTData === false) {
+          this.$Message.warning('请选择左边需要查询的任务类型！')
+        } else {
+          let keyArchNo;
+          let keyDate;
+          if(this.keyArchNo === '' || this.keyArchNo.length ===0){
+            keyArchNo = null;
+          }else{
+            keyArchNo = this.keyArchNo;
+          }
+          if(this.keyDate === '' || this.keyDate.length ===0){
+            keyDate = null;
+          }else{
+            keyDate = this.keyDate[0]+','+this.keyDate[1];
+          }
+          this.spinShow = true;
+          this.assCurrentPage = 1;
+
+          //批次任务搜索
+          if (this.showATData === true) {
+            this.searchParam ={
+              keyArchNo: keyArchNo,
+              keyDate: keyDate,
+              batchStatue: 0,
+              pageNum: 1,
+              pageSize: this.assPageSize
+            };
+            this.axios.post('/api/manageArch/searchBatchAssignment',this.qs.stringify(this.searchParam)).then(res => {
+              this.AssignmentData = res.data.data.list;
+              this.assDataCount = res.data.data.total;
+              this.spinShow = false;
+              if(res.data.data.list.length === 0){
+                this.$Message.info('没有找到！');
+                //不记录查询条件
+                this.searchParam ={};
+              }else{
+                //记录查询条件
+                this.isSearch = true;
+              }
+            })
+          }
+          //历史批次任务搜索
+          if (this.showHTData === true) {
+            this.searchParam ={
+              keyArchNo: keyArchNo,
+              keyDate: keyDate,
+              batchStatue: 1,
+              pageNum: 1,
+              pageSize: this.assPageSize
+            };
+            this.axios.post('/api/manageArch/searchBatchAssignment',this.qs.stringify(this.searchParam)).then(res => {
+              this.AssignmentData = res.data.data.list;
+              this.assDataCount = res.data.data.total;
+              this.spinShow = false;
+              if(res.data.data.list.length === 0){
+                this.$Message.info('没有找到！');
+                //不记录查询条件
+                this.searchParam ={};
+              }else{
+                //记录查询条件
+                this.isSearch = true;
+              }
+            })
+          }
+          //已分配任务搜索
+          if (this.showDTData === true) {
+            this.searchParam ={
+              keyArchNo: keyArchNo,
+              keyDate: keyDate,
+              pageNum: 1,
+              pageSize: this.assPageSize
+            };
+            this.axios.post('/api/manageArch/searchDistAssignment',this.qs.stringify(this.searchParam)).then(res => {
+              this.AssignmentData = res.data.data.list;
+              this.assDataCount = res.data.data.total;
+              this.spinShow = false;
+              if(res.data.data.list.length === 0){
+                this.$Message.info('没有找到！');
+                //不记录查询条件
+                this.searchParam ={};
+              }else{
+                //记录查询条件
+                this.isSearch = true;
+              }
+            })
+          }
+        }
+      },
+      //搜索重置
+      keyReset(){
+        this.keyArchNo = '';
+        this.keyDate = '';
+        this.isSearch = false;
+        this.searchParam ={};
+      },
+      //搜索重置并加载
+      keyResetLoad() {
+        this.keyArchNo = '';
+        this.keyDate = '';
+        this.isSearch = false;
+        this.searchParam ={};
+        if (this.showATData === true){
+          this.showATData = false;
+          this.showBatchAssignment()
+        }
+        if(this.showHTData === true){
+          this.showHTData = false;
+          this.showHisAssignment()
+        }
+        if(this.showDTData === true) {
+          this.showDTData=false;
+          this.showDistAssignment();
+        }
       }
     },
     mounted() {
@@ -964,6 +1155,7 @@
       }
     }
   }
+
   //任务状态解释说明
   function assignmentStatue(statue) {
     let statueDes;
@@ -974,6 +1166,7 @@
     }
     return statueDes;
   }
+
   //分配任务中的档案是哪个工作组
   function switchWrokGroup(name, data) {
     for (let i = 0; i < data.length; i++) {
@@ -982,13 +1175,14 @@
       }
     }
   }
+
   //修改分配任务中的档案是工作组id
   function switchWrokGroupID(GroupName, GroupData) {
     let data = '';
     for (let j = 0; j < GroupName.length; j++) {
       for (let i = 0; i < GroupData.length; i++) {
         if (GroupName[j] === GroupData[i].departName) {
-          data= data + GroupData[i].id + ',';
+          data = data + GroupData[i].id + ',';
           break;
         }
       }
