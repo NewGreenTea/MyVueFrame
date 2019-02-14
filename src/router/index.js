@@ -21,6 +21,7 @@ import postManagement from '../components/systemManagement/postManagement'
 import archSmCheck from '../components/organization/archSmCheck'
 import archPrint from '../components/archPrint'
 import createISO from '../components/organization/createISO'
+import IsoManage from '../components/organization/IsoManage'
 import assignmentManage from '../components/organization/assignmentManage'
 //著录时需要的界面（writerGroup）
 import BaseInfo from './../components/writeLayout/BaseInfo'
@@ -188,6 +189,16 @@ export default new Router({
             name: 'createISO',
             components: {
               createISO: createISO
+            },
+            meta:{
+              keepAlive:true //需要被缓存的组件
+            },
+          },
+          { // iso管理
+            path: '/index/viewcont/IsoManage',
+            name: 'IsoManage',
+            components: {
+              IsoManage: IsoManage
             },
             meta:{
               keepAlive:true //需要被缓存的组件

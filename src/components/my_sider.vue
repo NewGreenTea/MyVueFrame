@@ -44,6 +44,9 @@
         <MenuItem name="1-9">
           <router-link to="/index/viewcont/createISO" tag="p"><p @click="createISOLauout">制作ISO</p></router-link>
         </MenuItem>
+        <MenuItem name="1-10">
+          <router-link to="/index/viewcont/IsoManage" tag="p"><p @click="IsoManageLauout">ISO管理</p></router-link>
+        </MenuItem>
       </Submenu>
       <Submenu name="2">
         <template slot="title">
@@ -159,6 +162,16 @@
           this.$emit('showIndexCont', 'createISO')
         } else {
           this.$emit('showIndexCont', 'createISO'); // 子向父组件传值
+          this.$store.dispatch('AddTabView', temp)
+        }
+      },
+      IsoManageLauout() {
+        let path = this.getTabViewPath;
+        let temp = {name: 'IsoManage', path: '/index/viewcont/IsoManage', desName: 'ISO管理'};
+        if (recopy(path, 'IsoManage', '/index/viewcont/IsoManage')) {
+          this.$emit('showIndexCont', 'IsoManage')
+        } else {
+          this.$emit('showIndexCont', 'IsoManage'); // 子向父组件传值
           this.$store.dispatch('AddTabView', temp)
         }
       },

@@ -302,6 +302,9 @@
             this.$refs.table.selectAll(false);
             this.$Message.warning("输入的单个ISO文件大小不足以放下一份案卷！");
             return false;
+          }else if(res.data[res.data.length-1].isonum == '-1'){
+            this.$Message.warning("所选档案没有完成组卷！");
+            return false;
           }
 
           /*开始生成iso*/
