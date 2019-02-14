@@ -70,13 +70,13 @@
 
               <Col>
                 <FormItem class="FormItemClass" label="责任者">
-                  <Input placeholder="..." v-model="fileArch.liableId"/>
+                  <AutoComplete placeholder="..." v-model="fileArch.liableId" :data="liableIdMemory" :filter-method="filterMethod"></AutoComplete>
                 </FormItem>
               </Col>
 
               <Col>
                 <FormItem class="FormItemClass" label="文件题名" prop="fileTitle">
-                  <Input placeholder="..." v-model="fileArch.fileTitle"/>
+                  <AutoComplete placeholder="..." v-model="fileArch.fileTitle" :data="titleMemory" :filter-method="filterMethod"></AutoComplete>
                 </FormItem>
               </Col>
 
@@ -149,13 +149,13 @@
 
               <Col>
                 <FormItem class="FormItemClass" label="责任者">
-                  <Input placeholder="..." v-model="fileArch.liableId"/>
+                  <AutoComplete placeholder="..." v-model="fileArch.liableId" :data="liableIdMemory" :filter-method="filterMethod"></AutoComplete>
                 </FormItem>
               </Col>
 
               <Col>
                 <FormItem class="FormItemClass" label="文件题名" prop="fileTitle">
-                  <Input placeholder="..." v-model="fileArch.fileTitle"/>
+                  <AutoComplete placeholder="..." v-model="fileArch.fileTitle" :data="titleMemory" :filter-method="filterMethod"></AutoComplete>
                 </FormItem>
               </Col>
 
@@ -312,20 +312,37 @@
         AddModal: false,
         UpdateModal: false,
         //加载条动画
-        spinShow: false
+        spinShow: false,
+        //记忆著录数据
+        liableIdMemory: [],
+        titleMemory: []
       }
     },
     methods: {
       //修改时加载文件级信息
       loadFileArch() {
         this.spinShow = true;
-        this.axios.get('/api/loadArch/getArchInfo', {params: {archId: this.archId, ArchInfo: 'FileInfo'}}).then(
-          res => {
+        this.axios.get('/api/loadArch/getArchInfo', {
+          params: {archId: this.archId, ArchInfo: 'FileInfo'}
+        }).then(res => {
             this.tableData = res.data.data;
             this.addFileIndex = this.tableData.length + 1;
             this.spinShow = false;
+          });
+        //请求记忆数据
+        this.axios.all([this.loadFileMemory('Liable'),this.loadFileMemory('Title')]).then(this.axios.spread((res1,res2)=>{
+
+        }))
+      },
+      //加载文件信息记忆数据
+      loadFileMemory(type){
+        this.axios.get('/api/archMemory/loadMemory',{params: {type: type}}).then(res=>{
+          if(type === 'Liable'){
+            this.liableIdMemory = res.data.data
+          }else if(type === 'Title'){
+            this.titleMemory = res.data.data
           }
-        )
+        })
       },
       //点击添加弹窗的添加按钮
       saveArchData() {
@@ -351,6 +368,17 @@
         temp.fileDate = this.fileArch.fileDate;
         temp.pageNo = this.fileArch.pageNo;
         temp.remark = this.fileArch.remark;
+
+        let addFileLiableId=false;
+        let addFileTitle=false;
+        //判断填写的文件信息责任者或文件题名是否存在
+        if(this.liableIdMemory.indexOf(temp.liableId) === -1){
+          addFileLiableId=true;
+        }
+        if(this.titleMemory.indexOf(temp.fileTitle) === -1){
+          addFileTitle=true;
+        }
+
         this.$refs.addForm.validate((valid) => {
           if (valid) {
             if (this.operation === false) { //判断是否在修改著录还是新建著录
@@ -360,6 +388,25 @@
                 .then(res => {
                   if(res.data.code === 0){
                     this.$Message.success('添加成功！');
+
+                    //添加记忆数据
+                    if(addFileLiableId === true){
+                      this.axios.post('/api/archMemory/addMemory',this.qs.stringify({
+                        type: 'Liable',
+                        data: temp.liableId
+                      })).then(res=>{
+                        this.loadFileMemory('Liable')
+                      })
+                    }
+                    if(addFileTitle === true){
+                      this.axios.post('/api/archMemory/addMemory',this.qs.stringify({
+                        type: 'Title',
+                        data: temp.fileTitle
+                      })).then(res=>{
+                        this.loadFileMemory('Title')
+                      })
+                    }
+
                     this.$refs.addForm.resetFields();
                     this.loadFileArch();
                     this.addFileIndex +=1;
@@ -655,6 +702,10 @@
       cancelAllData(selection) {
         this.tempData = []
       },
+      //记忆著录数据过滤方法
+      filterMethod(value, option){
+        return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+      },
       //重置表格内容
       reset() {
         this.fileArch.liableId = '';
@@ -683,4 +734,8 @@
     padding-top: 8px;
   }
 
+  /*记忆信息数据显示样式*/
+  .FormItemClass >>> .ivu-select-dropdown-list{
+    max-height: 200px;
+  }
 </style>
