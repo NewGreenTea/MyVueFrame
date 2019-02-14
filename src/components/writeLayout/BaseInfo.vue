@@ -271,16 +271,40 @@
         this.$emit('changeShowView')
       },
       getDispatchNoType(DispatchNo) {
-        let index = DispatchNo.lastIndexOf("〔");
+        let index;
+        if(DispatchNo.indexOf("〔") !== -1){
+          index = DispatchNo.lastIndexOf("〔");
+        }else if(DispatchNo.indexOf("[") !== -1){
+          index = DispatchNo.lastIndexOf("[");
+        }else if(DispatchNo.indexOf("【") !== -1) {
+          index = DispatchNo.lastIndexOf("【");
+        }
         return DispatchNo.substring(0, index)
       },
       getDispatchNoYear(DispatchNo) {
-        let index = DispatchNo.lastIndexOf("〔");
-        let index2 = DispatchNo.lastIndexOf("〕");
+        let index;
+        let index2;
+        if(DispatchNo.indexOf("〔") !== -1){
+          index = DispatchNo.lastIndexOf("〔");
+          index2 = DispatchNo.lastIndexOf("〕");
+        }else if(DispatchNo.indexOf("[") !== -1){
+          index = DispatchNo.lastIndexOf("[");
+          index2 = DispatchNo.lastIndexOf("]");
+        }else if(DispatchNo.indexOf("【") !== -1){
+          index = DispatchNo.lastIndexOf("【");
+          index2 = DispatchNo.lastIndexOf("】");
+        }
         return DispatchNo.substring(index + 1, index2)
       },
       getDispatchNoNum(DispatchNo) {
-        let index = DispatchNo.lastIndexOf("〕");
+        let index;
+        if(DispatchNo.indexOf("〔") !== -1){
+          index = DispatchNo.lastIndexOf("〕");
+        }else if(DispatchNo.indexOf("]") !== -1){
+          index = DispatchNo.lastIndexOf("]");
+        }else if(DispatchNo.indexOf("】") !== -1) {
+          index = DispatchNo.lastIndexOf("】");
+        }
         return DispatchNo.substring(index + 1, DispatchNo.length - 1)
       },
       reset() {
