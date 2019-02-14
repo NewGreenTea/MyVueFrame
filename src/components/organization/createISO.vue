@@ -3,7 +3,7 @@
     <!-- 搜索条件 -->
     <Row>
       <Col span="22" offset="1">
-        <Form inline :label-width="80" label-position="left">
+        <Form inline :label-width="120" class="formClass-right" >
           <FormItem label="档案状态：">
             <Select v-model="statusdata" placeholder="全部" @on-change="search" style="width:200px">
               <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -36,7 +36,7 @@
                 </div>
                 <div>
                   <FormItem label="档案一级状态：">
-                    <Select v-model="tstatusdata" placeholder="全部" @on-change="search" style="width:200px">
+                    <Select v-model="tstatusdata" placeholder="全部" @on-change="search" style="width:300px">
                       <Option v-for="item in tstatusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                     </Select>
                   </FormItem>
