@@ -325,10 +325,20 @@
                 }
               }).then(res=>{
                 this.$Spin.hide();
-                let successNum=this.tempData.length-res.data.length;
+
+                //显示操作结果
+                let successNum=0;
+                let failNum=0;
+                if(typeof(res.data.length) == "undefined" || isNaN(res.data.length)){
+                  successNum=0;
+                  failNum=this.tempData.length;
+                }else {
+                  successNum=this.tempData.length-res.data.length;
+                  failNum=res.data.length;
+                }
                 let errorList='总操作数量：'+this.tempData.length+' 条'+'\n';
                 errorList+='成功：'+successNum+' 条'+'\n';
-                errorList+='失败：'+res.data.length+' 条'+'\n';
+                errorList+='失败：'+failNum+' 条'+'\n';
                 if(res.data.length>0){
                   errorList+='失败原因如下：'+'\n';
                   for (let i=0;i<res.data.length;i++){
