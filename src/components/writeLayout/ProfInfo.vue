@@ -1,5 +1,5 @@
 <template>
-  <div style="overflow: auto;margin-bottom: 20px">
+  <div style="margin-bottom: 20px">
     <Row>
       <Col span="3">
         <Card class="tips">
@@ -10,17 +10,17 @@
       <Col span="21">
         <!--专业信息必有的两个著录项-->
         <Row>
-          <Col span="20" offset="1">
+          <Col span="22" offset="1">
             <Form class="formClass" :model="profArch" :label-width="labelWidth" :rules="rules" ref="profForm">
               <Row :gutter="16">
                 <Col span="8">
                   <FormItem class="FormItemClass" label="建设单位" prop="buildCompany">
-                    <Input placeholder="..." v-model="profArch.buildCompany" class="writeInput"/>
+                    <Input placeholder="..." v-model="profArch.buildCompany"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <FormItem class="FormItemClass" label="建设项目" prop="buildProject">
-                    <Input placeholder="..." v-model="profArch.buildProject" class="writeInput"/>
+                    <Input placeholder="..." v-model="profArch.buildProject"/>
                   </FormItem>
                 </Col>
               </Row>
@@ -29,8 +29,8 @@
         </Row>
         <!--项目地点信息-->
         <Row>
-          <Col span="20" offset="1">
-            <Form class="formClass" :model="buildingAddressInfo" :rules="rules" :label-width="labelWidth">
+          <Col span="22" offset="1">
+            <Form class="formClass" :model="buildingAddressInfo" :rules="rules">
               <Row>
                 <Col span="2">
                   <p class="buildingAddressCss">建设地址</p>
@@ -38,10 +38,10 @@
                 <Col span="4" class="formSpec">
                   <FormItem>
                     <Row>
-                      <Col span="21">
-                        <Input placeholder="..." v-model="buildingAddressInfo.area" class="profSpecCss"/>
+                      <Col span="20">
+                        <Input placeholder="..." v-model="buildingAddressInfo.area"/>
                       </Col>
-                      <Col span="3">
+                      <Col span="4">
                         <p class="buildingAddressCss2">区</p>
                       </Col>
                     </Row>
@@ -50,10 +50,10 @@
                 <Col span="4" class="formSpec">
                   <FormItem>
                     <Row>
-                      <Col span="21">
-                        <Input placeholder="..." v-model="buildingAddressInfo.road" class="profSpecCss"/>
+                      <Col span="20">
+                        <Input placeholder="..." v-model="buildingAddressInfo.road"/>
                       </Col>
-                      <Col span="3">
+                      <Col span="4">
                         <p class="buildingAddressCss2">路</p>
                       </Col>
                     </Row>
@@ -62,10 +62,10 @@
                 <Col span="4" class="formSpec">
                   <FormItem>
                     <Row>
-                      <Col span="21">
-                        <Input placeholder="..." v-model="buildingAddressInfo.street" class="profSpecCss"/>
+                      <Col span="20">
+                        <Input placeholder="..." v-model="buildingAddressInfo.street"/>
                       </Col>
-                      <Col span="3">
+                      <Col span="4">
                         <p class="buildingAddressCss2">街</p>
                       </Col>
                     </Row>
@@ -74,10 +74,10 @@
                 <Col span="4" class="formSpec">
                   <FormItem prop="no">
                     <Row>
-                      <Col span="21">
-                        <Input placeholder="..." v-model="buildingAddressInfo.no" class="profSpecCss"/>
+                      <Col span="20">
+                        <Input placeholder="..." v-model="buildingAddressInfo.no"/>
                       </Col>
-                      <Col span="3">
+                      <Col span="4">
                         <p class="buildingAddressCss2">号</p>
                       </Col>
                     </Row>
@@ -125,7 +125,7 @@
     <Row>
       <Col span="21" offset="3">
         <Row>
-          <Col span="20" offset="1">
+          <Col span="22" offset="1">
             <Row :gutter="16">
               <Col span="6">
                 <!--地图型号表-->
@@ -155,10 +155,12 @@
     <!-- 专业信息必有的4个著录项表 end-->
 
     <!-- 按钮 -->
-    <Row class="profButtonView">
-      <Col span="2" offset="11">
+    <Row class="profButtonView" :gutter="16">
+      <Col span="1" offset="11">
         <Button @click="saveArch" v-if="operation">保存</Button>
         <Button @click="updateArch" v-if="!operation">修改</Button>
+      </Col>
+      <Col span="1">
         <Button @click="goBack">返回</Button>
       </Col>
     </Row>
@@ -189,7 +191,7 @@
     props: ['ProfParams'],
     data() {
       return {
-        labelWidth: 100,
+        labelWidth: 80,
         //档案分类
         archType: this.ProfParams.archType,
         // 项目地点表数据
@@ -296,25 +298,32 @@
                 }]
               }).then(res => {
                 //把专业信息的字段反写给档案信息的基本信息中的标题
-                let road,street,no;
-                if(this.buildingAddressInfo.road !== ''){
-                  road=this.buildingAddressInfo.road+'路'
-                }else{
-                  road=''
+                let road, street, no;
+                if (this.buildingAddressInfo.road !== '') {
+                  road = this.buildingAddressInfo.road + '路'
+                } else {
+                  road = ''
                 }
-                if(this.buildingAddressInfo.street !== ''){
-                  street=this.buildingAddressInfo.street+'街'
-                }else{
-                  street=''
+                if (this.buildingAddressInfo.street !== '') {
+                  street = this.buildingAddressInfo.street + '街'
+                } else {
+                  street = ''
                 }
-                if(this.buildingAddressInfo.no !== ''){
-                  no=this.buildingAddressInfo.no+'号'
-                }else{
-                  no=''
+                if (this.buildingAddressInfo.no !== '') {
+                  no = this.buildingAddressInfo.no + '号'
+                } else {
+                  no = ''
                 }
-                let BaseTitle = this.profArch.buildCompany + this.profArch.buildProject + this.buildingAddressInfo.area+'区'
+                //反写入到档案基本信息的案卷标题  -可提取出来
+                let BaseTitle = this.profArch.buildCompany + this.profArch.buildProject + this.buildingAddressInfo.area + '区'
                   + road + street + no;
-                this.axios.post('/api/baseInfo/updateBaseTitle', this.qs.stringify({archID: this.ProfParams.archId,title: BaseTitle}))
+                this.axios.post('/api/baseInfo/updateBaseTitle', this.qs.stringify({
+                  archID: this.ProfParams.archId,
+                  archNo: this.archNo,
+                  archType: this.ProfParams.archTypeID,
+                  dispatchNo: this.ProfParams.dispatchNo,
+                  title: BaseTitle
+                }))
               });
             });
 
@@ -355,7 +364,34 @@
           this.$refs.PMI.updatePMI(), this.$refs.PAHN.updatePAHN(), this.$refs.PPN.updatePPN()])    //子组件的数据更新方法
           .then(this.axios.spread((res1, res2, res3, res4, res5) => {
             this.$Message.info('修改完毕！')
-          }))
+          }));
+        //把专业信息的字段反写给档案信息的基本信息中的标题
+        let road, street, no;
+        if (this.buildingAddressInfo.road !== '') {
+          road = this.buildingAddressInfo.road + '路'
+        } else {
+          road = ''
+        }
+        if (this.buildingAddressInfo.street !== '') {
+          street = this.buildingAddressInfo.street + '街'
+        } else {
+          street = ''
+        }
+        if (this.buildingAddressInfo.no !== '') {
+          no = this.buildingAddressInfo.no + '号'
+        } else {
+          no = ''
+        }
+        //反写入到档案基本信息的案卷标题
+        let BaseTitle = this.profArch.buildCompany + this.profArch.buildProject + this.buildingAddressInfo.area + '区'
+          + road + street + no;
+        this.axios.post('/api/baseInfo/updateBaseTitle', this.qs.stringify({
+          archID: this.ProfParams.archId,
+          dispatchNo: this.ProfParams.dispatchNo,
+          archNo: this.archNo,
+          archType: this.ProfParams.archTypeID,
+          title: BaseTitle
+        }));
       },
       updateArch() {
         // 判断档案有无特性著录项

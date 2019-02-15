@@ -14,19 +14,19 @@
             <Col>
               <Row :gutter="16">
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="立案号">
-                    <Input placeholder="..." v-model="baseArch.registerNo" class="baseWriteInput"/>
+                  <FormItem class="FormItemClass" label="立案号" :label-width="lableWidth">
+                    <Input placeholder="..." v-model="baseArch.registerNo"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="档号">
-                    <Input placeholder="..." v-model="baseArch.archNo" class="colorBack baseWriteInput" disabled/>
+                  <FormItem class="FormItemClass" label="档号" :label-width="lableWidth">
+                    <Input placeholder="..." v-model="baseArch.archNo" class="colorBack" disabled/>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="案卷类别">
-                    <Tooltip :content="baseArch.archType" max-width="300" class="baseWriteInput">
-                      <Input placeholder="..." v-model="baseArch.archType" class="colorBack baseWriteInput" disabled/>
+                  <FormItem class="FormItemClass" label="案卷类别" :label-width="lableWidth">
+                    <Tooltip :content="baseArch.archType" max-width="300">
+                      <Input placeholder="..." v-model="baseArch.archType" class="colorBack" disabled/>
                     </Tooltip>
                   </FormItem>
                 </Col>
@@ -35,15 +35,15 @@
 
             <!--案卷标题-->
             <Col>
-              <FormItem class="FormItemClass" label="案卷标题">
-                <Input placeholder="..." v-model="baseArch.archTitle" style="width: 92%;float: right"/>
+              <FormItem class="FormItemClass" label="案卷标题" :label-width="lableWidth">
+                <Input placeholder="..." v-model="baseArch.archTitle"/>
               </FormItem>
             </Col>
 
             <!--编制单位-->
             <Col>
-              <FormItem class="FormItemClass" label="编制单位">
-                <Input placeholder="..." v-model="baseArch.company" style="width: 92%;float: right"/>
+              <FormItem class="FormItemClass" label="编制单位" :label-width="lableWidth">
+                <Input placeholder="..." v-model="baseArch.company"/>
               </FormItem>
             </Col>
 
@@ -51,20 +51,20 @@
             <Col>
               <Row :gutter="16">
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="编制日期" prop="date">
-                    <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="baseWriteInput"
+                  <FormItem class="FormItemClass" label="编制日期" prop="date" :label-width="lableWidth">
+                    <DatePicker placeholder="Select date" format="yyyy-MM-dd"
                                 @on-change="baseArch.date=$event" v-model="baseArch.date"></DatePicker>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="进馆日期" prop="inputDate">
-                    <DatePicker placeholder="Select date" format="yyyy-MM-dd" class="baseWriteInput"
+                  <FormItem class="FormItemClass" label="进馆日期" prop="inputDate" :label-width="lableWidth">
+                    <DatePicker placeholder="Select date" format="yyyy-MM-dd"
                                 @on-change="baseArch.inputDate=$event" v-model="baseArch.inputDate"></DatePicker>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="保管期限">
-                    <Input placeholder="..." v-model="baseArch.storageType" class="baseWriteInput"/>
+                  <FormItem class="FormItemClass" label="保管期限" :label-width="lableWidth">
+                    <Input placeholder="..." v-model="baseArch.storageType"/>
                   </FormItem>
                 </Col>
               </Row>
@@ -74,20 +74,21 @@
             <Col>
               <Row :gutter="16">
                 <Col span="8">
-                  <FormItem class="FormItemClass" prop="dispatchNoType" label="发文号: ">
-                    <Input placeholder="发文号：文种类别" v-model="baseArch.dispatchNoType" class="baseWriteInput"/>
+                  <FormItem class="FormItemClass" prop="dispatchNoType" label="发文号: " :label-width="lableWidth">
+                    <Input placeholder="发文号：文种类别" v-model="baseArch.dispatchNoType"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass dispatchCss" prop="dispatchNoYear" label="[">
-                    <Input placeholder="发文号：年份" v-model="baseArch.dispatchNoYear" class="baseWriteInput"/>
+                  <FormItem class="FormItemClass dispatchCss" prop="dispatchNoYear" label="[" :label-width="lableWidth">
+                    <Input placeholder="发文号：年份" v-model="baseArch.dispatchNoYear"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <Row :gutter="16">
                     <Col span="22">
-                      <FormItem class="FormItemClass dispatchCss" prop="dispatchNoNum" label="]">
-                        <Input placeholder="发文号：流水号" v-model="baseArch.dispatchNoNum" class="baseWriteInputSpec"/>
+                      <FormItem class="FormItemClass dispatchCss" prop="dispatchNoNum" label="]"
+                                :label-width="lableWidth">
+                        <Input placeholder="发文号：流水号" v-model="baseArch.dispatchNoNum"/>
                       </FormItem>
                     </Col>
                     <Col span="2" class="profWriteUnit">
@@ -102,20 +103,20 @@
             <Col>
               <Row :gutter="16">
                 <Col span="8">
-                  <FormItem class="FormItemClass selectFontCss" label="公开属性">
-                    <i-select placeholder="属性" class="baseWriteInput" v-model="baseArch.publicProperty">
+                  <FormItem class="FormItemClass selectFontCss" label="公开属性" :label-width="lableWidth">
+                    <i-select placeholder="属性" v-model="baseArch.publicProperty">
                       <i-option :key="item" v-for="item in pubProperty" :value="item">{{item}}</i-option>
                     </i-select>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="密级">
-                    <Input placeholder="..." v-model="baseArch.secretLv" class="baseWriteInput"/>
+                  <FormItem class="FormItemClass" label="密级" :label-width="lableWidth">
+                    <Input placeholder="..." v-model="baseArch.secretLv"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="案卷页数" prop="archPage">
-                    <Input placeholder="..." v-model="baseArch.archPage" class="baseWriteInput"/>
+                  <FormItem class="FormItemClass" label="案卷页数" prop="archPage" :label-width="lableWidth">
+                    <Input placeholder="..." v-model="baseArch.archPage"/>
                   </FormItem>
                 </Col>
               </Row>
@@ -124,18 +125,18 @@
             <Col>
               <Row :gutter="16">
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="经办人">
-                    <Input placeholder="..." v-model="baseArch.operator" class="baseWriteInput"/>
+                  <FormItem class="FormItemClass" label="经办人" :label-width="lableWidth">
+                    <Input placeholder="..." v-model="baseArch.operator"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="立卷审核人">
-                    <Input placeholder="..." v-model="baseArch.archAuditor" class="baseWriteInput"/>
+                  <FormItem class="FormItemClass" label="立卷审核人" :label-width="lableWidth">
+                    <Input placeholder="..." v-model="baseArch.archAuditor"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="立卷人">
-                    <Input placeholder="..." v-model="baseArch.archfileCreator" class="baseWriteInput"/>
+                  <FormItem class="FormItemClass" label="立卷人" :label-width="lableWidth">
+                    <Input placeholder="..." v-model="baseArch.archfileCreator"/>
                   </FormItem>
                 </Col>
               </Row>
@@ -145,11 +146,15 @@
       </Col>
     </Row>
 
-    <Row>
-      <Col span="3" offset="9">
+    <Row :gutter="16">
+      <Col span="1" offset="10">
         <Button @click="saveArch" v-if="operation">保存</Button>
         <Button @click="updateArch" v-if="!operation">修改</Button>
+      </Col>
+      <Col span="1">
         <Button @click="reset">重置</Button>
+      </Col>
+      <Col span="1">
         <Button @click="goBack">返回</Button>
       </Col>
     </Row>
@@ -169,6 +174,7 @@
     data() {
       return {
         ss: '100%',
+        lableWidth: 90,
         archNo: this.BaseParams.archNo,
         pubProperty: ['主动公开', '依申请公开', '免于公开', '(不填)'],
         operation: this.BaseParams.operation,
@@ -180,7 +186,7 @@
           dispatchDocNo: this.BaseParams.dispatchDocNo, // 读取出来
           registerNo: this.BaseParams.registerNo, // 读取出来
           archNo: this.BaseParams.archNo, // 读取出来
-          archTitle: '',
+          archTitle: this.BaseParams.title,
           company: '广州市国土资源和规划委员会',
           date: '',
           inputDate: this.BaseParams.archInputDate,
@@ -258,9 +264,9 @@
       //更新档案
       updateArch() {
         this.axios.post('/api/baseInfo/update', this.baseArch, config).then(res => {
-            if(res.data.code === 0){
+            if (res.data.code === 0) {
               this.$Message.success('修改成功!')
-            }else{
+            } else {
               this.$Message.error('修改失败!')
             }
           }
@@ -272,11 +278,11 @@
       },
       getDispatchNoType(DispatchNo) {
         let index;
-        if(DispatchNo.indexOf("〔") !== -1){
+        if (DispatchNo.indexOf("〔") !== -1) {
           index = DispatchNo.lastIndexOf("〔");
-        }else if(DispatchNo.indexOf("[") !== -1){
+        } else if (DispatchNo.indexOf("[") !== -1) {
           index = DispatchNo.lastIndexOf("[");
-        }else if(DispatchNo.indexOf("【") !== -1) {
+        } else if (DispatchNo.indexOf("【") !== -1) {
           index = DispatchNo.lastIndexOf("【");
         }
         return DispatchNo.substring(0, index)
@@ -284,13 +290,13 @@
       getDispatchNoYear(DispatchNo) {
         let index;
         let index2;
-        if(DispatchNo.indexOf("〔") !== -1){
+        if (DispatchNo.indexOf("〔") !== -1) {
           index = DispatchNo.lastIndexOf("〔");
           index2 = DispatchNo.lastIndexOf("〕");
-        }else if(DispatchNo.indexOf("[") !== -1){
+        } else if (DispatchNo.indexOf("[") !== -1) {
           index = DispatchNo.lastIndexOf("[");
           index2 = DispatchNo.lastIndexOf("]");
-        }else if(DispatchNo.indexOf("【") !== -1){
+        } else if (DispatchNo.indexOf("【") !== -1) {
           index = DispatchNo.lastIndexOf("【");
           index2 = DispatchNo.lastIndexOf("】");
         }
@@ -298,11 +304,11 @@
       },
       getDispatchNoNum(DispatchNo) {
         let index;
-        if(DispatchNo.indexOf("〔") !== -1){
+        if (DispatchNo.indexOf("〔") !== -1) {
           index = DispatchNo.lastIndexOf("〕");
-        }else if(DispatchNo.indexOf("]") !== -1){
+        } else if (DispatchNo.indexOf("]") !== -1) {
           index = DispatchNo.lastIndexOf("]");
-        }else if(DispatchNo.indexOf("】") !== -1) {
+        } else if (DispatchNo.indexOf("】") !== -1) {
           index = DispatchNo.lastIndexOf("】");
         }
         return DispatchNo.substring(index + 1, DispatchNo.length - 1)

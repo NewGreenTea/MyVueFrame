@@ -1,16 +1,16 @@
 <template>
   <Row>
-    <Col span="20" offset="1">
+    <Col span="22" offset="1">
       <Form class="formClass" :model="D21Info" ref="D21form" :rules="rules" :label-width="labelWidth">
         <Row class="WriteLayoutFont" :gutter="16">
           <Col span="8">
             <Row>
-              <Col span="16">
+              <Col span="15">
                 <FormItem class="FormItemClass" label="规划批面积（总用地面积）" prop="totalArea">
-                  <Input placeholder="..." v-model="D21Info.totalArea" class="profWriteInput"/>
+                  <Input placeholder="..." v-model="D21Info.totalArea"/>
                 </FormItem>
               </Col>
-              <Col span="8" class="profWriteUnit">
+              <Col span="9" class="profWriteUnit">
                 （平方米/m²）
               </Col>
             </Row>
@@ -19,7 +19,7 @@
             <Row>
               <Col span="16">
                 <FormItem class="FormItemClass" label="拟征地现状土地类别">
-                  <Input placeholder="..." v-model="D21Info.areaClass" class="profWriteInput"/>
+                  <Input placeholder="..." v-model="D21Info.areaClass"/>
                 </FormItem>
               </Col>
             </Row>
@@ -50,7 +50,7 @@
     props: ['specViewParams'],
     data() {
       return {
-        labelWidth: 100,
+        labelWidth: 80,
         archType: this.specViewParams.archType,
         archId: this.specViewParams.archId,
         D21Info: {

@@ -127,13 +127,13 @@
         columns: [
           {
             type: 'selection',
-            width: 60,
+            width: 50,
             align: 'center',
             key: '_checked'
           },
           {
             title: '序号',
-            width: 70,
+            width: 60,
             type: 'index'
           },
           {

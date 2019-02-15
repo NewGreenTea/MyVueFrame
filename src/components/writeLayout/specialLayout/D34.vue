@@ -1,23 +1,23 @@
 <template>
   <Row>
-    <Col span="20" offset="1">
+    <Col span="22" offset="1">
       <Form class="formClass" :model="D34Info" ref="D34form" :rules="rules" :label-width="labelWidth">
         <Row class="WriteLayoutFont" :gutter="16">
           <Col span="8">
             <FormItem class="FormItemClass" label="起止点">
-              <Input placeholder="..." v-model="D34Info.overheadPipeStart" class="writeInput"/>
+              <Input placeholder="..." v-model="D34Info.overheadPipeStart"/>
             </FormItem>
           </Col>
           <Col span="8">
             <FormItem class="FormItemClass" label="管径规格">
-              <Input placeholder="..." v-model="D34Info.overheadPipeType" class="writeInput"/>
+              <Input placeholder="..." v-model="D34Info.overheadPipeType"/>
             </FormItem>
           </Col>
           <Col span="8">
             <Row>
               <Col span="16">
                 <FormItem class="FormItemClass" label="管线长度" prop="overheadPipeLength">
-                  <Input placeholder="..." v-model="D34Info.overheadPipeLength" class="profWriteInput"/>
+                  <Input placeholder="..." v-model="D34Info.overheadPipeLength"/>
                 </FormItem>
               </Col>
               <Col span="6" class="profWriteUnit">
@@ -30,7 +30,7 @@
             <Row>
               <Col span="16">
                 <FormItem class="FormItemClass" label="架空高度" prop="overheadPipeHight">
-                  <Input placeholder="..." v-model="D34Info.overheadPipeHight" class="profWriteInput"/>
+                  <Input placeholder="..." v-model="D34Info.overheadPipeHight"/>
                 </FormItem>
               </Col>
               <Col span="6" class="profWriteUnit">
@@ -41,18 +41,18 @@
 
           <Col span="8">
             <FormItem class="FormItemClass" label="平面位置">
-              <Input placeholder="..." v-model="D34Info.overheadPipeEtc" class="writeInput"/>
+              <Input placeholder="..." v-model="D34Info.overheadPipeEtc"/>
             </FormItem>
           </Col>
           <Col span="8">
             <FormItem class="FormItemClass" label="起止点">
-              <Input placeholder="..." v-model="D34Info.underPipeStart" class="writeInput"/>
+              <Input placeholder="..." v-model="D34Info.underPipeStart"/>
             </FormItem>
           </Col>
 
           <Col span="8">
             <FormItem class="FormItemClass" label="管径规格">
-              <Input placeholder="..." v-model="D34Info.underPipeType" class="writeInput"/>
+              <Input placeholder="..." v-model="D34Info.underPipeType"/>
             </FormItem>
           </Col>
 
@@ -60,7 +60,7 @@
             <Row>
               <Col span="16">
                 <FormItem class="FormItemClass" label="管线长度" prop="underPipeLength">
-                  <Input placeholder="..." v-model="D34Info.underPipeLength" class="profWriteInput"/>
+                  <Input placeholder="..." v-model="D34Info.underPipeLength"/>
                 </FormItem>
               </Col>
               <Col span="6" class="profWriteUnit">
@@ -73,7 +73,7 @@
             <Row>
               <Col span="16">
                 <FormItem class="FormItemClass" label="埋设深度" prop="underPipeHight">
-                  <Input placeholder="..." v-model="D34Info.underPipeHight" class="profWriteInput"/>
+                  <Input placeholder="..." v-model="D34Info.underPipeHight"/>
                 </FormItem>
               </Col>
               <Col span="6" class="profWriteUnit">
@@ -84,7 +84,7 @@
 
           <Col span="8">
             <FormItem class="FormItemClass" label="平面位置">
-              <Input placeholder="..." v-model="D34Info.underPipePosition" class="writeInput"/>
+              <Input placeholder="..." v-model="D34Info.underPipePosition"/>
             </FormItem>
           </Col>
         </Row>
@@ -102,7 +102,7 @@
     props: ['specViewParams'],
     data() {
       return {
-        labelWidth: 100,
+        labelWidth: 80,
         archId: this.specViewParams.archId,
         D34Info: {
           id: null,

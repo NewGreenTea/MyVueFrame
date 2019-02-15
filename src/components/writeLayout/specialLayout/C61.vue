@@ -1,16 +1,16 @@
 <template>
   <Row>
-    <Col span="20" offset="1">
+    <Col span="22" offset="1">
       <Form class="formClass" :model="C61Info" ref="C61form" :rules="rules" :label-width="labelWidth">
-        <Row class="WriteLayoutFont" :gutter="16">
+        <Row class="WriteLayoutFont" :gutter="15">
           <Col span="8">
                 <Row>
-                  <Col span="16">
-                    <FormItem class="FormItemClass" label="总用地面积" prop="totalArea">
-                      <Input placeholder="..." v-model="C61Info.totalArea" class="profWriteInput"/>
+                  <Col span="15">
+                    <FormItem class="FormItemClass" label="总用地面积" prop="totalArea" :label-width="labelWidth">
+                      <Input placeholder="..." v-model="C61Info.totalArea"/>
                     </FormItem>
                   </Col>
-                  <Col span="7" class="profWriteUnit">
+                  <Col span="9" class="profWriteUnit">
                     （平方米/m²）
                   </Col>
                 </Row>
@@ -18,12 +18,12 @@
 
           <Col span="8">
                 <Row>
-                  <Col span="16">
-                    <FormItem class="FormItemClass" label="可建设用地面积(净用地面积)" prop="buildArea">
-                      <Input placeholder="..." v-model="C61Info.buildArea" class="profWriteInput"/>
+                  <Col span="15">
+                    <FormItem class="FormItemClass" label="可建设用地面积(净用地面积)" prop="buildArea" :label-width="labelWidth">
+                      <Input placeholder="..." v-model="C61Info.buildArea"/>
                     </FormItem>
                   </Col>
-                  <Col span="7" class="profWriteUnit">
+                  <Col span="9" class="profWriteUnit">
                     （平方米/m²）
                   </Col>
                 </Row>
@@ -31,27 +31,27 @@
 
           <Col span="8">
                 <Row>
-                  <Col span="16">
-                    <FormItem class="FormItemClass" label="道路用地面积" prop="roadArea">
-                      <Input placeholder="..." v-model="C61Info.roadArea" class="profWriteInput"/>
+                  <Col span="15">
+                    <FormItem class="FormItemClass" label="道路用地面积" prop="roadArea" :label-width="labelWidth">
+                      <Input placeholder="..." v-model="C61Info.roadArea"/>
                     </FormItem>
                   </Col>
-                  <Col span="7" class="profWriteUnit">
+                  <Col span="9" class="profWriteUnit">
                     （平方米/m²）
                   </Col>
                 </Row>
           </Col>
         </Row>
 
-        <Row class="WriteLayoutFont" :gutter="16">
+        <Row class="WriteLayoutFont" :gutter="15">
           <Col span="8">
             <Row>
-              <Col span="16">
-                <FormItem class="FormItemClass" label="容积率" prop="plotRatio">
-                  <Input placeholder="..." v-model="C61Info.plotRatio" class="profWriteInput"/>
+              <Col span="15">
+                <FormItem class="FormItemClass" label="容积率" prop="plotRatio" :label-width="labelWidth">
+                  <Input placeholder="..." v-model="C61Info.plotRatio"/>
                 </FormItem>
               </Col>
-              <Col span="7" class="profWriteUnit">
+              <Col span="9" class="profWriteUnit">
                 （%）
               </Col>
             </Row>
@@ -59,12 +59,12 @@
 
           <Col span="8">
             <Row>
-              <Col span="16">
-                <FormItem class="FormItemClass" label="建筑密度" prop="buildDensity">
-                  <Input placeholder="..." v-model="C61Info.buildDensity" class="profWriteInput"/>
+              <Col span="15">
+                <FormItem class="FormItemClass" label="建筑密度" prop="buildDensity" :label-width="labelWidth">
+                  <Input placeholder="..." v-model="C61Info.buildDensity"/>
                 </FormItem>
               </Col>
-              <Col span="7" class="profWriteUnit">
+              <Col span="9" class="profWriteUnit">
                 （kg/m³）
               </Col>
             </Row>
@@ -72,27 +72,27 @@
 
           <Col span="8">
             <Row>
-              <Col span="16">
-                <FormItem class="FormItemClass" label="绿地率" prop="greenSpaceRatio">
-                  <Input placeholder="..." v-model="C61Info.greenSpaceRatio" class="profWriteInput"/>
+              <Col span="15">
+                <FormItem class="FormItemClass" label="绿地率" prop="greenSpaceRatio" :label-width="labelWidth">
+                  <Input placeholder="..." v-model="C61Info.greenSpaceRatio"/>
                 </FormItem>
               </Col>
-              <Col span="7" class="profWriteUnit">
+              <Col span="9" class="profWriteUnit">
                 （%）
               </Col>
             </Row>
           </Col>
         </Row>
 
-        <Row class="WriteLayoutFont" :gutter="16">
+        <Row class="WriteLayoutFont" :gutter="15">
           <Col span="8">
             <Row>
-              <Col span="16">
-                <FormItem class="FormItemClass" label="居住人口" prop="population">
-                  <Input placeholder="..." v-model="C61Info.population" class="profWriteInput"/>
+              <Col span="15">
+                <FormItem class="FormItemClass" label="居住人口" prop="population" :label-width="labelWidth">
+                  <Input placeholder="..." v-model="C61Info.population"/>
                 </FormItem>
               </Col>
-              <Col span="7" class="profWriteUnit">
+              <Col span="9" class="profWriteUnit">
                 （万）
               </Col>
             </Row>
@@ -100,12 +100,12 @@
 
           <Col span="8">
             <Row>
-              <Col span="16">
-                <FormItem class="FormItemClass" label="计算容积率建筑面积" prop="plotRatioArea">
-                  <Input placeholder="..." v-model="C61Info.plotRatioArea" class="profWriteInput"/>
+              <Col span="15">
+                <FormItem class="FormItemClass" label="计算容积率建筑面积" prop="plotRatioArea" :label-width="labelWidth">
+                  <Input placeholder="..." v-model="C61Info.plotRatioArea"/>
                 </FormItem>
               </Col>
-              <Col span="7" class="profWriteUnit">
+              <Col span="9" class="profWriteUnit">
                 （平方米/m²）
               </Col>
             </Row>

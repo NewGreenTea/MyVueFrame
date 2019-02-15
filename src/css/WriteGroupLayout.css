@@ -1,13 +1,17 @@
 /*基本信息著录框的样式*/
 .baseWriteInput {
-  width: 300px;
+  max-width: 300px;
+  min-width: 230px;
   float: right;
 }
+
 /*（基本信息界面）发文号特殊样式*/
 .baseWriteInputSpec {
-  width: 265px;
+  max-width: 230px;
+  /*min-width: 230px;*/
   float: right;
 }
+
 /*专业信息特性著录框的样式*/
 .profWriteInput {
   width: 156px;
@@ -19,12 +23,13 @@
 }
 /*专业信息建设地址样式（以下4个）*/
 .profSpecCss {
-  width: 160px;
+  max-width: 160px;
+  min-width: 120px;
 }
 .buildingAddressCss {
-  font-size: 14px;
+  font-size: 15px;
   padding-top: 5px;
-  padding-left: 10px;
+  /*padding-left: 10px;*/
 }
 .buildingAddressCss2 {
   font-size: 14px;
@@ -45,7 +50,8 @@
 }
 /*专业信息著录框的样式*/
 .writeInput {
-  width: 284px;
+  max-width: 284px;
+  min-width: 220px;
   float: right;
 }
 /*专业信息操作按钮靠右显示*/

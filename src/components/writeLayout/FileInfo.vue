@@ -33,10 +33,12 @@
       </Col>
     </Row>
 
-    <Row style="margin-top: 30px">
-      <Col span="2" offset="11">
+    <Row style="margin-top: 30px" :gutter="16">
+      <Col span="1" offset="11">
         <Button v-if="operation" @click="saveArch">保存</Button>
         <Button v-if="!operation" @click="updateArch">修改</Button>
+      </Col>
+        <Col span="1">
         <Button @click="goBack">返回</Button>
       </Col>
     </Row>

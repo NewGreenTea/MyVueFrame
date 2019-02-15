@@ -1,6 +1,6 @@
 <template>
   <Row>
-    <Col span="20" offset="1">
+    <Col span="22" offset="1">
       <!-- D61验收测量记录册 -->
       <!--<RouterView ref="MeaInfo" name="MeasureInfo" :isUpdate="updateInfo"-->
       <!--@saveMeasureInfoData="saveD61MI" class="routeView"></RouterView>-->

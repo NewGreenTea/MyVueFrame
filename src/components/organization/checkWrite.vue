@@ -6,7 +6,7 @@
         <Col span="20" offset="2">
           <Form class="conditionFormFront">
             <Row>
-              <Col span="2">
+              <Col span="3">
                 <FormItem>
                   <h2>筛选条件:</h2>
                 </FormItem>
@@ -19,7 +19,7 @@
               <Col span="4">
                 <FormItem>
                   <Row>
-                    <Col span="10" offset="2">
+                    <Col span="11" offset="1">
                       档案状态：
                     </Col>
                     <Col span="12">
@@ -31,7 +31,7 @@
                   </Row>
                 </FormItem>
               </Col>
-              <Col span="13" offset="1">
+              <Col span="12" offset="1">
                 <FormItem>
                   <Row>
                     <Col span="4">

@@ -1,6 +1,6 @@
 <template>
   <Row>
-    <Col span="20" offset="1">
+    <Col span="22" offset="1">
       <Form class="formClass" :model="C62Info" :label-width="labelWidth">
         <Row class="WriteLayoutFont" :gutter="16">
           <Col span="8">
@@ -22,7 +22,7 @@
     props: ['specViewParams'],
     data() {
       return {
-        labelWidth: 100,
+        labelWidth: 80,
         archId: this.specViewParams.archId,
         C62Info: {
           id: null,

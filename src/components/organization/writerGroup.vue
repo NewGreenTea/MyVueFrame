@@ -6,7 +6,7 @@
         <Col span="20" offset="2">
           <Form class="conditionFormFront">
             <Row>
-              <Col span="2">
+              <Col span="3">
                 <FormItem>
                   <h2>筛选条件:</h2>
                 </FormItem>
@@ -19,10 +19,10 @@
               <Col span="4">
                 <FormItem>
                   <Row>
-                    <Col span="10" offset="2">
+                    <Col span="12" offset="2">
                       档案状态：
                     </Col>
-                    <Col span="12">
+                    <Col span="10">
                       <Select placeholder="状态" @on-change="oneSelect" :clearable="true" @on-clear="oneClear"
                               ref="selectStatue">
                         <Option :key="item" v-for="item in twoStatues" :value="item">{{item}}</Option>
@@ -31,7 +31,7 @@
                   </Row>
                 </FormItem>
               </Col>
-              <Col span="13" offset="1">
+              <Col span="12" offset="1">
                 <FormItem>
                   <Row>
                     <Col span="4">
@@ -75,7 +75,9 @@
         <Col span="20">
           <Row :gutter="16">
             <Col v-for="type in archTwoTypes" :key="type.index" span="8" style="margin-top: 7px;margin-bottom: 7px">
-              <Button size="large" long style="text-align: left" @click="writeLayout(type)">{{type.className}}</Button>
+              <Button size="large" long style="text-align: left" @click="writeLayout(type)">
+                {{type.className}}
+              </Button>
             </Col>
           </Row>
         </Col>
@@ -209,7 +211,7 @@
                         // 判断基本信息是否完成著录，是则“修改”，否则“添加”
                         this.axios.get('/api/baseInfo/existBaseInfo', {params: {archId: params.row.archId}})
                           .then(res => {
-                            if (res.data.data === 0) {
+                            if (res.data.data.length === 0) {
                               this.loadData = {
                                 view: false,
                                 hidd: true
@@ -224,6 +226,7 @@
                                 archTypeID: this.archTypeID,
                                 archTypeName: this.archTypeName,
                                 archInputDate: params.row.inputDate,
+                                title: res.data.data.title,
                                 operation: true
                               }
                             } else { //res.data.data === 1 的时候
@@ -238,6 +241,7 @@
                                 archTypeID: this.archTypeID,
                                 archTypeName: this.archTypeName,
                                 archInputDate: params.row.inputDate,
+                                title: res.data.data.title,
                                 operation: false
                               }
                             }
@@ -280,6 +284,7 @@
                                 archNo: params.row.archNo,
                                 archTypeID: this.archTypeID,
                                 archType: writeVueLayout(params.row.archNo),
+                                dispatchNo: params.row.dispatchDocNo,
                                 operation: true
                               }
                             } else { //res.data.data === 1 的时候
@@ -291,6 +296,7 @@
                                 archNo: params.row.archNo,
                                 archTypeID: this.archTypeID,
                                 archType: writeVueLayout(params.row.archNo),
+                                dispatchNo: params.row.dispatchDocNo,
                                 operation: false
                               }
                             }

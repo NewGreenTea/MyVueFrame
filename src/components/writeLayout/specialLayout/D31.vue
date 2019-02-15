@@ -1,6 +1,6 @@
 <template>
   <Row>
-    <Col span="20" offset="1">
+    <Col span="22" offset="1">
       <Form class="formClass" :model="D31Info" :label-width="labelWidth">
         <Row class="WriteLayoutFont" :gutter="16">
           <Col span="8">
@@ -12,7 +12,7 @@
       </Form>
     </Col>
 
-    <Col span="20" offset="1">
+    <Col span="22" offset="1">
       <!-- 报建项目详细 -->
       <!--<RouterView ref="BPInfo" name="BuildProjInfo" :isUpdate="updateInfo"-->
                   <!--@saveBuildProjInfoData="saveD31BPI" class="routeView"></RouterView>-->
@@ -20,7 +20,7 @@
                         @saveBuildProjInfoData="saveD31BPI" class="routeView"></D31BuildProjInfo>
     </Col>
 
-    <Col span="20" offset="1">
+    <Col span="22" offset="1">
       <!-- 公建配套 -->
       <!--<RouterView ref="PBInfo" name="D31PubBuildInfo" :isUpdate="updateInfo"-->
                   <!--@savePubBuildInfoData="saveD31PBI" class="routeView"></RouterView>-->
@@ -41,7 +41,7 @@
     props: ['specViewParams'],
     data() {
       return {
-        labelWidth: 100,
+        labelWidth: 80,
         archId: this.specViewParams.archId,
         D31Info: {
           id: null,
@@ -91,7 +91,6 @@
         this.axios.post('/api/profETC/updateD31', this.D31Info, ArchRequestConfig);
         this.$refs.BPInfo.updatePMI();
         this.$refs.PBInfo.updatePMI();
-        this.$Message.info('修改完毕!');
       },
       initParams(){
         this.D31SpecParams = this.specViewParams

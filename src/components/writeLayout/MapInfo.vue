@@ -2,10 +2,10 @@
   <Row class="WriteLayoutFont">
     <Col>
       <Row>
-        <Col span="12">
+        <Col span="10">
           地图型号表
         </Col>
-        <Col span="12">
+        <Col span="14">
           <Button @click="cancelMInfo" class="profButtonFloat">-</Button>
           <Button @click="updateMInfo" v-if="specViewParams.isUpdate" class="profButtonFloat">√</Button>
           <Button @click="saveMInfo" class="profButtonFloat">+</Button>

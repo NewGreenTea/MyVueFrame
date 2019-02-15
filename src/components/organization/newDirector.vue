@@ -22,7 +22,7 @@
             </RadioGroup>
           </Col>
           <Col span="24">
-            <Button @click="distributeAssignment">分配</Button>
+            <Button @click="distributeAssignment" type="success">分配</Button>
           </Col>
         </Row>
       </Col>
