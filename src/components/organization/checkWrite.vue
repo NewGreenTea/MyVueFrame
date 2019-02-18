@@ -4,7 +4,7 @@
       <Row>
         <!-- 加载档案数据待著录条件框 -->
         <Col span="20" offset="2">
-          <Form class="conditionFormFront">
+          <Form class="conditionFormFront" @keydown.enter.native="searchArch">
             <Row>
               <Col span="3">
                 <FormItem>
@@ -50,6 +50,10 @@
           <Page :current="needToDoPage" :total="needToDoCount" :page-size="needToDoPageSize" show-elevator show-total
                 placement="top"
                 show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="needToDoPSO"/>
+          <Spin fix v-if="spinShow">
+            <Icon type="ios-loading" size=36 class="demo-spin-icon-load"></Icon>
+            <div>加载中</div>
+          </Spin>
         </Col>
       </Row>
 
@@ -217,11 +221,13 @@
         //档号查询关键字
         keyword: '',
         pageKeyword: '',
+        spinShow: false
       }
     },
     methods: {
       //加载工作组负责的待质检档案数据
       loadGroupArch() {
+        this.spinShow = true;
         this.axios.get('/api/loadArch/getGroupArch', {
           params: {
             'archStatue': this.archStatueCode,
@@ -232,7 +238,8 @@
           }
         }).then(res => {
             this.needToDoData = res.data.data.list;
-            this.needToDoCount = res.data.data.total
+            this.needToDoCount = res.data.data.total;
+            this.spinShow = false;
           }
         )
       },
