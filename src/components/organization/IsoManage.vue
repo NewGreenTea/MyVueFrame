@@ -258,7 +258,29 @@
       },
       /*删除iso*/
       deleteISO(){
-
+        if(this.tempData.length<=0){
+          this.$Message.warning("请选择需要操作的记录");
+          return false;
+        }
+        this.$Modal.confirm({
+          title: '删除确认！',
+          content: '<h4>将会删除已勾选的"iso文件"以及对应的"交接登记表"</h4>',
+          onOk: () => {
+            this.deleteloading=true;
+            let param = new URLSearchParams();
+            param.append('isoids', this.tempData);
+            axios({
+              method: 'post',
+              url: '/api/iso/deleteIso',
+              data: param
+            }).then(res=>{
+              this.deleteloading=false;
+              this.tempData=[];
+              this.writeLayout(this.currentPage,this.pageSize);
+              this.$Message.success("删除成功");
+            })
+          }
+        });
       },
       // 选择单条记录
       selectData(selection, row) {
