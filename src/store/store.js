@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state: {
     userID: '', // 用户id
     userName: '', // 用户名
+    systemCode: '', //使用系统
     autoUploadParam: false, // 上传模式
     visitViewPath: [], // 标签路径（导航用）
     visitCurrnetPath: '', // 定位到当前页
@@ -34,6 +35,16 @@ export default new Vuex.Store({
       state.userName = name;
       window.localStorage.setItem('username', state.userName) //保存在浏览器的本地存储里
     },
+    //（设置）使用中系统 -2019/02/16
+    setSystemCode(state, code){
+      state.systemCode = code;
+      window.localStorage.setItem('systemCode', state.systemCode)
+    },
+    //（清除）使用中系统 -2019/02/16
+    clearSystemCode(state){
+      state.systemCode = '';
+      window.localStorage.setItem('userid', '')
+    },
     //更新用户id
     updateUserID(state, id){
       state.userID = id;
@@ -47,12 +58,12 @@ export default new Vuex.Store({
     //清除用户ID
     clearUserID (state) {
       state.userID = '';
-      window.localStorage.setItem('userid', state.userID)
+      window.localStorage.setItem('userid', '')
     },
     //清除用户名
     clearUserName (state) {
       state.userName = '';
-      window.localStorage.setItem('username', state.userName)
+      window.localStorage.setItem('username', '')
     },
     // ------------------------------------------------------
     //改变上传模式
@@ -125,6 +136,13 @@ export default new Vuex.Store({
     ClearUserName (context) {
       context.commit('clearUserName')
     },
+    //使用系统操作方法 -2019/02/16
+    SetSystemCode(context,code){
+      context.commit('setSystemCode',code)
+    },
+    ClearSystemCode(context){
+      context.commit('clearSystemCode')
+    },
     // ------------------------------------------
     ChangeAutoUpload (context, auto) {
       context.commit('changeAutoUpload', auto)
@@ -158,6 +176,7 @@ export default new Vuex.Store({
   getters: {
     visitViewPath: state => state.visitViewPath,
     AssignmentsData: state => state.AssignmentsData,
-    AssignmentsVisit: state => state.AssignmentsVisit
+    AssignmentsVisit: state => state.AssignmentsVisit,
+    systemCode: state => state.systemCode,
   }
 })
