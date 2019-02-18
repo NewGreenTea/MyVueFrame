@@ -32,7 +32,7 @@
         <Row>
           <!-- 分配界面：主体右边：（上半部分）筛选条件 -->
           <Col>
-            <Form ref="searchForm" class="conditionFormFront">
+            <Form ref="searchForm" class="conditionFormFront" @keydown.enter.native="searchNotDistri">
               <Row>
                 <Col span="2">
                   <FormItem>
@@ -78,7 +78,7 @@
                   <FormItem>
                     <Row>
                       <Col span="7" offset="4">
-                        关键字：
+                        档号：
                       </Col>
                       <Col span="13">
                         <Input placeholder="档号" v-model="keyword" :clearable="InputClear"/>
@@ -96,12 +96,12 @@
                     </Col>
                   </Row>
                 </Col>
-                <!-- 返回初始未分配档案数据按钮 -->
-                <Col span="3">
-                  <FormItem>
-                    <Button type="primary" @click="returnAll(1)">所有未分配档案</Button>
-                  </FormItem>
-                </Col>
+                <!-- 返回初始未分配档案数据按钮  -2019/02/16弃用-->
+                <!--<Col span="3">-->
+                <!--<FormItem>-->
+                <!--<Button type="primary" @click="returnAll(1)">所有未分配档案</Button>-->
+                <!--</FormItem>-->
+                <!--</Col>-->
               </Row>
             </Form>
           </Col>
@@ -126,6 +126,7 @@
 
 <script>
   import {ArchStatueChange} from './../../js/global'
+
   export default {
     name: "newDirector",
     data() {
@@ -223,6 +224,7 @@
         pso: [10, 20, 30, 40, 50],
         // 档案二级状态
         twoStatues: [
+          '全部',
           '待分配',
           '已分配（待著录）',
           '著录中',
@@ -277,19 +279,19 @@
       },
       //任务界面请求打开分配界面时，加载任务数据
       loadAssignmentsData() {
-        if(this.getAssignmentsData.pageUrl !== null){
-        this.spinShow = true;
-        this.pageUrl = this.getAssignmentsData.pageUrl;
-        this.urlParams = this.getAssignmentsData.urlParams;
-        this.axios.get(this.pageUrl, {params: this.urlParams})
-          .then(res => {
-            this.$Message.info('已加载到分配面板上');
-            this.DistributeArchData = res.data.data.list;
-            this.archDataCount = res.data.data.total;
-            this.searchData = false;
-            this.spinShow = false;
-            this.$store.commit('setAssignmentsData',{url:null,params:null})
-          })
+        if (this.getAssignmentsData.pageUrl !== null) {
+          this.spinShow = true;
+          this.pageUrl = this.getAssignmentsData.pageUrl;
+          this.urlParams = this.getAssignmentsData.urlParams;
+          this.axios.get(this.pageUrl, {params: this.urlParams})
+            .then(res => {
+              this.$Message.info('已加载到分配面板上');
+              this.DistributeArchData = res.data.data.list;
+              this.archDataCount = res.data.data.total;
+              this.searchData = false;
+              this.spinShow = false;
+              this.$store.commit('setAssignmentsData', {url: null, params: null})
+            })
         }
       },
       // 选好档案数据和著录工作组即可进行分配任务
@@ -340,7 +342,7 @@
             this.taskWG = '';
             this.tempArchData = [];
             this.taskArchID = [];
-            this.returnAll();
+            //this.returnAll();
           })
         }
       },
@@ -350,7 +352,7 @@
       },
       //根据条件查询未分配的档案
       searchNotDistri() {
-        if (this.keyDate !== '' || this.archStatues !== '' || this.keyword !== '') {
+        if (this.keyDate !== '' || this.archStatues !== null || this.keyword !== '') {
           this.pageUrl = '/api/importArch/archSearch';
           this.urlParams = {
             keyDate: this.keyDate,
@@ -362,19 +364,24 @@
           this.spinShow = true;
           this.axios.post(this.pageUrl, this.qs.stringify(this.urlParams, {indices: false}))
             .then(res => {
-              if(res.data.data.list.length === 0){
-                this.$Message.info('没有找到！')
-              }else{
-                this.DistributeArchData = res.data.data.list;
-                this.archDataCount = res.data.data.total;
-                this.searchData = true;
+              if (res.data.data === null) {
+                this.$Message.info('没有数据！');
+              } else {
+                if (res.data.data.list.length === 0) {
+                  this.$Message.info('没有找到！');
+                  this.DistributeArchData = [];
+                } else {
+                  this.DistributeArchData = res.data.data.list;
+                  this.archDataCount = res.data.data.total;
+                  this.searchData = true;
+                }
               }
 
-              this.keyDate = '';
-              this.archStatues = '';
-              this.keyword = '';
+              // this.keyDate = '';
+              // this.archStatues = '';
+              // this.keyword = '';
               //清空下拉选项的选择值
-              this.$refs.ArchStatue.clearSingleSelect();
+              // this.$refs.ArchStatue.clearSingleSelect();
               this.spinShow = false;
             })
 
@@ -384,7 +391,8 @@
       },
       //筛选条件：选择档案二级状态后
       choseTwoStatue(value) {
-        this.archStatues = ArchStatueChange.statueTwoCode(value)
+        this.archStatues = ArchStatueChange.statueTwoCode(value);
+        //alert('this.archStatues-' + this.archStatues);
       },
       //返回所有档案未分配数据
       returnAll() {
@@ -462,7 +470,7 @@
       this.loadWorkGroup()
     },
     computed: {
-      getAssignmentsData(){
+      getAssignmentsData() {
         return this.$store.state.AssignmentsData
       }
     }
