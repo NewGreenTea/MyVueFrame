@@ -67,6 +67,8 @@
             @on-page-size-change="ajpageSizeChange"
             show-elevator show-total show-sizer/>
 
+      <div slot="footer"></div>
+
     </Modal>
   </Row>
 </template>

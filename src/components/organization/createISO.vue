@@ -5,7 +5,7 @@
       <Col span="22" offset="1">
         <Form inline :label-width="120" class="formClass-right" >
           <FormItem label="档案状态：">
-            <Select v-model="statusdata" placeholder="全部" @on-change="search" style="width:200px">
+            <Select v-model="statusdata" placeholder="组卷完成" @on-change="search" style="width:200px">
               <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </FormItem>
@@ -155,48 +155,48 @@
         pso: [10, 20, 30, 50, 100],
         /*搜索表单*/
         //二级状态下拉选框
-        statusdata:10,
+        statusdata:9,
         statusList:[
-          {
-            value:'10',
-            label:'全部'
-          },
-          {
-            value:'0',
-            label:'待分配'
-          },
-          {
-            value:'1',
-            label:'待著录'
-          },
-          {
-            value:'2',
-            label:'著录中'
-          },
-          {
-            value:'3',
-            label:'待著录质检'
-          },
-          {
-            value:'4',
-            label:'待扫描质检'
-          },
-          {
-            value:'5',
-            label:'质检通过'
-          },
-          {
-            value:'6',
-            label:'质检不通过'
-          },
-          {
-            value:'7',
-            label:'上传中'
-          },
-          {
-            value:'8',
-            label:'待组卷'
-          },
+          // {
+          //   value:'10',
+          //   label:'全部'
+          // },
+          // {
+          //   value:'0',
+          //   label:'待分配'
+          // },
+          // {
+          //   value:'1',
+          //   label:'待著录'
+          // },
+          // {
+          //   value:'2',
+          //   label:'著录中'
+          // },
+          // {
+          //   value:'3',
+          //   label:'待著录质检'
+          // },
+          // {
+          //   value:'4',
+          //   label:'待扫描质检'
+          // },
+          // {
+          //   value:'5',
+          //   label:'质检通过'
+          // },
+          // {
+          //   value:'6',
+          //   label:'质检不通过'
+          // },
+          // {
+          //   value:'7',
+          //   label:'上传中'
+          // },
+          // {
+          //   value:'8',
+          //   label:'待组卷'
+          // },
           {
             value:'9',
             label:'组卷完成'
