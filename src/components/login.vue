@@ -20,7 +20,8 @@
               <div class="loginForm">
                 <Row>
                   <Col>
-                    <Form ref="formInline" :model="formInline" :rules="ruleInline" label-position="right" :label-width="100" @keydown.enter.native="handleSubmit('formInline')">
+                    <Form ref="formInline" :model="formInline" :rules="ruleInline" label-position="right"
+                           :label-width="100" @keydown.enter.native="handleSubmit('formInline')">
                       <FormItem prop="user">
                         <Input type="text" v-model="formInline.user" placeholder="Username">
                         <Icon type="ios-person-outline" slot="prepend" size="30"></Icon>
@@ -32,7 +33,24 @@
                         </Input>
                       </FormItem>
                       <FormItem>
-                        <Button type="primary" @click="handleSubmit('formInline')" style="float: right">登录</Button>
+                        <Row>
+                          <Col span="18">
+                            <Row>
+                              <Col span="5">
+                                区局系统:
+                              </Col>
+                              <Col span="18">
+                                <Select placeholder="请选择区局系统" @on-change="choseSystem" ref="SystemSelect">
+                                  <Option :key="item.systemCode" v-for="item in systems" :value="item.systemCode">{{item.systemName}}</Option>
+                                </Select>
+                              </Col>
+                            </Row>
+                          </Col>
+
+                          <Col span="6">
+                            <Button type="primary" @click="handleSubmit('formInline')" style="float: right">登录</Button>
+                          </Col>
+                        </Row>
                       </FormItem>
                     </Form>
                   </Col>
@@ -47,6 +65,7 @@
 </template>
 
 <script>
+  import {SystemFunction} from './../js/global'
   export default {
     name: 'login',
     data() {
@@ -55,7 +74,11 @@
         clientHeight: '',
         clientWidth: document.body.clientWidth,
         moveLeft: '',
-        systems: ['规划系统', '国土系统', '文书系统'],
+        //系统列表
+        systems: SystemFunction.systemObject(),
+        //系统
+        enterSystem: '',
+        //用户对象
         formInline: {
           user: '',
           password: ''
@@ -77,29 +100,38 @@
       }
     },
     methods: {
+      //选择系统
+      choseSystem(value){
+        this.enterSystem = value
+      },
       handleSubmit(name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            this.axios.post('/api/login', this.qs.stringify({
-              'username': this.formInline.user,
-              'password': this.formInline.password
-            })).then(res => {
-              if (res.data.code === 0) { //code=0 表示OK
-                this.axios.post('/api/user/get').then(res => {
-                  this.$store.dispatch('SetUserID', res.data.data.id); // 在前端记录登录者的用户ID
-                  this.$store.dispatch('SetUserName', res.data.data.nickname); // 在前端保持登录者的用户名
-                });
-                this.$router.push('/index/viewcont')
-              } else {
-                this.$Message.success(res.data.msg)
-              }
-            }).catch(err =>{
-              this.$Message.error('请求超时！')
-            })
-          } else {
-            this.$Message.error('格式错误!')
-          }
-        })
+        if(this.enterSystem === ''){
+          this.$Message.error('请选择系统！')
+        }else{
+          this.$refs[name].validate((valid) => {
+            if (valid) {
+              this.axios.post('/api/login', this.qs.stringify({
+                'username': this.formInline.user,
+                'password': this.formInline.password
+              })).then(res => {
+                if (res.data.code === 0) { //code=0 表示OK
+                  this.axios.post('/api/user/get').then(res => {
+                    this.$store.dispatch('SetUserID', res.data.data.id); // 在前端记录登录者的用户ID
+                    this.$store.dispatch('SetUserName', res.data.data.nickname); // 在前端保持登录者的用户名
+                    this.$store.dispatch('SetSystemCode',this.enterSystem) //记录登录系统
+                  });
+                  this.$router.push('/index/viewcont')
+                } else {
+                  this.$Message.success(res.data.msg)
+                }
+              }).catch(err =>{
+                this.$Message.error('请求超时！')
+              })
+            } else {
+              this.$Message.error('格式错误!')
+            }
+          })
+        }
       }
     },
     mounted() {
