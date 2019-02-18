@@ -7,7 +7,7 @@
         </FormItem>
         <FormItem>
           区局：
-          <Input type="text" v-model="SQform.district" placeholder="区局" clearable style="width: 150px"/>
+          <Input type="text" v-model="SQform.district" placeholder="区局" style="width: 150px" class="colorBack" disabled/>
           <Icon type="ios-person-outline" slot="prepend"></Icon>
         </FormItem>
         <FormItem prop="date">
@@ -30,7 +30,7 @@
         <FormItem>
           <Upload ref="upload" action="/api/importArch/handelExcel" :showUploadList="false" :on-success="importList"
                   :data="{district:SQform.district}" :before-upload="beforeUpload">
-            <i-button type="primary">导入清单</i-button>
+            <i-button type="primary" :loading="importLoading">导入清单</i-button>
           </Upload>
         </FormItem>
         <!--<FormItem>-->
@@ -100,7 +100,11 @@
           {
             title: '档号',
             key: 'archNO'
-          }
+          },
+          // {
+          //   title: '操作结果'
+          //
+          // }
         ],
         tableData: [],
         //传给后台的DTO
@@ -121,7 +125,9 @@
           inputDate: [
             {validator: notNull, trigger: 'change'}
           ]
-        }
+        },
+        //导入按钮加载状态
+        importLoading: false
       }
     },
     methods: {
@@ -133,6 +139,8 @@
         this.$refs.importForm.validate((valid) => {
           if (!valid) {
             this.$Message.error('请填写必要导入信息！');
+          }else{
+            this.importLoading = true;
           }
         });
         return !!(this.SQform.inputDate !== '' && this.SQform.date !== '' && this.SQform.batch);
@@ -163,6 +171,8 @@
           });
           this.$refs.importForm.resetFields();
         }
+        //关闭导入加载状态
+        this.importLoading = false;
       },
       //导入确认
       confirm() {
@@ -200,6 +210,18 @@
       clearList() {
         this.$refs.importForm.resetFields();
         this.tableData = [];
+      }
+    },
+    mounted(){
+      if(this.getSystemCode === '无'){
+        this.SQform.district = ''
+      }else{
+        this.SQform.district = this.getSystemCode
+      }
+    },
+    computed:{
+      getSystemCode(){
+        return this.$store.state.systemCode
       }
     }
   }
