@@ -65,7 +65,7 @@
               </Col>
 
               <Col>
-                <FormItem class="FormItemClass" label="文件编号" prop="fileNo">
+                <FormItem class="FormItemClass" label="文件编号">
                   <Input placeholder="..." v-model="fileArch.fileNo" class="colorBack"/>
                 </FormItem>
               </Col>
@@ -144,7 +144,7 @@
               </Col>
 
               <Col>
-                <FormItem class="FormItemClass" label="文件编号" prop="fileNo">
+                <FormItem class="FormItemClass" label="文件编号">
                   <Input placeholder="..." v-model="fileArch.fileNo" class="colorBack"/>
                 </FormItem>
               </Col>
@@ -412,7 +412,7 @@
                     this.$refs.addForm.resetFields();
                     this.loadFileArch();
                     this.addFileIndex +=1;
-                    this.saveFileInfo()
+                    this.saveFileInfo();
                   }else{
                     this.$Message.error('添加失败！');
                   }
@@ -426,12 +426,33 @@
                 .then(res => {
                   if(res.data.code === 0){
                     this.$Message.success('添加成功！');
+
+                    //添加记忆数据
+                    if(addFileLiableId === true){
+                      this.axios.post('/api/archMemory/addMemory',this.qs.stringify({
+                        type: 'Liable',
+                        data: temp.liableId
+                      })).then(res=>{
+                        this.loadFileMemory('Liable')
+                      })
+                    }
+                    if(addFileTitle === true){
+                      this.axios.post('/api/archMemory/addMemory',this.qs.stringify({
+                        type: 'Title',
+                        data: temp.fileTitle
+                      })).then(res=>{
+                        this.loadFileMemory('Title')
+                      })
+                    }
+
                     this.$refs.addForm.resetFields();
                     this.loadFileArch();
                     this.addFileIndex +=1;
+                    this.saveFileInfo();
                   }else{
                     this.$Message.error('添加失败！');
                   }
+                  this.spinShow = false;
                 });
             }
             this.UpdateAddData = [];
