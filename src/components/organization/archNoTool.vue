@@ -347,6 +347,9 @@
                   }
                   this.twoID = this.serialnumInfo.classId;
                   this.searchArchNo();
+                  //把添加时的类型删除
+                  this.$refs.addTwoCalssSelect.clearSingleSelect();
+                  this.$refs.addOneCalssSelect.clearSingleSelect();
                 });
               this.addModal = false;
             }else{
