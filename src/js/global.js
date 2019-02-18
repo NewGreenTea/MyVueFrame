@@ -114,9 +114,92 @@ let ArchStatueChange = {
       statueName = 8
     } else if (statue === '组卷完成') {
       statueName = 9
+    } else if (statue === '全部') {
+      statueName = ''
     }
     return statueName
   }
 };
 
-export {CommonFunction, ArchRequestConfig, ArchStatueChange}
+//系统设置
+let SystemFunction = {
+  //选择系统，设置区号
+  systemObject() {
+    return [
+      {
+        systemName: '市局',
+        systemCode: '无'
+      },
+      {
+        systemName: '越秀分局',
+        systemCode: '01'
+      },
+      {
+        systemName: '海珠分局',
+        systemCode: '02'
+      },
+      {
+        systemName: '荔湾分局',
+        systemCode: '03'
+      },
+      {
+        systemName: '天河分局',
+        systemCode: '04'
+      },
+      {
+        systemName: '白云分局',
+        systemCode: '05'
+      },
+      {
+        systemName: '黄埔分局',
+        systemCode: '06'
+      },
+      {
+        systemName: '花都分局',
+        systemCode: '07'
+      },
+      {
+        systemName: '番禺分局',
+        systemCode: '08'
+      },
+      {
+        systemName: '南沙分局',
+        systemCode: '09'
+      }]
+  },
+
+  //根据区号获取区名
+  getSystemDistrict(code){
+    console.log('11111111' + code);
+    let district;
+    if(code === '无'){
+      district = ''
+    }else if(code === '01'){
+      district = '越秀'
+    }else if(code === '02'){
+      district = '海珠'
+    }else if(code === '03'){
+      district = '荔湾'
+    }else if(code === '04'){
+      district = '天河'
+    }else if(code === '05'){
+      district = '白云'
+    }else if(code === '06'){
+      district = '黄埔'
+    }else if(code === '07'){
+      district = '花都'
+    }else if(code === '08'){
+      district = '番禺'
+    }else if(code === '09'){
+      district = '南沙'
+    }
+    return district;
+  },
+
+  //获取本地中的系统代码
+  getSystemCode(){
+    return window.localStorage.getItem('systemCode');
+  }
+};
+
+export {CommonFunction, ArchRequestConfig, ArchStatueChange, SystemFunction}
