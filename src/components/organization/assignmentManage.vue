@@ -26,7 +26,7 @@
       <Col span="19" class="TableFontCss buttonMargin">
         <Row>
           <Col>
-            <Form class="formClass-right">
+            <Form class="formClass-right" @keydown.enter.native="keySearch">
               <Row :gutter="16">
                 <Col span="6">
                   <FormItem label="档号:" :label-width="100">
