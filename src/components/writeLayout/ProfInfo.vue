@@ -11,15 +11,16 @@
         <!--专业信息必有的两个著录项-->
         <Row>
           <Col span="22" offset="1">
-            <Form class="formClass" :model="profArch" :label-width="labelWidth" :rules="rules" ref="profForm">
+            <!--<Form class="formClass" :model="profArch" :label-width="labelWidth" :rules="rules" ref="profForm">-->
+            <Form class="formClass" :model="profArch" :label-width="labelWidth">
               <Row :gutter="16">
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="建设单位" prop="buildCompany">
+                  <FormItem class="FormItemClass" label="建设单位">
                     <Input placeholder="..." v-model="profArch.buildCompany"/>
                   </FormItem>
                 </Col>
                 <Col span="8">
-                  <FormItem class="FormItemClass" label="建设项目" prop="buildProject">
+                  <FormItem class="FormItemClass" label="建设项目">
                     <Input placeholder="..." v-model="profArch.buildProject"/>
                   </FormItem>
                 </Col>
@@ -169,7 +170,7 @@
 
 <script>
   import {isIntegerNotMust, notNull} from '../../js/validate'
-  import {CommonFunction, ArchRequestConfig} from '../../js/global'
+  import {CommonFunction, ArchRequestConfig, SystemFunction} from '../../js/global'
   import ProjectNo from "./ProjectNo";
   import AreaHisNo from "./AreaHisNo";
   import MapInfo from "./MapInfo";
@@ -288,8 +289,10 @@
       },
       // 保存档案信息
       realSave() { // 特性档案的著录专业信息存储方法
-        this.$refs.profForm.validate((valid) => {
-          if (valid) {
+
+        // this.$refs.profForm.validate((valid) => {
+        //   alert(valid);
+        //   if (valid) {
             this.axios.post('/api/profInfo/addBuildAddress', this.buildingAddressInfo, ArchRequestConfig).then(res => {
               this.axios.post('/api/profInfo/addProfInfo', this.profArch, {
                 //判断字段是否为null，是则转为空字符串
@@ -317,13 +320,15 @@
                 //反写入到档案基本信息的案卷标题  -可提取出来
                 let BaseTitle = this.profArch.buildCompany + this.profArch.buildProject + this.buildingAddressInfo.area + '区'
                   + road + street + no;
-                this.axios.post('/api/baseInfo/updateBaseTitle', this.qs.stringify({
-                  archID: this.ProfParams.archId,
-                  archNo: this.archNo,
-                  archType: this.ProfParams.archTypeID,
-                  dispatchNo: this.ProfParams.dispatchNo,
-                  title: BaseTitle
-                }))
+                if (this.archType !== 'B1.3' && this.archType !== 'D8') { //B1.3和D8不用写到标题
+                  this.axios.post('/api/baseInfo/updateBaseTitle', this.qs.stringify({
+                    archID: this.ProfParams.archId,
+                    archNo: this.archNo,
+                    archType: this.ProfParams.archTypeID,
+                    dispatchNo: this.ProfParams.dispatchNo,
+                    title: BaseTitle
+                  }))
+                }
               });
             });
 
@@ -338,10 +343,11 @@
             }
             this.$Message.success('保存成功！');
             this.$emit('changeShowView')
-          } else {
-            this.$Message.error('著录信息有误！');
-          }
-        })
+          // }
+          // else {
+          //   this.$Message.error('著录信息有误！');
+          // }
+        // })
       },
       saveArch() { // 无特性档案的著录专业信息存储方法
         // 判断档案有无特性著录项
@@ -385,13 +391,15 @@
         //反写入到档案基本信息的案卷标题
         let BaseTitle = this.profArch.buildCompany + this.profArch.buildProject + this.buildingAddressInfo.area + '区'
           + road + street + no;
-        this.axios.post('/api/baseInfo/updateBaseTitle', this.qs.stringify({
-          archID: this.ProfParams.archId,
-          dispatchNo: this.ProfParams.dispatchNo,
-          archNo: this.archNo,
-          archType: this.ProfParams.archTypeID,
-          title: BaseTitle
-        }));
+        if (this.archType !== 'B1.3' && this.archType !== 'D8') { //B1.3和D8不用写到标题
+          this.axios.post('/api/baseInfo/updateBaseTitle', this.qs.stringify({
+            archID: this.ProfParams.archId,
+            dispatchNo: this.ProfParams.dispatchNo,
+            archNo: this.archNo,
+            archType: this.ProfParams.archTypeID,
+            title: BaseTitle
+          }));
+        }
       },
       updateArch() {
         // 判断档案有无特性著录项
@@ -437,7 +445,21 @@
       this.loadArch();
       this.showMapInfo = true;
       this.showAreaHisNo = true;
-      this.showProjectNo = true
+      this.showProjectNo = true;
+      if (this.getSystemCode === '无') {
+        this.buildingAddressInfo.area = ''
+      } else {
+        this.buildingAddressInfo.area = SystemFunction.getSystemDistrict(this.getSystemCode)
+      }
+    },
+    computed: {
+      getSystemCode() {
+        if (this.$store.state.systemCode === '') {
+          return window.localStorage.getItem('systemCode')
+        } else {
+          return this.$store.state.systemCode
+        }
+      }
     },
     created() {
       this.initSpecParams();
