@@ -8,7 +8,8 @@
         </Card>
       </Col>
       <Col span="18">
-        <Form class="formClass" :model="baseArch" :rules="rules" ref="BaseInfoForm">
+        <!-- 校验规则 切换的时候 -->
+        <Form class="formClass" :model="baseArch" :rules="checkRules" ref="BaseInfoForm">
           <Row :gutter="16">
             <!--立案号,档号,案卷类别-->
             <Col>
@@ -187,7 +188,7 @@
           registerNo: this.BaseParams.registerNo, // 读取出来
           archNo: this.BaseParams.archNo, // 读取出来
           archTitle: this.BaseParams.title,
-          company: '广州市国土资源和规划委员会',
+          company: '广州市国土资源和规划委员会', //todo
           date: '',
           inputDate: this.BaseParams.archInputDate,
           archPage: '',
@@ -203,7 +204,9 @@
           publicProperty: '',
           classId: this.BaseParams.archTypeID
         },
-        rules: {
+        rules: null,
+        //除了B1.3和D8
+        rules1: {
           registerNo: [
             {validator: isInteger, trigger: 'blur'}
           ],
@@ -211,24 +214,38 @@
             {validator: notNull, trigger: 'blur'}
           ],
           date: [
+            {validator: notNull, trigger: 'change '}
+          ],
+          inputDate: [
+            {validator: notNull, trigger: 'blur'}
+          ],
+          dispatchNoType: [
+            {validator: notNull, trigger: 'blur'}
+          ],
+          dispatchNoNum: [
+            {validator: isInteger, trigger: 'blur'}
+          ],
+          dispatchNoYear: [
+            {validator: isInteger, trigger: 'blur'}
+          ],
+          archPage: [
+            {validator: isInteger, trigger: 'change'}
+          ]
+        },  //待修改，进去就是提示错误 todo
+        rules2: {
+          registerNo: [
+            {validator: isInteger, trigger: 'blur'}
+          ],
+          date: [
             {validator: notNull, trigger: 'change'}
           ],
           inputDate: [
-            {validator: notNull, trigger: 'change'}
-          ],
-          dispatchNoType: [
-            {validator: notNull, trigger: ['blur', 'change']}
-          ],
-          dispatchNoNum: [
-            {validator: isInteger, trigger: ['blur', 'change']}
-          ],
-          dispatchNoYear: [
-            {validator: isInteger, trigger: ['blur', 'change']}
+            {validator: notNull, trigger: 'blur'}
           ],
           archPage: [
-            {validator: isInteger, trigger: 'blur'}
+            {validator: isInteger, trigger: 'change'}
           ]
-        }
+        },
       }
     },
     methods: {
@@ -263,14 +280,19 @@
       },
       //更新档案
       updateArch() {
-        this.axios.post('/api/baseInfo/update', this.baseArch, config).then(res => {
-            if (res.data.code === 0) {
-              this.$Message.success('修改成功!')
-            } else {
-              this.$Message.error('修改失败!')
-            }
+        this.$refs.BaseInfoForm.validate((valid) => {
+          if (valid) {
+            this.axios.post('/api/baseInfo/update', this.baseArch, config).then(res => {
+              if (res.data.code === 0) {
+                this.$Message.success('修改成功!')
+              } else {
+                this.$Message.error('修改失败!')
+              }
+            })
+          }else{
+            this.$Message.error('修改信息有误！');
           }
-        )
+        })
       },
       goBack() {
         //this.$router.go(-1);
@@ -278,40 +300,52 @@
       },
       getDispatchNoType(DispatchNo) {
         let index;
-        if (DispatchNo.indexOf("〔") !== -1) {
-          index = DispatchNo.lastIndexOf("〔");
-        } else if (DispatchNo.indexOf("[") !== -1) {
-          index = DispatchNo.lastIndexOf("[");
-        } else if (DispatchNo.indexOf("【") !== -1) {
-          index = DispatchNo.lastIndexOf("【");
+        if(DispatchNo!== '') {
+          if (DispatchNo.indexOf("〔") !== -1) {
+            index = DispatchNo.lastIndexOf("〔");
+          } else if (DispatchNo.indexOf("[") !== -1) {
+            index = DispatchNo.lastIndexOf("[");
+          } else if (DispatchNo.indexOf("【") !== -1) {
+            index = DispatchNo.lastIndexOf("【");
+          }
+          return DispatchNo.substring(0, index)
+        }else{
+          return ''
         }
-        return DispatchNo.substring(0, index)
       },
       getDispatchNoYear(DispatchNo) {
         let index;
         let index2;
-        if (DispatchNo.indexOf("〔") !== -1) {
-          index = DispatchNo.lastIndexOf("〔");
-          index2 = DispatchNo.lastIndexOf("〕");
-        } else if (DispatchNo.indexOf("[") !== -1) {
-          index = DispatchNo.lastIndexOf("[");
-          index2 = DispatchNo.lastIndexOf("]");
-        } else if (DispatchNo.indexOf("【") !== -1) {
-          index = DispatchNo.lastIndexOf("【");
-          index2 = DispatchNo.lastIndexOf("】");
+        if(DispatchNo!== '') {
+          if (DispatchNo.indexOf("〔") !== -1) {
+            index = DispatchNo.lastIndexOf("〔");
+            index2 = DispatchNo.lastIndexOf("〕");
+          } else if (DispatchNo.indexOf("[") !== -1) {
+            index = DispatchNo.lastIndexOf("[");
+            index2 = DispatchNo.lastIndexOf("]");
+          } else if (DispatchNo.indexOf("【") !== -1) {
+            index = DispatchNo.lastIndexOf("【");
+            index2 = DispatchNo.lastIndexOf("】");
+          }
+          return DispatchNo.substring(index + 1, index2)
+        }else{
+          return ''
         }
-        return DispatchNo.substring(index + 1, index2)
       },
       getDispatchNoNum(DispatchNo) {
         let index;
-        if (DispatchNo.indexOf("〔") !== -1) {
-          index = DispatchNo.lastIndexOf("〕");
-        } else if (DispatchNo.indexOf("]") !== -1) {
-          index = DispatchNo.lastIndexOf("]");
-        } else if (DispatchNo.indexOf("】") !== -1) {
-          index = DispatchNo.lastIndexOf("】");
+        if(DispatchNo!== '') {
+          if (DispatchNo.indexOf("〔") !== -1) {
+            index = DispatchNo.lastIndexOf("〕");
+          } else if (DispatchNo.indexOf("]") !== -1) {
+            index = DispatchNo.lastIndexOf("]");
+          } else if (DispatchNo.indexOf("】") !== -1) {
+            index = DispatchNo.lastIndexOf("】");
+          }
+          return DispatchNo.substring(index + 1, DispatchNo.length - 1)
+        }else{
+          return ''
         }
-        return DispatchNo.substring(index + 1, DispatchNo.length - 1)
       },
       reset() {
         this.baseArch.archTitle = '';
@@ -329,10 +363,23 @@
         this.baseArch.archfileCreator = '';
         this.baseArch.publicProperty = '';
         this.$refs.BaseInfoForm.resetFields()
-      }
+      },
+
     },
     mounted() {
-      this.loadArch()
+      this.loadArch();
+      // this.checkRules();
+    },
+    computed:{
+      //加载正确的校验规则
+      checkRules(){
+        if((this.BaseParams.archTypeName.indexOf('B1.3') > -1) || (this.BaseParams.archTypeName.indexOf('D8') >-1)){
+          return this.rules2;
+        }
+        else{
+          return this.rules1;
+        }
+      }
     }
   }
 </script>
