@@ -254,6 +254,8 @@
         }).then(res=>{
           this.WriterArchData = res.data.data.list;
           this.totalCount = res.data.data.total;
+        }).catch(error=>{
+          this.$Message.error('数据错误')
         })
       },
       //页码改变
@@ -291,6 +293,7 @@
         let param = new URLSearchParams();
         param.append('ids', this.tempData);
         param.append('GBSize', this.isosize);
+        param.append('archType', 'GH');
         axios({
           method: 'post',
           url: '/api/arch/calculateSize',
@@ -355,6 +358,8 @@
                     return h('pre', errorList)
                   }
                 });
+              }).catch(error=>{
+                this.$Message.error('数据错误')
               })
             },
             onCancel: () => {
@@ -367,6 +372,7 @@
           this.tempData=[];
           this.$refs.table.selectAll(false);
           this.isoloading=false;
+          this.$Message.error('数据错误')
         })
       },
       createISO(){

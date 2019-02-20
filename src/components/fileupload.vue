@@ -163,6 +163,8 @@
           url: '/api/upload/cleanUploadCache'
         }).then(res=>{
           this.$Message.success("缓存清除完成")
+        }).catch(error=>{
+          this.$Message.error('数据错误')
         })
       },
       changeInputValue(){
@@ -221,6 +223,8 @@
               data: param
             }).then(res=>{
 
+            }).catch(error=>{
+              this.$Message.error('数据错误')
             })
           }
         }
@@ -250,6 +254,8 @@
               data: param
             }).then(res => {
 
+            }).catch(error=>{
+              this.$Message.error('数据错误')
             })
           }
         }

@@ -198,6 +198,8 @@
         }).then(res=>{
           this.WriterArchData = res.data.data.list;
           this.totalCount = res.data.data.total;
+        }).catch(error=>{
+          this.$Message.error('数据错误')
         })
       },
       writeAjLayout(currentPage,pageSize){
@@ -212,6 +214,8 @@
         }).then(res=>{
           this.ajData = res.data.data.list;
           this.ajtotalCount = res.data.data.total;
+        }).catch(error=>{
+          this.$Message.error('数据错误')
         })
       },
       //页码改变
@@ -252,10 +256,13 @@
           url: '/api/iso/downloadIso',
           data: param
         }).then(res=>{
+
           this.downloadloading=false;
           this.tempData=[];
           this.$refs.table.selectAll(false);
           this.$Message.success("交接清单生成成功");
+        }).catch(error=>{
+          this.$Message.error('数据错误')
         })
       },
       /*删除iso*/
@@ -280,6 +287,8 @@
               this.tempData=[];
               this.writeLayout(this.currentPage,this.pageSize);
               this.$Message.success("删除成功");
+            }).catch(error=>{
+              this.$Message.error('数据错误')
             })
           }
         });

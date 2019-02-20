@@ -275,6 +275,8 @@
               this.aPassB=false;
               this.aNotPassB=false;
             }
+          }).catch(error=>{
+            this.$Message.error('数据错误')
           })
         },
         //页码改变
@@ -306,7 +308,9 @@
               this.$Message.success("操作成功");
               this.handleSerach();
             }
-          )
+          ).catch(error=>{
+            this.$Message.error('数据错误')
+          })
           this.bzid='';
           this.bzinput='';
         },
@@ -325,6 +329,8 @@
           }).then(res=>{
               this.$Message.success("操作成功");
               this.handleSerach();
+          }).catch(error=>{
+            this.$Message.error('数据错误')
           })
           this.tempData=[];
         },
@@ -353,7 +359,9 @@
               this.$Message.success("操作成功");
               this.handleSerach();
             }
-          )
+          ).catch(error=>{
+            this.$Message.error('数据错误')
+          })
           this.bzinput='';
         },
         inputcancels : function(){

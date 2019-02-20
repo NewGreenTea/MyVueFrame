@@ -249,6 +249,8 @@
         }).then(res=>{
           this.WriterArchData = res.data.data.list;
           this.totalCount = res.data.data.total;
+        }).catch(error=>{
+          this.$Message.error('数据错误')
         })
       },
       //页码改变
@@ -289,7 +291,7 @@
           }
         }).catch(error => {
           this.floading=false;
-          console.log(error);
+          this.$Message.error('数据错误')
         })
         this.tempData=[];
         this.$refs.table.selectAll(false);
@@ -316,7 +318,7 @@
           }
         }).catch(error => {
           this.jloading=false;
-          console.log(error);
+          this.$Message.error('数据错误')
         })
         this.tempData=[];
         this.$refs.table.selectAll(false);

@@ -150,6 +150,8 @@
         }).then(res=>{
           this.WriterArchData = res.data.data.list;
           this.totalCount = res.data.data.total;
+        }).catch(error=>{
+          this.$Message.error('数据错误')
         })
       },
       //页码改变
@@ -225,7 +227,7 @@
           this.$Spin.hide();
           this.tempData=[];
           this.$refs.table.selectAll(false);
-          console.log(error)
+          this.$Message.error('数据错误')
         })
       },
       // 选择单条记录
