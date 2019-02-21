@@ -129,19 +129,6 @@
           uploaderInstance.opts.query={archNo : this.archNoPage, ifIgnore : '1'};
         }
 
-        // uploaderInstance.fileList=uploaderInstance.fileList.slice(0,-1);
-        // for(let i=0;i<fileList.length;i++){
-        //   this.uploadFolders.push(fileList[i]);
-        //   for(let j=0;j<fileList[i].fileList.length;j++){
-        //       this.uploadFolders.push(fileList[i].fileList[j])
-        //   }
-        // }
-        // for (let i=0;i<this.uploadFolders.length;i++){
-        //   uploaderInstance.fileList.push(this.uploadFolders[i])
-        // }
-        // uploaderInstance.files.push(files);
-        // console.log(uploaderInstance)
-
       },
       ifCleanCache(){
         this.$Modal.confirm({
@@ -203,7 +190,7 @@
       },
       //单个文件上传成功
       fileSuccess(rootFile, file, message, chunk){
-        //判断当前已完成多少个文件
+        //判断当前已完成多少个文件，队列所有文件上传完之后删除缓存中上传信息
         if(rootFile.isFolder){
           let archno=file.parent.name;
           let filenum=file.parent.fileList.length;
@@ -234,7 +221,7 @@
         //记录上传失败的信息
         let resmsg=JSON.parse(chunk.xhr.response).msg;
         this.errorList.push(resmsg);
-        //判断当前已完成多少个文件
+        //判断当前已完成多少个文件,队列所有文件上传完之后删除缓存中上传信息
         if(rootFile.isFolder) {
           let archno = file.parent.name;
           let filenum = file.parent.fileList.length;

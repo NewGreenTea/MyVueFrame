@@ -256,10 +256,10 @@
           url: '/api/iso/downloadIso',
           data: param
         }).then(res=>{
-
           this.downloadloading=false;
           this.tempData=[];
           this.$refs.table.selectAll(false);
+
           this.$Message.success("交接清单生成成功");
         }).catch(error=>{
           this.$Message.error('数据错误')
