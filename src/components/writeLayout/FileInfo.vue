@@ -34,16 +34,23 @@
     </Row>
 
     <Row style="margin-top: 30px" :gutter="16">
-      <Col span="1" offset="11">
+      <Col span="4" offset="10">
+        <div>
+        <Button type="success" v-if="archCommit" @click="commitArch">确认</Button>
         <Button v-if="operation" @click="saveArch">保存</Button>
         <Button v-if="!operation" @click="updateArch">修改</Button>
-      </Col>
-        <Col span="1">
         <Button @click="goBack">返回</Button>
+        </div>
       </Col>
     </Row>
 
-    <Modal width="1250px" v-model="AddModal" :loading="loading" :mask-closable="false" title="添加文件信息"
+    <Modal v-model="showModal" title="确认信息" @on-ok="tips(3)">
+      <div>
+        档案的基本信息，专业信息，文件信息都已著录完，是否完成这份档案?
+      </div>
+    </Modal>
+
+    <Modal width="900px" v-model="AddModal" :loading="loading" :mask-closable="false" title="添加文件信息"
            @on-ok="saveArchData" @on-cancel="cancleAdd">
       <Row>
         <Col span="20" offset="2">
@@ -51,12 +58,12 @@
             <Row :gutter="16">
               <Col>
                 <Row :gutter="16">
-                  <Col span="10">
+                  <Col span="11">
                     <FormItem class="FormItemClass" label="档号">
                       <Input placeholder="..." v-model="fileArch.archNo" class="colorBack" disabled/>
                     </FormItem>
                   </Col>
-                  <Col span="10" offset="4">
+                  <Col span="11" offset="2">
                     <FormItem class="FormItemClass" label="序号" prop="fileIndex">
                       <Input placeholder="..." v-model="fileArch.fileIndex" class="colorBack"/>
                     </FormItem>
@@ -72,13 +79,15 @@
 
               <Col>
                 <FormItem class="FormItemClass" label="责任者">
-                  <AutoComplete placeholder="..." v-model="fileArch.liableId" :data="liableIdMemory" :filter-method="filterMethod"></AutoComplete>
+                  <AutoComplete placeholder="..." v-model="fileArch.liableId" :data="liableIdMemory"
+                                :filter-method="filterMethod"></AutoComplete>
                 </FormItem>
               </Col>
 
               <Col>
                 <FormItem class="FormItemClass" label="文件题名" prop="fileTitle">
-                  <AutoComplete placeholder="..." v-model="fileArch.fileTitle" :data="titleMemory" :filter-method="filterMethod"></AutoComplete>
+                  <AutoComplete placeholder="..." v-model="fileArch.fileTitle" :data="titleMemory"
+                                :filter-method="filterMethod"></AutoComplete>
                 </FormItem>
               </Col>
 
@@ -92,14 +101,14 @@
 
               <Col>
                 <Row :gutter="16">
-                  <Col span="10">
+                  <Col span="11">
                     <FormItem class="FormItemClass" label="日期">
                       <DatePicker placeholder="Select date" format="yyyy-MM-dd" type="date"
                                   @on-change="fileArch.fileDate=$event" v-model="fileArch.fileDate"></DatePicker>
                     </FormItem>
                   </Col>
 
-                  <Col span="10" offset="4">
+                  <Col span="11" offset="2">
                     <FormItem class="FormItemClass" label="页号" prop="pageNo">
                       <Input placeholder="..." v-model="fileArch.pageNo"/>
                     </FormItem>
@@ -115,14 +124,21 @@
             </Row>
           </Form>
         </Col>
-
-        <Col span="1" offset="2">
+      </Row>
+      <Row>
+        <Col span="2" offset="2">
           <Button @click="reset" style="align-content: center">重置</Button>
         </Col>
+        <!--<Col span="2">-->
+          <!--<Button @click="frontResult" style="align-content: center">上一条</Button>-->
+        <!--</Col>-->
+        <!--<Col span="2">-->
+          <!--<Button @click="nextResult" style="align-content: center">下一条</Button>-->
+        <!--</Col>-->
       </Row>
     </Modal>
 
-    <Modal width="1250px" v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改文件信息"
+    <Modal width="900px" v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改文件信息"
            @on-ok="updateArchData" @on-cancel="cancleUpdate">
       <Row>
         <Col span="20" offset="2">
@@ -130,12 +146,12 @@
             <Row :gutter="16">
               <Col>
                 <Row :gutter="16">
-                  <Col span="10">
+                  <Col span="11">
                     <FormItem class="FormItemClass" label="档号">
                       <Input placeholder="..." v-model="fileArch.archNo" class="colorBack" disabled/>
                     </FormItem>
                   </Col>
-                  <Col span="10" offset="4">
+                  <Col span="11" offset="2">
                     <FormItem class="FormItemClass" label="序号" prop="fileIndex">
                       <Input placeholder="..." v-model="fileArch.fileIndex" class="colorBack"/>
                     </FormItem>
@@ -151,13 +167,15 @@
 
               <Col>
                 <FormItem class="FormItemClass" label="责任者">
-                  <AutoComplete placeholder="..." v-model="fileArch.liableId" :data="liableIdMemory" :filter-method="filterMethod"></AutoComplete>
+                  <AutoComplete placeholder="..." v-model="fileArch.liableId" :data="liableIdMemory"
+                                :filter-method="filterMethod"></AutoComplete>
                 </FormItem>
               </Col>
 
               <Col>
                 <FormItem class="FormItemClass" label="文件题名" prop="fileTitle">
-                  <AutoComplete placeholder="..." v-model="fileArch.fileTitle" :data="titleMemory" :filter-method="filterMethod"></AutoComplete>
+                  <AutoComplete placeholder="..." v-model="fileArch.fileTitle" :data="titleMemory"
+                                :filter-method="filterMethod"></AutoComplete>
                 </FormItem>
               </Col>
 
@@ -171,14 +189,14 @@
 
               <Col>
                 <Row :gutter="16">
-                  <Col span="10">
+                  <Col span="11">
                     <FormItem class="FormItemClass" label="日期">
                       <DatePicker placeholder="Select date" format="yyyy-MM-dd" type="date"
                                   @on-change="fileArch.fileDate=$event" v-model="fileArch.fileDate"></DatePicker>
                     </FormItem>
                   </Col>
 
-                  <Col span="10" offset="4">
+                  <Col span="11" offset="2">
                     <FormItem class="FormItemClass" label="页号" prop="pageNo">
                       <Input placeholder="..." v-model="fileArch.pageNo"/>
                     </FormItem>
@@ -194,9 +212,16 @@
             </Row>
           </Form>
         </Col>
-
-        <Col span="1" offset="2">
+      </Row>
+      <Row>
+        <Col span="2" offset="9">
           <Button @click="reset" style="align-content: center">重置</Button>
+        </Col>
+        <Col span="2">
+          <Button @click="frontResult" style="align-content: center">上一条</Button>
+        </Col>
+        <Col span="2">
+          <Button @click="nextResult" style="align-content: center">下一条</Button>
         </Col>
       </Row>
     </Modal>
@@ -205,14 +230,16 @@
 
 <script>
   import {isInteger, notNull, isNum} from '../../js/validate'
-  import {CommonFunction, ArchRequestConfig} from "../../js/global";
+  import {CommonFunction, ArchRequestConfig,archNoType} from "../../js/global";
 
   export default {
     name: "FileInfo",
     props: ['FileParams'],
     data() {
       return {
-        labelWidth: 150,
+        showModal: false,
+        archCommit: false,
+        labelWidth: 100,
         loading: true,
         tableHeight: '500',
         columns: [
@@ -240,7 +267,7 @@
                   'content': params.row.fileTitle,
                   'max-width': 300
                 }
-              }, params.row.fileTitle.length > 23?params.row.fileTitle.substring(0,23)+'...':params.row.fileTitle)
+              }, params.row.fileTitle.length > 23 ? params.row.fileTitle.substring(0, 23) + '...' : params.row.fileTitle)
             }
           },
           {
@@ -327,21 +354,24 @@
         this.axios.get('/api/loadArch/getArchInfo', {
           params: {archId: this.archId, ArchInfo: 'FileInfo'}
         }).then(res => {
-            this.tableData = res.data.data;
-            this.addFileIndex = this.tableData.length + 1;
-            this.spinShow = false;
-          });
+          this.tableData = res.data.data;
+          this.addFileIndex = this.tableData.length + 1;
+          this.spinShow = false;
+        });
         //请求记忆数据
-        this.axios.all([this.loadFileMemory('Liable'),this.loadFileMemory('Title')]).then(this.axios.spread((res1,res2)=>{
-
-        }))
+        this.axios.all([this.loadFileMemory('Liable'), this.loadFileMemory('Title')]).then(this.axios.spread((res1, res2) => {
+          //错误提示
+        }));
+        if(this.FileParams.archCommit === true){
+          this.archCommit = true
+        }
       },
       //加载文件信息记忆数据
-      loadFileMemory(type){
-        this.axios.get('/api/archMemory/loadMemory',{params: {type: type}}).then(res=>{
-          if(type === 'Liable'){
+      loadFileMemory(type) {
+        this.axios.get('/api/archMemory/loadMemory', {params: {type: type}}).then(res => {
+          if (type === 'Liable') {
             this.liableIdMemory = res.data.data
-          }else if(type === 'Title'){
+          } else if (type === 'Title') {
             this.titleMemory = res.data.data
           }
         })
@@ -371,14 +401,14 @@
         temp.pageNo = this.fileArch.pageNo;
         temp.remark = this.fileArch.remark;
 
-        let addFileLiableId=false;
-        let addFileTitle=false;
+        let addFileLiableId = false;
+        let addFileTitle = false;
         //判断填写的文件信息责任者或文件题名是否存在
-        if(this.liableIdMemory.indexOf(temp.liableId) === -1){
-          addFileLiableId=true;
+        if (this.liableIdMemory.indexOf(temp.liableId) === -1) {
+          addFileLiableId = true;
         }
-        if(this.titleMemory.indexOf(temp.fileTitle) === -1){
-          addFileTitle=true;
+        if (this.titleMemory.indexOf(temp.fileTitle) === -1) {
+          addFileTitle = true;
         }
 
         this.$refs.addForm.validate((valid) => {
@@ -388,32 +418,32 @@
               this.spinShow = true;
               this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig)
                 .then(res => {
-                  if(res.data.code === 0){
+                  if (res.data.code === 0) {
                     this.$Message.success('添加成功！');
 
                     //添加记忆数据
-                    if(addFileLiableId === true){
-                      this.axios.post('/api/archMemory/addMemory',this.qs.stringify({
+                    if (addFileLiableId === true) {
+                      this.axios.post('/api/archMemory/addMemory', this.qs.stringify({
                         type: 'Liable',
                         data: temp.liableId
-                      })).then(res=>{
+                      })).then(res => {
                         this.loadFileMemory('Liable')
                       })
                     }
-                    if(addFileTitle === true){
-                      this.axios.post('/api/archMemory/addMemory',this.qs.stringify({
+                    if (addFileTitle === true) {
+                      this.axios.post('/api/archMemory/addMemory', this.qs.stringify({
                         type: 'Title',
                         data: temp.fileTitle
-                      })).then(res=>{
+                      })).then(res => {
                         this.loadFileMemory('Title')
                       })
                     }
 
                     this.$refs.addForm.resetFields();
                     this.loadFileArch();
-                    this.addFileIndex +=1;
+                    this.addFileIndex += 1;
                     this.saveFileInfo();
-                  }else{
+                  } else {
                     this.$Message.error('添加失败！');
                   }
                   this.spinShow = false;
@@ -424,32 +454,32 @@
               this.UpdateAddData.push(temp);
               this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig)
                 .then(res => {
-                  if(res.data.code === 0){
+                  if (res.data.code === 0) {
                     this.$Message.success('添加成功！');
 
                     //添加记忆数据
-                    if(addFileLiableId === true){
-                      this.axios.post('/api/archMemory/addMemory',this.qs.stringify({
+                    if (addFileLiableId === true) {
+                      this.axios.post('/api/archMemory/addMemory', this.qs.stringify({
                         type: 'Liable',
                         data: temp.liableId
-                      })).then(res=>{
+                      })).then(res => {
                         this.loadFileMemory('Liable')
                       })
                     }
-                    if(addFileTitle === true){
-                      this.axios.post('/api/archMemory/addMemory',this.qs.stringify({
+                    if (addFileTitle === true) {
+                      this.axios.post('/api/archMemory/addMemory', this.qs.stringify({
                         type: 'Title',
                         data: temp.fileTitle
-                      })).then(res=>{
+                      })).then(res => {
                         this.loadFileMemory('Title')
                       })
                     }
 
                     this.$refs.addForm.resetFields();
                     this.loadFileArch();
-                    this.addFileIndex +=1;
+                    this.addFileIndex += 1;
                     this.saveFileInfo();
-                  }else{
+                  } else {
                     this.$Message.error('添加失败！');
                   }
                   this.spinShow = false;
@@ -475,7 +505,7 @@
       saveArch() {
         this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
           this.$Message.success('保存完毕');
-          this.goBack()
+          this.checkComplete(this.FileParams.archId)
         });
       },
       //点击弹窗的修改按钮
@@ -576,19 +606,20 @@
           this.UpdateDeleteData = [];
           this.loadFileArch();
           this.spinShow = false;
-          this.$Message.info('修改完成!')
+          this.$Message.info('修改完成!');
+          this.checkComplete(this.FileParams.archId)
         });
       },
       //点击显示添加弹窗
       saveFileInfo() {
         this.$refs.addForm.resetFields();
         //判断是否是勾选添加，简单点说明就是从中间插入
-        if(Object.keys(this.tempData).length > 1){
+        if (Object.keys(this.tempData).length > 1) {
           this.$Message.error('请勾选一条以下的数据！')
-        }else if(Object.keys(this.tempData).length === 1){
+        } else if (Object.keys(this.tempData).length === 1) {
           this.fileArch.fileIndex = this.tempData[0].fileIndex + 1;
           this.AddModal = true;
-        }else{
+        } else {
           this.fileArch.fileIndex = this.addFileIndex;
           this.AddModal = true;
         }
@@ -620,22 +651,25 @@
         this.$refs.addForm.resetFields();
         this.reset();
         this.AddModal = false;
-        this.$refs.fileTable.selectAll(false)
+        this.$refs.fileTable.selectAll(false);
+        for (let i = 0; i < this.tableData.length; i++) {
+          console.log(JSON.stringify(this.tableData[i]))
+        }
       },
       //删除所选文件记录数（只能删除一条  --2019/01/14）
       cancelFileInfo() {
         if (Object.keys(this.tempData).length === 0) {
           this.$Message.info('请钩选要删除的文件')
-        } else if(Object.keys(this.tempData).length > 1){
+        } else if (Object.keys(this.tempData).length > 1) {
           this.$Message.info('请钩选一条要删除的文件')
         } else {
           this.spinShow = true;
           this.axios.post('/api/fileInfo/delete', JSON.stringify(this.tempData), ArchRequestConfig)
             .then(res => {
-              if(res.data.code === 0){
+              if (res.data.code === 0) {
                 this.$Message.success('删除成功！');
                 this.loadFileArch();
-              }else{
+              } else {
                 this.$Message.error('删除失败！');
               }
               this.spinShow = false;
@@ -644,14 +678,14 @@
         }
       },
       //删除全部文件级信息(--2019/01/14)
-      allDeleteFileInfo(){
+      allDeleteFileInfo() {
         this.spinShow = true;
         this.axios.post('/api/fileInfo/delete', JSON.stringify(this.tableData), ArchRequestConfig)
           .then(res => {
-            if(res.data.code === 0){
+            if (res.data.code === 0) {
               this.$Message.success('删除成功！');
               this.loadFileArch();
-            }else{
+            } else {
               this.$Message.success('删除失败！')
             }
             this.spinShow = false;
@@ -700,6 +734,8 @@
       // 取消更新
       cancleUpdate() {
         this.$refs.updateForm.resetFields();
+        this.$refs.addForm.resetFields();
+        this.reset();
         this.tempData = [];
         this.$refs.fileTable.selectAll(false)
       },
@@ -726,7 +762,7 @@
         this.tempData = []
       },
       //记忆著录数据过滤方法
-      filterMethod(value, option){
+      filterMethod(value, option) {
         return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
       },
       //重置表格内容
@@ -741,8 +777,118 @@
       },
       //后退
       goBack() {
-        // this.$router.go(-1);
-        this.$emit('changeShowView')
+        this.axios.get('/api/baseInfo/existBaseInfo', {params: {archId: this.archId}})
+          .then(res => {
+            let temp;
+            if (res.data.data.length === 0) {
+              temp=true;
+            }else{
+              temp=false;
+            }
+            this.axios.post('/api/loadArch/necessaryBaseInfo',this.qs.stringify({archID:this.archId})).then(res2 =>{
+              let data = {
+                archId: this.archId, //传递一些重要参数给下一个界面
+                archNo: this.archNo,
+                registerNo: res2.data.registerNo,
+                dispatchDocNo: res2.data.dispatchDocNo,
+                archTypeID: this.classId,
+                archTypeName: archNoType.writeVueLayout2(this.archNo),
+                archInputDate: res2.data.inputDate,
+                title: res.data.data.title,
+                operation: temp,
+                archCommit: this.archCommit
+              };
+              this.$emit('toShowOther', 'BaseInfo', data)
+            });
+          })
+      },
+      //上一条记录
+      frontResult() {
+        if (this.UpdateModal === true) {
+          let frontNum = this.fileArch.fileIndex;
+          if (frontNum === 1) {
+            this.$Message.info('已经是第一条数据！')
+          } else {
+            for (let i = 0; i < this.tableData.length; i++) {
+              if ((frontNum-1) === this.tableData[i].fileIndex) {
+                this.fileArch.id = this.tableData[i].id;
+                this.fileArch.archId = this.tableData[i].archId;
+                this.fileArch.archNo = this.tableData[i].archNo;
+                this.fileArch.fileIndex = this.tableData[i].fileIndex;
+                this.fileArch.fileNo = this.tableData[i].fileNo;
+                this.fileArch.liableId = this.tableData[i].liableId;
+                this.fileArch.fileTitle = this.tableData[i].fileTitle;
+                this.fileArch.fileType = this.tableData[i].fileType;
+                this.fileArch.fileDate = this.tableData[i].fileDate;
+                this.fileArch.pageNo = this.tableData[i].pageNo;
+                this.fileArch.remark = this.tableData[i].remark;
+                this.fileArch.classId = this.tableData[i].classId;
+                break;
+              }
+            }
+          }
+        } else if (this.AddModal === true) {
+
+        }
+      },
+      //下一条记录
+      nextResult() {
+        if (this.UpdateModal === true) {
+          let frontNum = this.fileArch.fileIndex;
+          if (frontNum === this.tableData.length) {
+            this.$Message.info('已经是最后一条数据！')
+          } else {
+            for (let i = 0; i < this.tableData.length; i++) {
+              if ((frontNum+1) === this.tableData[i].fileIndex) {
+                this.fileArch.id = this.tableData[i].id;
+                this.fileArch.archId = this.tableData[i].archId;
+                this.fileArch.archNo = this.tableData[i].archNo;
+                this.fileArch.fileIndex = this.tableData[i].fileIndex;
+                this.fileArch.fileNo = this.tableData[i].fileNo;
+                this.fileArch.liableId = this.tableData[i].liableId;
+                this.fileArch.fileTitle = this.tableData[i].fileTitle;
+                this.fileArch.fileType = this.tableData[i].fileType;
+                this.fileArch.fileDate = this.tableData[i].fileDate;
+                this.fileArch.pageNo = this.tableData[i].pageNo;
+                this.fileArch.remark = this.tableData[i].remark;
+                this.fileArch.classId = this.tableData[i].classId;
+                break;
+              }
+            }
+          }
+        } else if (this.AddModal === true) {
+
+        }
+      },
+      //确认档案完成信息
+      tips(statue) {
+        //检测基本信息的文件页数和文件级信息文件编号是否相等
+        this.axios.post('/api/loadArch/checkArchFilePage', this.qs.stringify({archID: this.FileParams.archId})).then(res => {
+          if (res.data.code === 1) {
+            this.$Message.error(res.data.msg);
+          } else {
+            // 修改档案状态，变为已著录/待质检的状态
+            this.axios.post('/api/loadArch/writeComplete', this.qs.stringify({archID: this.FileParams.archId,twoStatue:statue})).then(res => {
+              this.archCommit = false;
+              this.$emit('changeShowView')
+            })
+          }
+        })
+      },
+      //确认提示
+      commitArch(){
+        this.showModal = true;
+      },
+      //检测三大信息是否完成的方法
+      checkComplete(id){
+        //触发三大信息是否著录完，弹出提示
+        this.axios.post('/api/loadArch/ArchIsComplete', this.qs.stringify({
+          archID: id
+        })).then(res => {
+          if(res.data ===1){
+            this.archCommit = true
+          }
+        });
       }
     },
     mounted() {
@@ -758,7 +904,7 @@
   }
 
   /*记忆信息数据显示样式*/
-  .FormItemClass >>> .ivu-select-dropdown-list{
+  .FormItemClass >>> .ivu-select-dropdown-list {
     max-height: 200px;
   }
 </style>

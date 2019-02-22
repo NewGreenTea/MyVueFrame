@@ -9,7 +9,7 @@
       </Col>
       <Col span="18">
         <!-- 校验规则 切换的时候 -->
-        <Form class="formClass" :model="baseArch" :rules="checkRules" ref="BaseInfoForm">
+        <Form class="formClass" ref="BaseInfoForm" :rules="getRules" :model="baseArch">
           <Row :gutter="16">
             <!--立案号,档号,案卷类别-->
             <Col>
@@ -148,22 +148,36 @@
     </Row>
 
     <Row :gutter="16">
-      <Col span="1" offset="10">
-        <Button @click="saveArch" v-if="operation">保存</Button>
-        <Button @click="updateArch" v-if="!operation">修改</Button>
-      </Col>
-      <Col span="1">
-        <Button @click="reset">重置</Button>
-      </Col>
-      <Col span="1">
-        <Button @click="goBack">返回</Button>
+      <Col span="8" offset="8">
+        <div>
+          <Button type="success" v-if="archCommit" @click="commitArch">确认</Button>
+          <Button @click="goProfInfo">专业信息</Button>
+          <Button @click="goFileInfo2">文件信息</Button>
+          <Button @click="saveArch" v-if="this.baseArch.id===null">保存</Button>
+          <Button @click="updateArch" v-if="this.baseArch.id!==null">修改</Button>
+          <Button @click="reset">重置</Button>
+          <Button @click="goBack">返回</Button>
+        </div>
       </Col>
     </Row>
+
+    <Modal v-model="showModal" title="确认信息" @on-ok="tips(3)">
+      <div>
+        档案的基本信息，专业信息，文件信息都已著录完，是否完成这份档案？
+      </div>
+    </Modal>
+
+    <Modal v-model="showModal2" title="确认信息" @on-ok="sureback(1)">
+      <div>
+        档案信息进行了修改，没有点击确认，是否确定离开？
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
   import {isInteger, notNull} from '../../js/validate'
+  import {SystemFunction, archNoType} from '../../js/global'
   //档案数据对象的传输配置
   const config = {
     headers: {'Content-Type': 'application/json'}
@@ -175,6 +189,10 @@
     data() {
       return {
         ss: '100%',
+        showModal: false,
+        showModal2: false,
+        //档案确认按钮
+        archCommit: false,
         lableWidth: 90,
         archNo: this.BaseParams.archNo,
         pubProperty: ['主动公开', '依申请公开', '免于公开', '(不填)'],
@@ -182,13 +200,13 @@
         keyDate: '',
         // 表单用一个基本信息档案类装字段
         baseArch: {
-          id: '',
+          id: null,
           archId: this.BaseParams.archId, // 读取出来
           dispatchDocNo: this.BaseParams.dispatchDocNo, // 读取出来
           registerNo: this.BaseParams.registerNo, // 读取出来
           archNo: this.BaseParams.archNo, // 读取出来
           archTitle: this.BaseParams.title,
-          company: '广州市国土资源和规划委员会', //todo
+          company: '',
           date: '',
           inputDate: this.BaseParams.archInputDate,
           archPage: '',
@@ -200,12 +218,12 @@
           operator: '',
           archAuditor: '',
           archfileCreator: '',
-          archType: this.BaseParams.archTypeName,
+          archType: '',
           publicProperty: '',
           classId: this.BaseParams.archTypeID
         },
-        rules: null,
-        //除了B1.3和D8
+        //rules: null,
+        //除了B1.3和D8,c4
         rules1: {
           registerNo: [
             {validator: isInteger, trigger: 'blur'}
@@ -214,7 +232,7 @@
             {validator: notNull, trigger: 'blur'}
           ],
           date: [
-            {validator: notNull, trigger: 'change '}
+            {validator: notNull, trigger: 'change'}
           ],
           inputDate: [
             {validator: notNull, trigger: 'blur'}
@@ -231,7 +249,7 @@
           archPage: [
             {validator: isInteger, trigger: 'change'}
           ]
-        },  //待修改，进去就是提示错误 todo
+        },
         rules2: {
           registerNo: [
             {validator: isInteger, trigger: 'blur'}
@@ -251,17 +269,23 @@
     methods: {
       //加载档案信息（修改时触发）
       loadArch() {
+        this.baseArch.company = '广州市' + SystemFunction.getSystemDistrict(this.getSystemCode) + '国土资源和规划局';
         if (this.operation === false) {
           this.axios.get('/api/loadArch/getArchInfo', {
             params: {
-              archId: this.baseArch.archId,
+              archId: this.BaseParams.archId,
               ArchInfo: 'BaseInfo'
             }
-          }).then(
-            res => {
-              this.baseArch = res.data.data
-            }
-          )
+          }).then(res => {
+            this.baseArch = res.data.data;
+          })
+        } else {
+          this.axios.post('/api/loadArch/ArchTypeName', this.qs.stringify({archNo: archNoType.writeVueLayout2(this.BaseParams.archNo)})).then(res => {
+            this.baseArch.archType = res.data;
+          });
+        }
+        if (this.BaseParams.archCommit === true) {
+          this.archCommit = true
         }
       },
       // 保存档案
@@ -269,9 +293,9 @@
         this.$refs.BaseInfoForm.validate((valid) => {
           if (valid) {
             this.axios.post('/api/baseInfo/add', this.baseArch, config).then(res => {
-              //todo,有错报错，没错提示并跳转
               this.$Message.success('保存完毕!');
-              this.goBack()
+              //检测
+              this.checkComplete(this.BaseParams.archId);
             })
           } else {
             this.$Message.error('著录信息有误！');
@@ -284,23 +308,90 @@
           if (valid) {
             this.axios.post('/api/baseInfo/update', this.baseArch, config).then(res => {
               if (res.data.code === 0) {
-                this.$Message.success('修改成功!')
+                this.$Message.success('修改成功!');
+                //检测
+                this.checkComplete(this.BaseParams.archId);
               } else {
                 this.$Message.error('修改失败!')
               }
             })
-          }else{
+          } else {
             this.$Message.error('修改信息有误！');
           }
         })
       },
+      //检测三大信息是否完成的方法
+      checkComplete(id) {
+        //触发三大信息是否著录完，弹出提示
+        this.axios.post('/api/loadArch/ArchIsComplete', this.qs.stringify({
+          archID: id
+        })).then(res => {
+          if (res.data === 1) {
+            this.archCommit = true
+          }
+        });
+      },
+      //返回
       goBack() {
-        //this.$router.go(-1);
-        this.$emit('changeShowView')
+        if (this.archCommit === true) {
+          this.showModal2 = true;
+        } else {
+          this.$emit('changeShowView')
+        }
+      },
+      sureback(statue) {
+        // 修改档案状态，变为已著录/待质检的状态
+        this.axios.post('/api/loadArch/writeComplete', this.qs.stringify({
+          archID: this.BaseParams.archId,
+          twoStatue: statue
+        })).then(res => {
+          this.archCommit = false;
+          this.$emit('changeShowView')
+        })
+      },
+      //跳转到专业信息
+      goProfInfo() {
+        this.axios.get('/api/profInfo/existProfInfo', {params: {archId: this.BaseParams.archId}}).then(res => {
+          let temp;
+          if (res.data.data === 0) {
+            temp = true;
+          } else {
+            temp = false;
+          }
+          let data = {
+            archId: this.BaseParams.archId, //传递一些重要参数给下一个界面
+            archNo: this.archNo,
+            archTypeID: this.BaseParams.archTypeID,
+            archType: archNoType.writeVueLayout(this.archNo),
+            dispatchNo: this.BaseParams.dispatchDocNo,
+            operation: temp,
+            archCommit: this.archCommit
+          };
+          this.$emit('toShowOther', 'ProfInfo', data)
+        })
+      },
+      //跳转到文件信息
+      goFileInfo2() {
+        this.axios.get('/api/fileInfo/existFileInfo', {params: {archId: this.BaseParams.archId}}).then(res => {
+          let temp;
+          if (res.data.data === 0) {
+            temp = true;
+          } else {
+            temp = false;
+          }
+          let data = {
+            archId: this.BaseParams.archId, //传递一些重要参数给下一个界面
+            archNo: this.archNo,
+            archTypeID: this.BaseParams.archTypeID,
+            operation: temp,
+            archCommit: this.archCommit
+          };
+          this.$emit('toShowOther', 'FileInfo', data)
+        })
       },
       getDispatchNoType(DispatchNo) {
         let index;
-        if(DispatchNo!== '') {
+        if (DispatchNo !== '') {
           if (DispatchNo.indexOf("〔") !== -1) {
             index = DispatchNo.lastIndexOf("〔");
           } else if (DispatchNo.indexOf("[") !== -1) {
@@ -309,14 +400,14 @@
             index = DispatchNo.lastIndexOf("【");
           }
           return DispatchNo.substring(0, index)
-        }else{
+        } else {
           return ''
         }
       },
       getDispatchNoYear(DispatchNo) {
         let index;
         let index2;
-        if(DispatchNo!== '') {
+        if (DispatchNo !== '') {
           if (DispatchNo.indexOf("〔") !== -1) {
             index = DispatchNo.lastIndexOf("〔");
             index2 = DispatchNo.lastIndexOf("〕");
@@ -328,13 +419,13 @@
             index2 = DispatchNo.lastIndexOf("】");
           }
           return DispatchNo.substring(index + 1, index2)
-        }else{
+        } else {
           return ''
         }
       },
       getDispatchNoNum(DispatchNo) {
         let index;
-        if(DispatchNo!== '') {
+        if (DispatchNo !== '') {
           if (DispatchNo.indexOf("〔") !== -1) {
             index = DispatchNo.lastIndexOf("〕");
           } else if (DispatchNo.indexOf("]") !== -1) {
@@ -343,13 +434,13 @@
             index = DispatchNo.lastIndexOf("】");
           }
           return DispatchNo.substring(index + 1, DispatchNo.length - 1)
-        }else{
+        } else {
           return ''
         }
       },
       reset() {
         this.baseArch.archTitle = '';
-        this.baseArch.company = '广州市国土资源和规划委员会';
+        this.baseArch.company = '广州市' + SystemFunction.getSystemDistrict(this.getSystemCode) + '国土资源和规划局';
         this.baseArch.date = '';
         this.keyDate = '';
         this.baseArch.archPage = '';
@@ -364,20 +455,48 @@
         this.baseArch.publicProperty = '';
         this.$refs.BaseInfoForm.resetFields()
       },
-
+      commitArch() {
+        this.showModal = true;
+      },
+      //确认提示，确认档案完成
+      tips(statue) {
+        //检测基本信息的文件页数和文件级信息文件编号是否相等
+        this.axios.post('/api/loadArch/checkArchFilePage', this.qs.stringify({archID: this.BaseParams.archId})).then(res => {
+          if (res.data.code === 1) {
+            this.$Message.error(res.data.msg);
+          } else {
+            // 修改档案状态，变为已著录/待质检的状态
+            this.axios.post('/api/loadArch/writeComplete', this.qs.stringify({
+              archID: this.BaseParams.archId,
+              twoStatue: statue
+            })).then(res => {
+              this.archCommit = false;
+              this.$emit('changeShowView')
+            })
+          }
+        })
+      }
     },
     mounted() {
       this.loadArch();
-      // this.checkRules();
     },
-    computed:{
+    computed: {
       //加载正确的校验规则
-      checkRules(){
-        if((this.BaseParams.archTypeName.indexOf('B1.3') > -1) || (this.BaseParams.archTypeName.indexOf('D8') >-1)){
+      getRules() {
+        if ((this.BaseParams.archTypeName.indexOf('B1.3') > -1) || (this.BaseParams.archTypeName.indexOf('D8') > -1)
+          || (this.BaseParams.archTypeName.indexOf('C4') > -1)) {
           return this.rules2;
         }
-        else{
+        else {
           return this.rules1;
+        }
+      },
+      //加载基本信息的编制单位
+      getSystemCode() {
+        if (this.$store.state.systemCode === '') {
+          return window.localStorage.getItem('systemCode')
+        } else {
+          return this.$store.state.systemCode
         }
       }
     }

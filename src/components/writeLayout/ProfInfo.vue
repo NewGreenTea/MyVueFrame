@@ -37,49 +37,37 @@
                   <p class="buildingAddressCss">建设地址</p>
                 </Col>
                 <Col span="4" class="formSpec">
-                  <FormItem>
+                  <FormItem label="区">
                     <Row>
                       <Col span="20">
                         <Input placeholder="..." v-model="buildingAddressInfo.area"/>
                       </Col>
-                      <Col span="4">
-                        <p class="buildingAddressCss2">区</p>
-                      </Col>
                     </Row>
                   </FormItem>
                 </Col>
                 <Col span="4" class="formSpec">
-                  <FormItem>
+                  <FormItem label="街">
                     <Row>
                       <Col span="20">
                         <Input placeholder="..." v-model="buildingAddressInfo.road"/>
                       </Col>
-                      <Col span="4">
-                        <p class="buildingAddressCss2">路</p>
-                      </Col>
                     </Row>
                   </FormItem>
                 </Col>
                 <Col span="4" class="formSpec">
-                  <FormItem>
+                  <FormItem label="路">
                     <Row>
                       <Col span="20">
                         <Input placeholder="..." v-model="buildingAddressInfo.street"/>
                       </Col>
-                      <Col span="4">
-                        <p class="buildingAddressCss2">街</p>
-                      </Col>
                     </Row>
                   </FormItem>
                 </Col>
                 <Col span="4" class="formSpec">
-                  <FormItem prop="no">
+                  <FormItem prop="no" label="号">
                     <Row>
                       <Col span="20">
                         <Input placeholder="..." v-model="buildingAddressInfo.no"/>
-                      </Col>
-                      <Col span="4">
-                        <p class="buildingAddressCss2">号</p>
                       </Col>
                     </Row>
                   </FormItem>
@@ -157,20 +145,28 @@
 
     <!-- 按钮 -->
     <Row class="profButtonView" :gutter="16">
-      <Col span="1" offset="11">
-        <Button @click="saveArch" v-if="operation">保存</Button>
-        <Button @click="updateArch" v-if="!operation">修改</Button>
-      </Col>
-      <Col span="1">
-        <Button @click="goBack">返回</Button>
+      <Col span="6" offset="9">
+        <div>
+          <Button type="success" v-if="archCommit" @click="commitArch">确认</Button>
+          <Button @click="goFileInfo">文件信息</Button>
+          <Button @click="saveArch" v-if="operation">保存</Button>
+          <Button @click="updateArch" v-if="!operation">修改</Button>
+          <Button @click="goBack">返回</Button>
+        </div>
       </Col>
     </Row>
+
+    <Modal v-model="showModal" title="确认信息" @on-ok="tips(3)">
+      <div>
+        档案的基本信息，专业信息，文件信息都已著录完，是否完成这份档案?
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
   import {isIntegerNotMust, notNull} from '../../js/validate'
-  import {CommonFunction, ArchRequestConfig, SystemFunction} from '../../js/global'
+  import {CommonFunction, ArchRequestConfig, SystemFunction, archNoType} from '../../js/global'
   import ProjectNo from "./ProjectNo";
   import AreaHisNo from "./AreaHisNo";
   import MapInfo from "./MapInfo";
@@ -192,7 +188,10 @@
     props: ['ProfParams'],
     data() {
       return {
+        showModal: false,
+        archCommit:false,
         labelWidth: 80,
+        archID: this.ProfParams.archId,
         //档案分类
         archType: this.ProfParams.archType,
         // 项目地点表数据
@@ -214,7 +213,7 @@
         // 档案专业信息必要信息
         profArch: {
           id: null,
-          archId: this.ProfParams.archId, // 读取出来(456只是测试用)
+          archId: this.ProfParams.archId, // 读取出来
           archNo: this.ProfParams.archNo, // 读取出来
           buildCompany: '',
           buildProject: '',
@@ -253,25 +252,26 @@
         if (this.operation === false) {
           this.axios.get('/api/loadArch/getArchInfo', {
             params: {
-              archId: this.profArch.archId,
+              archId: this.archID,
               ArchInfo: 'ProfInfo'
             }
-          })
-            .then(res => {
+          }).then(res => {
                 this.profArch = res.data.data
               }
             );
           this.axios.get('/api/loadArch/getProfInfo', {
             params: {
-              archId: this.profArch.archId,
+              archId: this.archID,
               ArchInfo: 'BA'
             }
-          })
-            .then(res => {
+          }).then(res => {
                 this.buildingAddressInfo = res.data.data;
               }
             );
           this.updateInfo = true
+        };
+        if(this.ProfParams.archCommit === true){
+          this.archCommit = true
         }
       },
       //初始化传递参数
@@ -289,64 +289,63 @@
       },
       // 保存档案信息
       realSave() { // 特性档案的著录专业信息存储方法
-
         // this.$refs.profForm.validate((valid) => {
         //   alert(valid);
         //   if (valid) {
-            this.axios.post('/api/profInfo/addBuildAddress', this.buildingAddressInfo, ArchRequestConfig).then(res => {
-              this.axios.post('/api/profInfo/addProfInfo', this.profArch, {
-                //判断字段是否为null，是则转为空字符串
-                transformRequest: [function (data) {
-                  return CommonFunction.dataIsNull(data)
-                }]
-              }).then(res => {
-                //把专业信息的字段反写给档案信息的基本信息中的标题
-                let road, street, no;
-                if (this.buildingAddressInfo.road !== '') {
-                  road = this.buildingAddressInfo.road + '路'
-                } else {
-                  road = ''
-                }
-                if (this.buildingAddressInfo.street !== '') {
-                  street = this.buildingAddressInfo.street + '街'
-                } else {
-                  street = ''
-                }
-                if (this.buildingAddressInfo.no !== '') {
-                  no = this.buildingAddressInfo.no + '号'
-                } else {
-                  no = ''
-                }
-                //反写入到档案基本信息的案卷标题  -可提取出来
-                let BaseTitle = this.profArch.buildCompany + this.profArch.buildProject + this.buildingAddressInfo.area + '区'
-                  + road + street + no;
-                if (this.archType !== 'B1.3' && this.archType !== 'D8') { //B1.3和D8不用写到标题
-                  this.axios.post('/api/baseInfo/updateBaseTitle', this.qs.stringify({
-                    archID: this.ProfParams.archId,
-                    archNo: this.archNo,
-                    archType: this.ProfParams.archTypeID,
-                    dispatchNo: this.ProfParams.dispatchNo,
-                    title: BaseTitle
-                  }))
-                }
-              });
-            });
+        this.axios.post('/api/profInfo/addBuildAddress', this.buildingAddressInfo, ArchRequestConfig).then(res => {
+          this.axios.post('/api/profInfo/addProfInfo', this.profArch, {
+            //判断字段是否为null，是则转为空字符串
+            transformRequest: [function (data) {
+              return CommonFunction.dataIsNull(data)
+            }]
+          }).then(res => {
+            //把专业信息的字段反写给档案信息的基本信息中的标题
+            let road, street, no;
+            if (this.buildingAddressInfo.road !== '') {
+              road = this.buildingAddressInfo.road
+            } else {
+              road = ''
+            }
+            if (this.buildingAddressInfo.street !== '') {
+              street = this.buildingAddressInfo.street
+            } else {
+              street = ''
+            }
+            if (this.buildingAddressInfo.no !== '') {
+              no = this.buildingAddressInfo.no
+            } else {
+              no = ''
+            }
+            //反写入到档案基本信息的案卷标题  -可提取出来
+            let BaseTitle = this.profArch.buildCompany + this.profArch.buildProject + this.buildingAddressInfo.area
+              + road + street + no;
+            if (this.archType !== 'B1.3' && this.archType !== 'D8' && !(this.archType.indexOf('C4') > -1)) { //B1.3和D8不用写到标题
+              this.axios.post('/api/baseInfo/updateBaseTitle', this.qs.stringify({
+                archID: this.ProfParams.archId,
+                archNo: this.archNo,
+                archType: this.ProfParams.archTypeID,
+                dispatchNo: this.ProfParams.dispatchNo,
+                title: BaseTitle
+              }))
+            }
+          });
+        });
 
-            if (this.mapInfoData !== []) {
-              this.axios.post('/api/profInfo/addMapInfo', JSON.stringify(this.mapInfoData), ArchRequestConfig);
-            }
-            if (this.areaHisNoData !== []) {
-              this.axios.post('/api/profInfo/addAreaHisNo', JSON.stringify(this.areaHisNoData), ArchRequestConfig);
-            }
-            if (this.projectNoData !== []) {
-              this.axios.post('/api/profInfo/addProjectNo', JSON.stringify(this.projectNoData), ArchRequestConfig);
-            }
-            this.$Message.success('保存成功！');
-            this.$emit('changeShowView')
-          // }
-          // else {
-          //   this.$Message.error('著录信息有误！');
-          // }
+        if (this.mapInfoData !== []) {
+          this.axios.post('/api/profInfo/addMapInfo', JSON.stringify(this.mapInfoData), ArchRequestConfig);
+        }
+        if (this.areaHisNoData !== []) {
+          this.axios.post('/api/profInfo/addAreaHisNo', JSON.stringify(this.areaHisNoData), ArchRequestConfig);
+        }
+        if (this.projectNoData !== []) {
+          this.axios.post('/api/profInfo/addProjectNo', JSON.stringify(this.projectNoData), ArchRequestConfig);
+        }
+        this.$Message.success('保存成功！');
+        this.$emit('changeShowView')
+        // }
+        // else {
+        //   this.$Message.error('著录信息有误！');
+        // }
         // })
       },
       saveArch() { // 无特性档案的著录专业信息存储方法
@@ -369,29 +368,30 @@
         this.axios.all([this.axiosUpdateProfInfo(), this.axiosUpdateBuildingAddress(),    //专业信息基本和建设地址信息
           this.$refs.PMI.updatePMI(), this.$refs.PAHN.updatePAHN(), this.$refs.PPN.updatePPN()])    //子组件的数据更新方法
           .then(this.axios.spread((res1, res2, res3, res4, res5) => {
-            this.$Message.info('修改完毕！')
+            this.$Message.info('修改完毕！');
+            this.checkComplete(this.ProfParams.archId);
           }));
         //把专业信息的字段反写给档案信息的基本信息中的标题
         let road, street, no;
         if (this.buildingAddressInfo.road !== '') {
-          road = this.buildingAddressInfo.road + '路'
+          road = this.buildingAddressInfo.road
         } else {
           road = ''
         }
         if (this.buildingAddressInfo.street !== '') {
-          street = this.buildingAddressInfo.street + '街'
+          street = this.buildingAddressInfo.street
         } else {
           street = ''
         }
         if (this.buildingAddressInfo.no !== '') {
-          no = this.buildingAddressInfo.no + '号'
+          no = this.buildingAddressInfo.no
         } else {
           no = ''
         }
         //反写入到档案基本信息的案卷标题
-        let BaseTitle = this.profArch.buildCompany + this.profArch.buildProject + this.buildingAddressInfo.area + '区'
+        let BaseTitle = this.profArch.buildCompany + this.profArch.buildProject + this.buildingAddressInfo.area
           + road + street + no;
-        if (this.archType !== 'B1.3' && this.archType !== 'D8') { //B1.3和D8不用写到标题
+        if (this.archType !== 'B1.3' && this.archType !== 'D8' && !(this.archType.indexOf('C4') > -1)) { //B1.3和D8不用写到标题
           this.axios.post('/api/baseInfo/updateBaseTitle', this.qs.stringify({
             archID: this.ProfParams.archId,
             dispatchNo: this.ProfParams.dispatchNo,
@@ -413,7 +413,49 @@
       },
       //后退
       goBack() {
-        this.$emit('changeShowView')
+        this.axios.get('/api/baseInfo/existBaseInfo', {params: {archId: this.archID}})
+          .then(res => {
+            let temp;
+            if (res.data.data.length === 0) {
+              temp = true;
+            } else {
+              temp = false;
+            }
+            this.axios.post('/api/loadArch/necessaryBaseInfo', this.qs.stringify({archID: this.archID})).then(res2 => {
+              let data = {
+                archId: this.archID, //传递一些重要参数给下一个界面
+                archNo: this.archNo,
+                registerNo: res2.data.registerNo,
+                dispatchDocNo: res2.data.dispatchDocNo,
+                archTypeID: this.profArch.classId,
+                archTypeName: archNoType.writeVueLayout2(this.archNo),
+                archInputDate: res2.data.inputDate,
+                title: res.data.data.title,
+                operation: temp
+              };
+              this.$emit('toShowOther', 'BaseInfo', data)
+            });
+          })
+      },
+      //跳转到文件级信息
+      goFileInfo() {
+        this.axios.get('/api/fileInfo/existFileInfo', {params: {archId: this.archID}})
+          .then(res => {
+            let temp;
+            if (res.data.data === 0) {
+              temp = true;
+            } else {
+              temp = false;
+            }
+            let data = {
+              archId: this.archID, //传递一些重要参数给下一个界面
+              archNo: this.archNo,
+              archTypeID: this.profArch.classId,
+              operation: temp,
+              archCommit: this.archCommit
+            };
+            this.$emit('toShowOther', 'FileInfo', data)
+          })
       },
       // 子组件地图型号表传过来的数据
       saveMID(data) {
@@ -438,6 +480,36 @@
       axiosUpdateBuildingAddress() {
         //项目地点更新
         this.axios.post('/api/profInfo/updateBuildAddress', this.buildingAddressInfo, ArchRequestConfig)
+      },
+      //确认档案完成信息
+      tips(statue) {
+        //检测基本信息的文件页数和文件级信息文件编号是否相等
+        this.axios.post('/api/loadArch/checkArchFilePage', this.qs.stringify({archID: this.ProfParams.archId})).then(res => {
+          if (res.data.code === 1) {
+            this.$Message.error(res.data.msg);
+          } else {
+            // 修改档案状态，变为已著录/待质检的状态
+            this.axios.post('/api/loadArch/writeComplete', this.qs.stringify({archID: this.ProfParams.archId,twoStatue:statue})).then(res => {
+              this.archCommit = false;
+              this.$emit('changeShowView')
+            })
+          }
+        })
+      },
+      //确认提示
+      commitArch(){
+        this.showModal = true;
+      },
+      //检测三大信息是否完成的方法
+      checkComplete(id){
+        //触发三大信息是否著录完，弹出提示
+        this.axios.post('/api/loadArch/ArchIsComplete', this.qs.stringify({
+          archID: id
+        })).then(res => {
+          if(res.data ===1){
+            this.archCommit = true
+          }
+        });
       }
     },
     mounted() {
