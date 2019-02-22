@@ -23,7 +23,7 @@
       <Form class="formClass" :model="D61NumAreaInfo" ref="addForm" :rules="rules">
         <Row>
           <Col>
-            <Row>
+            <Row :gutter="16">
               <Col span="3">
                 <p class="profSpecTableCss">项目名称</p>
               </Col>
@@ -47,10 +47,10 @@
               </Col>
             </Row>
 
-            <Row>
+            <Row :gutter="16">
               <Col span="3">
                 <FormItem class="FormItemClass">
-                  <Tooltip :content="D61NumAreaInfo.projectName" max-width="100" class="D31D61NumWriteInput">
+                  <Tooltip :content="D61NumAreaInfo.projectName" max-width="200">
                     <Input placeholder="..." v-model="D61NumAreaInfo.projectName" class="D31D61NumWriteInput"/>
                   </Tooltip>
                 </FormItem>
@@ -113,8 +113,8 @@
       <Form class="formClass" :model="D61NumAreaInfo" ref="updateForm" :rules="rules">
         <Row>
           <Col>
-            <Row>
-              <Col span="3">
+            <Row :gutter="16">
+              <Col span="4">
                 <p class="profSpecTableCss">项目名称</p>
               </Col>
               <Col span="3">
@@ -138,9 +138,9 @@
             </Row>
 
             <Row :gutter="16">
-              <Col span="3">
+              <Col span="4">
                 <FormItem class="FormItemClass">
-                  <Tooltip :content="D61NumAreaInfo.projectName" max-width="100" class="D31D61NumWriteInput">
+                  <Tooltip :content="D61NumAreaInfo.projectName" max-width="200">
                     <Input placeholder="..." v-model="D61NumAreaInfo.projectName" class="D31D61NumWriteInput"/>
                   </Tooltip>
                 </FormItem>
@@ -295,9 +295,9 @@
       },
       updateMInfo() {
         if (Object.keys(this.tempData).length === 0) { //判断有没勾选
-          alert('请钩选要修改的验收建筑层数与面积')
+          this.$Message.info('请钩选要修改的验收建筑层数与面积')
         } else if (Object.keys(this.tempData).length > 1) {
-          alert('请钩选一条要修改的验收建筑层数与面积')
+          this.$Message.info('请钩选一条要修改的验收建筑层数与面积')
         } else {
           this.UpdateModal = true;
           this.D61NumAreaInfo.id = this.tempData[0].id;
@@ -580,7 +580,7 @@
       },
       cancelMInfo() {
         if (Object.keys(this.tempData).length === 0) {
-          alert('请钩选要删除的验收建筑层数与面积')
+          this.$Message.info('请钩选要删除的验收建筑层数与面积')
         } else {
           let index = [];
           for (let i = 0; i < this.tempData.length; i++) {

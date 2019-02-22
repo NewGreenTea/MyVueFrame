@@ -30,7 +30,7 @@
     </Col>
 
     <!-- 用地性质详细著录 -->
-    <Col span="20" offset="1">
+    <Col span="22" offset="1">
       <!--<RouterView ref="D22UAInfo" name="D22UseAreaInfo" :isUpdate="updateInfo"-->
                   <!--@saveUseAreaInfoData="saveD22UAI"></RouterView>-->
       <UseAreaInfo ref="D22UAInfo" name="D22UseAreaInfo" :D212SpecParams="D212SpecParams"

@@ -60,7 +60,9 @@
         if (this.specViewParams.isUpdate === true) {
           this.axios.get('/api/profETC/getD31', {params: {archId: this.specViewParams.archId}}).then(
             res => {
-              this.D31Info = res.data.data
+              if(res.data.data !== null){
+                this.D31Info = res.data.data
+              }
             }
           )
         }

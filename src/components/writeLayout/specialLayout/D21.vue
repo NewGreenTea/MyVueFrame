@@ -29,7 +29,7 @@
     </Col>
 
     <!-- 用地性质详细著录表 -->
-    <Col span="20" offset="1">
+    <Col span="22" offset="1">
       <!--<RouterView ref="D21UAInfo" name="D21UseAreaInfo" :isUpdate="updateInfo"-->
                   <!--@saveUseAreaInfoData="saveD21UAI"></RouterView>-->
       <UseAreaInfo ref="D21UAInfo" name="D21UseAreaInfo" :D212SpecParams="D212SpecParams"
