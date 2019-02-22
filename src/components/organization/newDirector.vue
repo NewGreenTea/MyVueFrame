@@ -40,13 +40,13 @@
                   </FormItem>
                 </Col>
                 <!-- 筛选条件：档案状态 -->
-                <Col span="4">
+                <Col span="6">
                   <FormItem>
                     <Row>
-                      <Col span="10" offset="2">
+                      <Col span="6" offset="2">
                         档案状态：
                       </Col>
-                      <Col span="12">
+                      <Col span="14">
                         <Select placeholder="状态" @on-change="choseTwoStatue" ref="ArchStatue" :clearable="InputClear">
                           <Option :key="item" v-for="item in twoStatues" :value="item">{{item}}</Option>
                         </Select>
@@ -332,6 +332,8 @@
           })).then(res => {
             if (res.data.code === 0) {
               this.$Message.success('分配完成！');
+              //加载分配好的
+              //todo
             } else {
               this.$Message.error('分配失败！')
             }
