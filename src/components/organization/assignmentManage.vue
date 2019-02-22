@@ -165,7 +165,7 @@
             }
           },
           {
-            title: '任务id',
+            title: '批次',
             key: 'batchId'
           },
           {
@@ -244,7 +244,7 @@
             }
           },
           {
-            title: '任务id',
+            title: '批次',
             key: 'batchId'
           },
           {
