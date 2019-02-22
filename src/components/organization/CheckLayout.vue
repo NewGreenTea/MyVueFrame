@@ -7,7 +7,7 @@
         <Button @click="showFileInfo" :class="{'buttonSelect': butOnSelect.activeIndex === 3}">文件信息</Button>
         <Button @click="goBack">返回</Button>
       </Col>
-      <Col span="6" offset="6">
+      <Col span="6" offset="6" v-if="!this.checkParams.openCheck">
         <Button @click="successCheck" type="success">质检通过</Button>
         <Button @click="failCheck" type="error">质检不通过</Button>
       </Col>
@@ -198,13 +198,13 @@
                   <Col>
                     <p>
                       <!--<Input placeholder="..." v-model="buildingAddressInfo.area" class="writeInput"/>-->
-                      <span v-if="buildingAddressInfo.area.length !== 0" class="displaySpan"> {{buildingAddressInfo.area + '区'}}</span>
+                      <span v-if="buildingAddressInfo!== null" class="displaySpan"> {{buildingAddressInfo.area + '区'}}</span>
                       <!--<Input placeholder="..." v-model="buildingAddressInfo.road" class="writeInput"/>-->
-                      <span v-if="buildingAddressInfo.road.length !== 0" class="displaySpan">{{buildingAddressInfo.road + '路'}}</span>
+                      <span v-if="buildingAddressInfo!== null" class="displaySpan">{{buildingAddressInfo.road + '路'}}</span>
                       <!--<Input placeholder="..." v-model="buildingAddressInfo.street" class="writeInput"/>-->
-                      <span v-if="buildingAddressInfo.street.length !== 0" class="displaySpan">{{buildingAddressInfo.street + '街'}}</span>
+                      <span v-if="buildingAddressInfo!== null" class="displaySpan">{{buildingAddressInfo.street + '街'}}</span>
                       <!--<Input placeholder="..." v-model="buildingAddressInfo.no" class="writeInput"/>-->
-                      <span v-if="buildingAddressInfo.no.length !== 0" class="displaySpan">{{buildingAddressInfo.no + '号'}}</span>
+                      <span v-if="buildingAddressInfo!== null" class="displaySpan">{{buildingAddressInfo.no + '号'}}</span>
                     </p>
                   </Col>
                 </Row>
@@ -1242,7 +1242,7 @@
       },
     },
     mounted() {
-      this.loadWriteCheck()
+      this.loadWriteCheck();
     }
   }
 </script>
