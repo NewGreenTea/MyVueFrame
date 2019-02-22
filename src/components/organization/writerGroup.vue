@@ -4,41 +4,67 @@
       <Row>
         <!-- 加载档案数据待著录条件框 -->
         <Col span="20" offset="2">
-          <Form class="conditionFormFront">
+          <Form class="conditionFormFront" :label-width="labelWidth" style="margin-bottom: 20px">
             <Row>
-              <Col span="3">
-                <FormItem>
-                  <h2>筛选条件:</h2>
+              <Col span="9">
+                <FormItem label="档案类别：">
+                  <Cascader v-model="searchArchType" :data="archTypes" trigger="click" filterable
+                            :render-format="Cascaderformat" @on-change="typeSelect"></Cascader>
                 </FormItem>
               </Col>
               <Col span="4">
-                <FormItem>
-                  <Input placeholder="档号等" v-model="keyword"/>
+                <FormItem label="档案状态：">
+                  <Select placeholder="状态" @on-change="oneSelect" :clearable="true" @on-clear="oneClear"
+                          ref="selectStatue">
+                    <Option :key="item" v-for="item in twoStatues" :value="item">{{item}}</Option>
+                  </Select>
                 </FormItem>
               </Col>
-              <Col span="4">
-                <FormItem>
+              <Col span="7">
+                <FormItem label="档号：">
                   <Row>
-                    <Col span="12" offset="2">
-                      档案状态：
+                    <Col span="20">
+                      <Input placeholder="档号，使用：可区间查询" v-model="archNoKeyword"/>
                     </Col>
-                    <Col span="10">
-                      <Select placeholder="状态" @on-change="oneSelect" :clearable="true" @on-clear="oneClear"
-                              ref="selectStatue">
-                        <Option :key="item" v-for="item in twoStatues" :value="item">{{item}}</Option>
-                      </Select>
-                    </Col>
-                  </Row>
-                </FormItem>
-              </Col>
-              <Col span="12" offset="1">
-                <FormItem>
-                  <Row>
                     <Col span="4">
-                      <Button type="primary" @click="searchArch">搜索</Button>
+                      <Tooltip placement="bottom-start" theme="light" max-width="300" class="searchTips"
+                               content="可使用冒号进行范围查询（例如“C3.1-2018-0001:D3.1-2018-0010”）">
+                        <Icon type="ios-help-circle-outline" size="30"/>
+                      </Tooltip>
                     </Col>
                   </Row>
                 </FormItem>
+              </Col>
+              <Col span="1">
+                <Button type="primary" @click="searchArch">搜索</Button>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Collapse>
+                  <Panel name="1">
+                    更多搜索
+                    <div slot="content">
+                      <Row>
+                        <Col span="4">
+                          <FormItem label="批次：">
+                            <Input placeholder="批次" v-model="batchData"/>
+                          </FormItem>
+                        </Col>
+                        <Col span="6">
+                          <FormItem label="立案号：">
+                            <Input placeholder="立案号" v-model="regNoKeyword"/>
+                          </FormItem>
+                        </Col>
+                        <Col span="8">
+                          <FormItem label="发文号：">
+                            <Input placeholder="发文号" v-model="dispatchKeyword"/>
+                          </FormItem>
+                        </Col>
+                      </Row>
+                    </div>
+                  </Panel>
+                </Collapse>
               </Col>
             </Row>
           </Form>
@@ -56,52 +82,12 @@
         </Col>
       </Row>
 
-      <Row style="margin-top: 20px">
-        <!-- 选择类别 -->
-        <Col span="2"><span class="archTypeText">选择著录类别：</span></Col>
-        <Col span="20">
-          <Row :gutter="16">
-            <Col v-for="type in archOneTypes" :key="type.index" span="4">
-              <Button size="large" long @click="showTwoTypes(type)">{{type}}</Button>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-      <Row v-if="showTwoType" style="margin-top: 30px">
-        <Col span="2"><span class="archTypeText">选择详细类别：</span></Col>
-        <Col span="20">
-          <Row :gutter="16">
-            <Col v-for="type in archTwoTypes" :key="type.index" span="8" style="margin-top: 7px;margin-bottom: 7px">
-              <Button size="large" long style="text-align: left" @click="writeLayout(type)">
-                {{type.className}}
-              </Button>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-
       <Row v-if="showArchData" style="margin-top: 20px;">
-        <Col span="20" offset="2">
-          <Form class="conditionFormFront">
-            <Row>
-              <Col span="5">
-                <FormItem label="档号：" :label-width="60">
-                  <Input placeholder="档号等" v-model="showArchDataKeyword"/>
-                </FormItem>
-              </Col>
-              <Col span="1" offset="1">
-                <FormItem>
-                  <Button type="primary" @click="searchArch2" @keydown.enter.native="searchArch2">搜索</Button>
-                </FormItem>
-              </Col>
-            </Row>
-          </Form>
-        </Col>
         <!-- 加载档案数据表格 -->
         <Col span="20" offset="2" class="TableFontCss">
           <Table border :columns="columns" :data="tableData"></Table>
-          <Page :current="currentPage" :total="totalCount" :page-size="pageSize" show-elevator show-total show-sizer
-                :page-size-opts="pageSizeOpt" @on-change="destPage1" @on-page-size-change="changePageSize1"/>
+          <!--<Page :current="currentPage" :total="totalCount" :page-size="pageSize" show-elevator show-total show-sizer-->
+          <!--:page-size-opts="pageSizeOpt" @on-change="destPage1" @on-page-size-change="changePageSize1"/>-->
           <Spin fix v-if="spinShow2">
             <Icon type="ios-loading" size=36 class="demo-spin-icon-load"></Icon>
             <div>加载中</div>
@@ -122,17 +108,17 @@
       <keep-alive>
         <!--<router-view :name="viewName" @changeShowView="showView" v-if="$route.meta.keepAlive"></router-view>-->
         <div v-if="viewName === 'BaseInfo'">
-          <BaseInfo @changeShowView="showView" :BaseParams="baseParams"></BaseInfo>
+          <BaseInfo @changeShowView="showView" :BaseParams="baseParams" @toShowOther="showOtherWrite"></BaseInfo>
         </div>
       </keep-alive>
       <keep-alive>
         <div v-if="viewName === 'ProfInfo'">
-          <ProfInfo @changeShowView="showView" :ProfParams="profParams"></ProfInfo>
+          <ProfInfo @changeShowView="showView" :ProfParams="profParams" @toShowOther="showOtherWrite"></ProfInfo>
         </div>
       </keep-alive>
       <keep-alive>
         <div v-if="viewName === 'FileInfo'">
-          <FileInfo @changeShowView="showView" :FileParams="fileParams"></FileInfo>
+          <FileInfo @changeShowView="showView" :FileParams="fileParams" @toShowOther="showOtherWrite"></FileInfo>
         </div>
       </keep-alive>
     </div>
@@ -140,7 +126,7 @@
 </template>
 
 <script>
-  import {ArchStatueChange} from './../../js/global'
+  import {ArchStatueChange, archNoType} from './../../js/global'
   import BaseInfo from "../writeLayout/BaseInfo";
   import FileInfo from "../writeLayout/FileInfo";
   import ProfInfo from "../writeLayout/ProfInfo";
@@ -150,6 +136,7 @@
     components: {ProfInfo, FileInfo, BaseInfo},
     data() {
       return {
+        labelWidth: 100,
         showTwoType: false, // 控制二级分类的显示
         archOneTypes: [], // 一级分类，后台获取
         archTwoTypes: [], // 二级分类，后台获取
@@ -165,7 +152,7 @@
         loadData: {
           view: true,
           hidd: false
-        }, // todo
+        },
         totalCount: 0, // 分页插件：总数量
         pageSize: 10, // 分页插件：显示条数
         pageSizeOpt: [10, 20, 30, 40, 50, 100], // 分页插件：选择显示条数框
@@ -176,19 +163,6 @@
         fileParams: '',
         // 显示表格的属性列
         columns: [
-          {
-            type: 'selection',
-            width: 60,
-            align: 'center',
-            key: '_checked'
-          },
-          {
-            title: '序号',
-            width: 70,
-            render: (h, params) => {
-              return h('span', params.index + (this.currentPage - 1) * this.pageSize + 1);
-            }
-          },
           {
             title: '立案号',
             key: 'registerNo'
@@ -233,34 +207,34 @@
                                 view: false,
                                 hidd: true
                               };
-                              this.viewName = 'BaseInfo';
-                              this.showWriteData = true;
                               this.baseParams = {
                                 archId: params.row.archId, //传递一些重要参数给下一个界面
                                 archNo: params.row.archNo,
                                 registerNo: params.row.registerNo,
                                 dispatchDocNo: params.row.dispatchDocNo,
-                                archTypeID: this.archTypeID,
-                                archTypeName: this.archTypeName,
+                                archTypeID: params.row.classId,
+                                archTypeName: archNoType.writeVueLayout2(params.row.archNo),
                                 archInputDate: params.row.inputDate,
                                 title: res.data.data.title,
                                 operation: true
-                              }
+                              };
+                              this.viewName = 'BaseInfo';
+                              this.showWriteData = true;
                             } else { //res.data.data === 1 的时候
                               this.showModal = true;
                               this.modalTitle = '基本信息已完成';
-                              this.viewName = 'BaseInfo';
                               this.baseParams = {
                                 archId: params.row.archId, //传递一些重要参数给下一个界面
                                 archNo: params.row.archNo,
                                 registerNo: params.row.registerNo,
                                 dispatchDocNo: params.row.dispatchDocNo,
-                                archTypeID: this.archTypeID,
-                                archTypeName: this.archTypeName,
+                                archTypeID: params.row.classId,
+                                archTypeName: archNoType.writeVueLayout2(params.row.archNo),
                                 archInputDate: params.row.inputDate,
                                 title: res.data.data.title,
                                 operation: false
                               };
+                              this.viewName = 'BaseInfo';
                             }
                           })
 
@@ -295,15 +269,15 @@
                                 hidd: true
                               };
                               this.viewName = 'ProfInfo';
-                              this.showWriteData = true;
                               this.profParams = {
                                 archId: params.row.archId, //传递一些重要参数给下一个界面
                                 archNo: params.row.archNo,
-                                archTypeID: this.archTypeID,
-                                archType: writeVueLayout(params.row.archNo),
+                                archTypeID: params.row.archVO.classId,
+                                archType: archNoType.writeVueLayout(params.row.archNo),
                                 dispatchNo: params.row.dispatchDocNo,
                                 operation: true
-                              }
+                              };
+                              this.showWriteData = true;
                             } else { //res.data.data === 1 的时候
                               this.showModal = true;
                               this.viewName = 'ProfInfo';
@@ -311,8 +285,8 @@
                               this.profParams = {
                                 archId: params.row.archId, //传递一些重要参数给下一个界面
                                 archNo: params.row.archNo,
-                                archTypeID: this.archTypeID,
-                                archType: writeVueLayout(params.row.archNo),
+                                archTypeID: params.row.archVO.classId,
+                                archType: archNoType.writeVueLayout(params.row.archNo),
                                 dispatchNo: params.row.dispatchDocNo,
                                 operation: false
                               }
@@ -347,23 +321,14 @@
                                 view: false,
                                 hidd: true
                               };
-                              this.showWriteData = true;
                               this.viewName = 'FileInfo';
                               this.fileParams = {
                                 archId: params.row.archId, //传递一些重要参数给下一个界面
                                 archNo: params.row.archNo,
-                                archTypeID: this.archTypeID,
+                                archTypeID: params.row.archVO.classId,
                                 operation: true
-                              }
-                              // this.$router.push({
-                              //     name: this.viewName,
-                              //     params: {
-                              //       archId: params.row.archId, //传递一些重要参数给下一个界面
-                              //       archNo: params.row.archNo,
-                              //       archTypeID: this.archTypeID,
-                              //       operation: true
-                              //     }
-                              //   })
+                              };
+                              this.showWriteData = true;
                             } else {
                               this.showModal = true;
                               this.viewName = 'FileInfo';
@@ -371,18 +336,9 @@
                               this.fileParams = {
                                 archId: params.row.archId, //传递一些重要参数给下一个界面
                                 archNo: params.row.archNo,
-                                archTypeID: this.archTypeID,
+                                archTypeID: params.row.archVO.classId,
                                 operation: false
                               }
-                              // this.pushConf = {
-                              //     name: this.viewName,
-                              //     params: {
-                              //       archId: params.row.archId, //传递一些重要参数给下一个界面
-                              //       archNo: params.row.archNo,
-                              //       archTypeID: this.archTypeID,
-                              //       operation: false
-                              //     }
-                              //   }
                             }
                           });
                       }
@@ -406,13 +362,32 @@
             }
           },
           {
+            title: '批次',
+            width: 70,
+            render: (h, params) => {
+              return h('p', params.row.archVO.batchId)
+            }
+          },
+          {
+            title: '立案号',
+            render: (h, params) => {
+              return h('p', params.row.archVO.registerNo)
+            }
+          },
+          {
+            title: '发文号',
+            render: (h, params) => {
+              return h('p', params.row.archVO.dispatchDocNo)
+            }
+          },
+          {
             title: '档号',
             render: (h, params) => {
               return h('p', params.row.archVO.archNo)
             }
           },
           {
-            title: '档号状态',
+            title: '档案状态',
             render: (h, params) => {
               return h('p', ArchStatueChange.lowerStatueTwoDes(params.row.archVO.twoStatue))
             }
@@ -463,6 +438,7 @@
                                   this.loadGroupArch();
                                   //刷新选择具体分类的档案著录数据
                                   this.reFlash();
+                                  this.spinShow = false;
                                 })
                             }
                           })
@@ -475,7 +451,7 @@
                         click: () => {
                           this.showArchData = true;
                           this.showTwoType = false;
-                          this.archTypeName = writeVueLayout2(params.row.archVO.archNo);
+                          this.archTypeName = archNoType.writeVueLayout2(params.row.archVO.archNo);
                           this.axiosArchNo(params.row.archVO.archNo);
                         }
                       }
@@ -484,13 +460,70 @@
                 }
               }
             }
+          },
+          {
+            title: '编辑',
+            width: 70,
+            render: (h, params) => {
+              return h('div', [
+                h('Button',
+                  {
+                    props: {
+                      type: 'primary', size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.loadData = {
+                          view: false,
+                          hidd: true
+                        };
+                        // 判断基本信息是否完成著录，是则“修改”，否则“添加”
+                        this.axios.get('/api/baseInfo/existBaseInfo', {params: {archId: params.row.archId}}).then(res=>{
+                          if (res.data.data.length === 1) {
+                            this.baseParams = {
+                              archId: params.row.archVO.archId, //传递一些重要参数给下一个界面
+                              archNo: params.row.archVO.archNo,
+                              registerNo: params.row.archVO.registerNo,
+                              dispatchDocNo: params.row.archVO.dispatchDocNo,
+                              archTypeID: params.row.archVO.classId,
+                              archTypeName: archNoType.writeVueLayout2(params.row.archVO.archNo),
+                              archInputDate: params.row.archVO.inputDate,
+                              title: '',
+                              operation: false
+                            };
+                            this.viewName = 'BaseInfo';
+                            this.showWriteData = true;
+                          }else{
+                            this.baseParams = {
+                              archId: params.row.archVO.archId, //传递一些重要参数给下一个界面
+                              archNo: params.row.archVO.archNo,
+                              registerNo: params.row.archVO.registerNo,
+                              dispatchDocNo: params.row.archVO.dispatchDocNo,
+                              archTypeID: params.row.archVO.classId,
+                              archTypeName: archNoType.writeVueLayout2(params.row.archVO.archNo),
+                              archInputDate: params.row.archVO.inputDate,
+                              title: '',
+                              operation: true
+                            };
+                            this.viewName = 'BaseInfo';
+                            this.showWriteData = true;
+                          }
+                        });
+                      }
+                    }
+                  }, '+')
+              ])
+            }
           }
         ],
         //工作组著录分页配置
         needToDoPage: 1,
         needToDoCount: 0,
-        needToDoPageSize: 5,
-        needToDoPSO: [1, 2, 3, 4, 5, 6, 8, 10],
+        needToDoPageSize: 10,
+        needToDoPSO: [1, 5, 8, 10, 15, 20, 50],
         //用户信息id
         userID: this.$store.state.userID,
         //查询档案二级状态码
@@ -503,7 +536,19 @@
         //查看具体分类的档案著录数据表格的加载动画
         spinShow2: false,
         //具体分类档案著录数据的搜索关键字
-        showArchDataKeyword: ''
+        showArchDataKeyword: '',
+        //搜索条件中的档案类型级联数据
+        archTypes: [],
+        //搜索条件中的档案档号关键字
+        archNoKeyword: '',
+        //搜索条件中的档案类别
+        searchArchType: [],
+        //搜索条件的批次数据
+        batchData: '',
+        //搜索条件中的档案立案号关键字
+        regNoKeyword: '',
+        //搜索条件中的档案发文号关键字
+        dispatchKeyword: ''
       }
     },
     methods: {
@@ -522,7 +567,21 @@
           }
         )
       },
+      //加载档案类型级联数据 -2019/02/19
+      loadArchTypes() {
+        this.axios.get('/api/loadArch/getArchType').then(res => {
+          this.archTypes = res.data.data
+        })
+      },
+      //加载工作组负责的批次数据
+      // loadArchBatch() {
+      //   this.axios.get('/api/loadArch/getGroupBatch').then(res => {
+      //       this.batchData = res.data.data
+      //     }
+      //   )
+      // },
       // 显示一级分类
+      //*******************************弃用start
       loadOneTypes() {
         this.axios.get('/api/loadArch/getOneClass').then(res => {
             this.archOneTypes = res.data.data
@@ -557,7 +616,11 @@
             pageSize: this.pageSize
           }
         }).then(res => {
-          if (res.data.data.list.length === 0) {
+          if(res.data.data === null){
+            this.$Message.info('没有相应的档案！');
+            this.tableData = [];
+            this.totalCount = 0;
+          }else if (res.data.data.list.length === 0) {
             this.$Message.info('没有相应的档案！');
             this.tableData = [];
             this.totalCount = 0;
@@ -569,7 +632,7 @@
           this.spinShow2 = false;
         })
       },
-
+      //*******************************弃用end
       // 显示著录列表，隐藏著录界面
       showView() {
         this.showWriteData = false;
@@ -577,10 +640,24 @@
           view: true,
           hidd: false
         };
-        //加载个人工作组待著录档案数据
-        this.loadGroupArch();
-        //刷新具体分类的档案著录数据
-        this.reFlash();
+        //刷新表格
+        this.searchFunction(this.needToDoPage,this.needToDoPageSize);
+      },
+      //三大信息互相跳转
+      showOtherWrite(viewName, data) {
+        if (viewName === 'ProfInfo') {
+          this.viewName = 'ProfInfo';
+          this.showWriteData = true;
+          this.profParams = data;
+        } else if (viewName === 'FileInfo') {
+          this.viewName = 'FileInfo';
+          this.showWriteData = true;
+          this.fileParams = data;
+        } else if (viewName === 'BaseInfo') {
+          this.viewName = 'BaseInfo';
+          this.showWriteData = true;
+          this.baseParams = data;
+        }
       },
       //进入修改界面
       tips() {
@@ -599,35 +676,52 @@
       oneSelect(value) {
         this.archStatueCode = statueTwoCode(value);
       },
+      //搜索条件中的档案类型返回
+      typeSelect(value, selectedData){
+        this.searchArchType = value;
+      },
       //清空搜索条件中的状态条件
       oneClear() {
         this.archStatueCode = ''
       },
-      //搜索条件中的点击搜索
-      searchArch() {
-        this.pageKeyword = this.keyword;
+      //搜索方法
+      searchFunction(pageNum,pageSize){
         this.spinShow = true;
-        this.axios.get('/api/loadArch/getGroupArch', {
-          params: {
-            'archStatue': this.archStatueCode,
-            'keyword': this.pageKeyword,
-            'page': this.needToDoPage,
-            'pageSize': this.needToDoPageSize
+        this.axios.post('/api/loadArch/GroupArch', this.qs.stringify({
+          archType: this.searchArchType[1],
+          archStatue: this.archStatueCode,
+          archNo: this.archNoKeyword,
+          dispKeyword: this.dispatchKeyword,
+          batch: this.batchData,
+          regKeyword: this.regNoKeyword,
+          check: false,
+          page: pageNum,
+          pageSize: pageSize
+        })).then(res => {
+          if(res.data.data === null){
+            this.$Message.info('没有找到！');
+            this.needToDoData = [];
+            this.needToDoCount = 0;
+          }else if (res.data.data.list.length === 0) {
+            this.$Message.info('没有找到！');
+            this.needToDoData = [];
+            this.needToDoCount = 0;
+          } else {
+            this.needToDoData = res.data.data.list;
+            this.needToDoCount = res.data.data.total;
           }
+          this.spinShow = false;
+          this.showArchData = false;
         })
-          .then(res => {
-            if (res.data.data.list.length === 0) {
-              this.$Message.info('没有找到！');
-              this.needToDoData = [];
-              this.needToDoCount = 0;
-            } else {
-              this.needToDoData = res.data.data.list;
-              this.needToDoCount = res.data.data.total;
-            }
-            //this.keyword = '';
-            this.spinShow = false;
-            //this.$refs.selectStatue.clearSingleSelect();
-          })
+      },
+      //搜索
+      searchArch() {
+        let result = archNoType.changeArchNoCondition(this.archNoKeyword);
+        if (!result) {
+          this.$Message.error('搜索档号区间，两档号类型不一致！')
+        } else {
+          this.searchFunction(this.needToDoPage,this.needToDoPageSize);
+        }
       },
       //具体分类档案著录数据的搜索
       searchArch2() {
@@ -637,7 +731,7 @@
           this.axiosArchNo(this.showArchDataKeyword);
         }
       },
-      //查询所有该登录者的待著录数据
+      //查询所有该登录者的待著录数据 -已弃用
       allWriteArch() {
         this.$refs.selectStatue.clearSingleSelect();
         this.archStatueCode = 1;
@@ -657,38 +751,14 @@
       //切换页码
       destPage(index) {
         this.needToDoPage = index;
-        this.spinShow = true;
-        this.axios.get('/api/loadArch/getGroupArch', {
-          params: {
-            'archStatue': this.archStatueCode,
-            'keyword': this.pageKeyword,
-            'page': this.needToDoPage,
-            'pageSize': this.needToDoPageSize
-          }
-        }).then(res => {
-          this.needToDoData = res.data.data.list;
-          this.needToDoCount = res.data.data.total;
-          this.spinShow = false;
-        })
+        this.searchFunction(this.needToDoPage,this.needToDoPageSize);
       },
       //切换配置页
       changePageSize(index) {
         this.needToDoPageSize = index;
-        this.spinShow = true;
-        this.axios.get('/api/loadArch/getGroupArch', {
-          params: {
-            'archStatue': this.archStatueCode,
-            'keyword': this.pageKeyword,
-            'page': this.needToDoPage,
-            'pageSize': this.needToDoPageSize
-          }
-        }).then(res => {
-          this.needToDoData = res.data.data.list;
-          this.needToDoCount = res.data.data.total;
-          this.spinShow = false;
-        })
+        this.searchFunction(this.needToDoPage,this.needToDoPageSize);
       },
-      //刷新体局分类的档案著录数据
+      //刷新具体分类的档案著录数据
       reFlash() {
         this.spinShow2 = true;
         this.axios.get('/api/loadArch/getTpyeArch', {
@@ -731,10 +801,16 @@
           this.totalCount = res.data.data.total
         })
       },
+      //档案类型级联数据的名称显示格式
+      Cascaderformat(label, selectedData) {
+        return label[label.length-1];
+      }
     },
     mounted() {
-      this.loadOneTypes();
-      this.loadGroupArch();
+      // this.loadOneTypes();
+      // this.loadGroupArch();
+      this.loadArchTypes();
+      // this.loadArchBatch();
     }
   }
 
@@ -749,19 +825,6 @@
       statueName = 6
     }
     return statueName
-  }
-
-  // 把C6.1 XXXXXXX变成C61，跳转到相应的著录专业信息界面有用
-  function writeVueLayout(type) {
-    let index = type.indexOf("-");
-    let archType = type.substring(0, index).replace('\.', '');
-    return archType
-  }
-  // 把C6.1 XXXXXXX变成C6.1，跳转到相应的著录专业信息界面有用
-  function writeVueLayout2(type) {
-    let index = type.indexOf("-");
-    let archType = type.substring(0, index);
-    return archType
   }
 </script>
 
@@ -785,15 +848,6 @@
 
   /*表格字体大小*/
   .TableFontCss >>> .ivu-table {
-    font-size: 14px;
-  }
-
-  /*条件显示样式*/
-  .conditionFormFront >>> .ivu-form-item-content {
-    font-size: 15px;
-  }
-
-  .conditionFormFront >>> .ivu-input {
     font-size: 14px;
   }
 </style>
