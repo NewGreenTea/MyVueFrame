@@ -11,6 +11,7 @@ export function notNull(rule, value, callback) {
     }
   }, 0);
 }
+
 // 验证是否整数
 export function isInteger(rule, value, callback) {
   if (!value) {
@@ -103,13 +104,13 @@ export function isIntegerNotMust(rule, value, callback) {
     callback();
   }
   setTimeout(() => {
-    if (!Number(value)) {
+    if (!Number(value) && Number(0) !== 0) {
       callback(new Error('请输入数字'));
     } else {
-      const re = /^[0-9]*[1-9][0-9]*$/;
+      const re = /^([1-9]\d*|[0]{1,1})$/;
       const rsCheck = re.test(value);
       if (!rsCheck) {
-        callback(new Error('请输入数字'));
+        callback(new Error('请输正整数'));
       } else {
         callback();
       }
@@ -123,11 +124,10 @@ export function isDecimalNotMust(rule, value, callback) {
     callback();
   }
   setTimeout(() => {
-    if (!Number(value)) {
+    if (!Number(value) && Number(0) !== 0) {
       callback(new Error('请输入数字'));
     } else {
-      //const re = /^(([1-9]{1}\d*)|(0{1}))(\.\d{2})$/;
-      const re =/^(([^0][0-9]+|0)\.([0-9]{1,2})$)|^(([^0][0-9]+|0)$)|^(([1-9]+)\.([0-9]{1,2})$)|^(([1-9]+)$)/;
+      const re =/^(([^0][0-9]+|0)\.([0-9]{1,2})$)|^(([^0][0-9]+|0)$)|^(([1-9]+)\.([0-9]{1,2})$)|^(([0-9]+)$)/;
       const rsCheck = re.test(value);
       if (!rsCheck) {
         callback(new Error('最多保留两位小数'));

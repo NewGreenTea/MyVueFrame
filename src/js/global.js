@@ -169,37 +169,66 @@ let SystemFunction = {
   },
 
   //根据区号获取区名
-  getSystemDistrict(code){
-    console.log('11111111' + code);
+  getSystemDistrict(code) {
     let district;
-    if(code === '无'){
+    if (code === '无') {
       district = ''
-    }else if(code === '01'){
-      district = '越秀'
-    }else if(code === '02'){
-      district = '海珠'
-    }else if(code === '03'){
-      district = '荔湾'
-    }else if(code === '04'){
-      district = '天河'
-    }else if(code === '05'){
-      district = '白云'
-    }else if(code === '06'){
-      district = '黄埔'
-    }else if(code === '07'){
-      district = '花都'
-    }else if(code === '08'){
-      district = '番禺'
-    }else if(code === '09'){
-      district = '南沙'
+    } else if (code === '01') {
+      district = '越秀区'
+    } else if (code === '02') {
+      district = '海珠区'
+    } else if (code === '03') {
+      district = '荔湾区'
+    } else if (code === '04') {
+      district = '天河区'
+    } else if (code === '05') {
+      district = '白云区'
+    } else if (code === '06') {
+      district = '黄埔区'
+    } else if (code === '07') {
+      district = '花都区'
+    } else if (code === '08') {
+      district = '番禺区'
+    } else if (code === '09') {
+      district = '南沙区'
     }
     return district;
   },
 
   //获取本地中的系统代码
-  getSystemCode(){
+  getSystemCode() {
     return window.localStorage.getItem('systemCode');
   }
 };
 
-export {CommonFunction, ArchRequestConfig, ArchStatueChange, SystemFunction}
+//三大档案信息的档号处理对象
+let archNoType = {
+  // 把C6.1-XXXXXXX变成C61，跳转到相应的著录专业信息界面有用
+  writeVueLayout(type) {
+    let index = type.indexOf("-");
+    let archType = type.substring(0, index).replace('\.', '');
+    return archType
+  },
+
+  // 把C6.1-XXXXXXX变成C6.1，跳转到相应的著录专业信息界面有用
+  writeVueLayout2(type) {
+    let index = type.indexOf("-");
+    let archType = type.substring(0, index);
+    return archType
+  },
+
+  //著录或著录质检档号区间搜索条件
+  changeArchNoCondition(data){
+    let result=true;
+    if(data.indexOf(':')>1 || data.indexOf('：')>1){
+      data=data.replace('：',':');
+      let str=data.split(':');
+      if(this.writeVueLayout2(str[0])!==this.writeVueLayout2(str[1])){
+        result=false;
+      }
+    }
+    return result;
+  }
+};
+
+export {CommonFunction, ArchRequestConfig, ArchStatueChange, SystemFunction, archNoType}
