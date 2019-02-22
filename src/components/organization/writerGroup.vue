@@ -272,7 +272,7 @@
                               this.profParams = {
                                 archId: params.row.archId, //传递一些重要参数给下一个界面
                                 archNo: params.row.archNo,
-                                archTypeID: params.row.archVO.classId,
+                                archTypeID: params.row.classId,
                                 archType: archNoType.writeVueLayout(params.row.archNo),
                                 dispatchNo: params.row.dispatchDocNo,
                                 operation: true
@@ -285,7 +285,7 @@
                               this.profParams = {
                                 archId: params.row.archId, //传递一些重要参数给下一个界面
                                 archNo: params.row.archNo,
-                                archTypeID: params.row.archVO.classId,
+                                archTypeID: params.row.classId,
                                 archType: archNoType.writeVueLayout(params.row.archNo),
                                 dispatchNo: params.row.dispatchDocNo,
                                 operation: false
