@@ -198,13 +198,13 @@
                   <Col>
                     <p>
                       <!--<Input placeholder="..." v-model="buildingAddressInfo.area" class="writeInput"/>-->
-                      <span v-if="buildingAddressInfo!== null" class="displaySpan"> {{buildingAddressInfo.area + '区'}}</span>
+                      <span v-if="buildingAddressInfo!== null" class="displaySpan"> {{buildingAddressInfo.area}}</span>
                       <!--<Input placeholder="..." v-model="buildingAddressInfo.road" class="writeInput"/>-->
-                      <span v-if="buildingAddressInfo!== null" class="displaySpan">{{buildingAddressInfo.road + '路'}}</span>
+                      <span v-if="buildingAddressInfo!== null" class="displaySpan">{{buildingAddressInfo.road}}</span>
                       <!--<Input placeholder="..." v-model="buildingAddressInfo.street" class="writeInput"/>-->
-                      <span v-if="buildingAddressInfo!== null" class="displaySpan">{{buildingAddressInfo.street + '街'}}</span>
+                      <span v-if="buildingAddressInfo!== null" class="displaySpan">{{buildingAddressInfo.street}}</span>
                       <!--<Input placeholder="..." v-model="buildingAddressInfo.no" class="writeInput"/>-->
-                      <span v-if="buildingAddressInfo!== null" class="displaySpan">{{buildingAddressInfo.no + '号'}}</span>
+                      <span v-if="buildingAddressInfo!== null" class="displaySpan">{{buildingAddressInfo.no}}</span>
                     </p>
                   </Col>
                 </Row>

@@ -444,14 +444,18 @@
       },
       //质检批量操作
       allOperation(checkResult){
-        let result=true;
+        let result=false;
         let ids=[];
-        for(let i = 0; i < this.tempArchData.length; i++){
-          if(this.tempArchData[i].twoStatue>3){
-            result = false;
-            this.$Message.error('第'+(i+1)+'行，不是待著录质检状态！')
-          }else{
-            ids.push(this.tempArchData[i].archId)
+        if(this.tempArchData.length === 0){
+          this.$Message.error('请选择质检档案！')
+        }else{
+          for(let i = 0; i < this.tempArchData.length; i++){
+            if(this.tempArchData[i].twoStatue>3){
+              result = true;
+              this.$Message.error('第'+(i+1)+'行，不是待著录质检状态！')
+            }else{
+              ids.push(this.tempArchData[i].archId)
+            }
           }
         }
         if(result){
