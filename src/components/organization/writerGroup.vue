@@ -413,9 +413,7 @@
                 } else if (params.row.baseCode === 0 && params.row.profCode !== 0 && params.row.fileCode !== 0) {
                   return h('p', '基本信息未著录')
                 } else {
-                  if (params.row.archVO.twoStatue === 3) {
-                    return h('p', '')
-                  } else if (params.row.archVO.twoStatue === 6 || params.row.archVO.twoStatue < 3) {
+                  if (params.row.archVO.twoStatue === 6 || params.row.archVO.twoStatue < 3) {
                     return h('Button', {
                       props: {
                         type: 'primary', size: 'small'
