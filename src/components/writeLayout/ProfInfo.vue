@@ -232,7 +232,7 @@
         showMapInfo: false,
         showAreaHisNo: false,
         showProjectNo: false,
-        //专业信息校验规则
+        //专业信息校验规则  -2019/02/22弃用
         rules: {
           buildCompany: [
             {validator: notNull, trigger: 'blur'}
@@ -341,23 +341,36 @@
           this.axios.post('/api/profInfo/addProjectNo', JSON.stringify(this.projectNoData), ArchRequestConfig);
         }
         this.$Message.success('保存成功！');
-        this.$emit('changeShowView')
+        this.checkComplete(this.archID);
+        this.operation =false;
+        // this.$emit('changeShowView')
         // }
         // else {
         //   this.$Message.error('著录信息有误！');
         // }
         // })
       },
+      //检测三大信息是否完成的方法
+      checkComplete(id) {
+        //触发三大信息是否著录完，弹出提示
+        this.axios.post('/api/loadArch/ArchIsComplete', this.qs.stringify({
+          archID: id
+        })).then(res => {
+          if (res.data === 1) {
+            this.archCommit = true
+          }
+        });
+      },
       saveArch() { // 无特性档案的著录专业信息存储方法
         // 判断档案有无特性著录项
         if (this.$refs.specialView !== null && this.$refs.specialView !== undefined) {
-          this.$refs.profForm.validate((valid) => {
-            if (valid) {
+          // this.$refs.profForm.validate((valid) => {
+          //   if (valid) {
               this.$refs.specialView.saveArch();  //即调用realSave方法,但是里面包含个性信息保存操作
-            } else {
-              this.$Message.error('著录信息有误！');
-            }
-          })
+            // } else {
+            //   this.$Message.error('著录信息有误！');
+            // }
+          // })
         }
         else {
           this.realSave()

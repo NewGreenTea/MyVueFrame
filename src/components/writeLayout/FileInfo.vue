@@ -505,6 +505,7 @@
       saveArch() {
         this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig).then(res => {
           this.$Message.success('保存完毕');
+          this.operation = false;
           this.checkComplete(this.FileParams.archId)
         });
       },
