@@ -112,6 +112,7 @@
                    v-if="DistributeArchData != null" @on-select-all="selectAllData" @on-select="selectRowData"
                    @on-select-cancel="cancelRowData" @on-select-all-cancel="cancelAllData"></Table>
             <Page :current="currentPage" :total="archDataCount" :page-size="pageSize" show-elevator show-total
+                  placement="top"
                   show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="pso"/>
             <Spin fix v-if="spinShow">
               <Icon type="ios-loading" size=36 class="demo-spin-icon-load"></Icon>
