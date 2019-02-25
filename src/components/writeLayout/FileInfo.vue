@@ -315,7 +315,7 @@
             {validator: notNull, trigger: 'blur'}
           ],
           fileTitle: [
-            {validator: notNull, trigger: 'blur'}
+            {validator: notNull, trigger: 'change'}
           ],
           pageNo: [
             {validator: isNum, trigger: 'blur'}

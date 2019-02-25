@@ -64,7 +64,7 @@
                   </FormItem>
                 </Col>
                 <Col span="4" class="formSpec">
-                  <FormItem prop="no" label="号">
+                  <FormItem label="号">
                     <Row>
                       <Col span="20">
                         <Input placeholder="..." v-model="buildingAddressInfo.no"/>
@@ -435,6 +435,13 @@
               temp = false;
             }
             this.axios.post('/api/loadArch/necessaryBaseInfo', this.qs.stringify({archID: this.archID})).then(res2 => {
+              let title;
+              if(res.data.data.title === ''){
+                title = this.profArch.buildCompany + this.profArch.buildProject + this.buildingAddressInfo.area
+                +this.buildingAddressInfo.road + this.buildingAddressInfo.street + this.buildingAddressInfo.no
+              }else{
+                title = res.data.data.title
+              }
               let data = {
                 archId: this.archID, //传递一些重要参数给下一个界面
                 archNo: this.archNo,
@@ -443,7 +450,7 @@
                 archTypeID: this.profArch.classId,
                 archTypeName: archNoType.writeVueLayout2(this.archNo),
                 archInputDate: res2.data.inputDate,
-                title: res.data.data.title,
+                title: title,
                 operation: temp
               };
               this.$emit('toShowOther', 'BaseInfo', data)

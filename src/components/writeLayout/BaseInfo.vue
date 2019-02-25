@@ -294,6 +294,8 @@
           if (valid) {
             this.axios.post('/api/baseInfo/add', this.baseArch, config).then(res => {
               this.$Message.success('保存完毕!');
+              //保存时立即关闭保存按钮，显示修改按钮 -2019/02/25
+              this.baseArch.id='temp';
               //检测
               this.checkComplete(this.BaseParams.archId);
             })
