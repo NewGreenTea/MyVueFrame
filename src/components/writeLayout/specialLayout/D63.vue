@@ -21,7 +21,7 @@
                 </FormItem>
               </Col>
               <Col span="9" class="profWriteUnit">
-                （平方米/m²）
+                （米/m）
               </Col>
             </Row>
           </Col>
@@ -33,7 +33,7 @@
                 </FormItem>
               </Col>
               <Col span="9" class="profWriteUnit">
-                （平方米/m²）
+                （米/m）
               </Col>
             </Row>
           </Col>
@@ -42,6 +42,8 @@
               <Input placeholder="..." v-model="D63PipelineInfo.overheadPipeEtc"/>
             </FormItem>
           </Col>
+        </Row>
+        <Row class="WriteLayoutFont" :gutter="15">
           <Col span="8">
             <FormItem class="FormItemClass" label="起止点">
               <Input placeholder="..." v-model="D63PipelineInfo.underPipeStart"/>
@@ -60,7 +62,7 @@
                 </FormItem>
               </Col>
               <Col span="9" class="profWriteUnit">
-                （平方米/m²）
+                （米/m）
               </Col>
             </Row>
           </Col>
@@ -72,7 +74,7 @@
                 </FormItem>
               </Col>
               <Col span="9" class="profWriteUnit">
-                （平方米/m²）
+                （米/m）
               </Col>
             </Row>
           </Col>

@@ -25,7 +25,6 @@
               </Col>
             </Row>
           </Col>
-
           <Col span="8">
             <Row>
               <Col span="16">
@@ -38,24 +37,24 @@
               </Col>
             </Row>
           </Col>
-
           <Col span="8">
             <FormItem class="FormItemClass" label="平面位置">
               <Input placeholder="..." v-model="D34Info.overheadPipeEtc"/>
             </FormItem>
           </Col>
+        </Row>
+
+        <Row class="WriteLayoutFont" :gutter="16">
           <Col span="8">
             <FormItem class="FormItemClass" label="起止点">
               <Input placeholder="..." v-model="D34Info.underPipeStart"/>
             </FormItem>
           </Col>
-
           <Col span="8">
             <FormItem class="FormItemClass" label="管径规格">
               <Input placeholder="..." v-model="D34Info.underPipeType"/>
             </FormItem>
           </Col>
-
           <Col span="8">
             <Row>
               <Col span="16">
@@ -68,7 +67,6 @@
               </Col>
             </Row>
           </Col>
-
           <Col span="8">
             <Row>
               <Col span="16">
@@ -81,7 +79,6 @@
               </Col>
             </Row>
           </Col>
-
           <Col span="8">
             <FormItem class="FormItemClass" label="平面位置">
               <Input placeholder="..." v-model="D34Info.underPipePosition"/>
