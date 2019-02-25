@@ -282,7 +282,7 @@
         this.ifIgnore=false;
         this.errorList=[];
         this.$refs.myupload.$children[2].$children=[];
-      },
+      }
 
     }
 
