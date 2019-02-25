@@ -27,7 +27,7 @@
     <!-- 基本信息 -->
     <Row v-if="base" class="displayClass">
       <Col span="20" offset="1">
-        <div style="border:1px solid #000;padding: 30px">
+        <div style="border:1px solid #000;padding: 0px 30px;">
           <Form class="checkFormClass" :model="baseArch" ref="BaseInfoForm">
             <Row>
               <!--立案号,档号,案卷类别-->
@@ -168,7 +168,7 @@
     <!-- 专业信息 -->
     <Row v-if="prof" class="displayClass">
       <Col span="20" offset="1">
-      <div style="border:1px solid #000;padding: 30px">
+      <div style="border:1px solid #000;padding: 0px 30px">
           <Row>
             <Col>
               <!-- 专业基本 -->
@@ -596,7 +596,7 @@
       </Col>
 
       <!-- 个性专业表格信息 -->
-      <Col span="20" offset="1" class="TableFontCss">
+      <Col span="20" offset="1" class="TableFontCss" style="margin-bottom:15px;margin-top: 15px;">
         <Row v-if="showD212">
           用地性质详细著录表
           <Table border :columns="UseAreaInfoColumns" :data="UseAreaInfoData" :height="tableHeight2"></Table>
@@ -626,7 +626,7 @@
       </Col>
 
       <!-- 个性专业三大基本表格信息 -->
-      <Col span="20" offset="1">
+      <Col span="20" offset="1" style="margin-bottom:15px;margin-top: 15px;">
         <Row :gutter="16">
           <!-- 专业：地图型号 -->
           <Col span="8" class="TableFontCss">

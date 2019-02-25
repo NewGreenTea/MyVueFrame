@@ -31,6 +31,7 @@
 /*整体显示内容div样式*/
 .checkWriteCss {
   font-size: 20px;
+  margin-bottom: 50px;
 }
 /*著录质检文件级信息样式*/
 .displayClass {
