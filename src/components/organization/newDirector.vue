@@ -285,7 +285,7 @@
           this.urlParams = this.getAssignmentsData.urlParams;
           this.axios.get(this.pageUrl, {params: this.urlParams})
             .then(res => {
-              this.$Message.info('已加载到分配面板上');
+              this.$Message.info('加载到分配面板上');
               this.DistributeArchData = res.data.data.list;
               this.archDataCount = res.data.data.total;
               this.searchData = false;
@@ -332,8 +332,6 @@
           })).then(res => {
             if (res.data.code === 0) {
               this.$Message.success('分配完成！');
-              //加载分配好的
-              //todo
             } else {
               this.$Message.error('分配失败！')
             }
@@ -344,7 +342,21 @@
             this.taskWG = '';
             this.tempArchData = [];
             this.taskArchID = [];
-            //this.returnAll();
+            //如果是任务界面传递过来的数据
+            if(this.searchData === false){
+              this.spinShow = true;
+              this.axios.get(this.pageUrl, {params: this.urlParams})
+                .then(res => {
+                  this.$Message.info('加载到分配面板上');
+                  this.DistributeArchData = res.data.data.list;
+                  this.archDataCount = res.data.data.total;
+                  this.searchData = false;
+                  this.spinShow = false;
+                })
+            }else{
+              //原本从分配界面本身的数据
+              this.searchNotDistri()
+            }
           })
         }
       },
@@ -386,7 +398,6 @@
               // this.$refs.ArchStatue.clearSingleSelect();
               this.spinShow = false;
             })
-
         } else {
           this.$Message.error('筛选条件没有正确选择！')
         }
@@ -394,7 +405,6 @@
       //筛选条件：选择档案二级状态后
       choseTwoStatue(value) {
         this.archStatues = ArchStatueChange.statueTwoCode(value);
-        //alert('this.archStatues-' + this.archStatues);
       },
       //返回所有档案未分配数据
       returnAll() {
