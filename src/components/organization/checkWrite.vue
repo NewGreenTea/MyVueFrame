@@ -118,7 +118,7 @@
 
 <script>
   import CheckLayout from "./CheckLayout";
-  import {archNoType} from './../../js/global'
+  import {ArchStatueChange,archNoType} from './../../js/global'
 
   export default {
     name: "checkWrite",
@@ -178,6 +178,12 @@
             title: '档号',
             render: (h, params) => {
               return h('p', params.row.archVO.archNo)
+            }
+          },
+          {
+            title: '档案状态',
+            render: (h, params) => {
+              return h('p', ArchStatueChange.statueTwoDes(params.row.archVO.twoStatue))
             }
           },
           {
