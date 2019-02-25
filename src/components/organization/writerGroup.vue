@@ -505,7 +505,7 @@
                               archTypeID: params.row.archVO.classId,
                               archTypeName: archNoType.writeVueLayout2(params.row.archVO.archNo),
                               archInputDate: params.row.archVO.inputDate,
-                              title: '',
+                              title: res.data.data.title,
                               operation: true
                             };
                             this.viewName = 'BaseInfo';
