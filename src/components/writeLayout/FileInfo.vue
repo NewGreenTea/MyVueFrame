@@ -321,7 +321,7 @@
             {validator: isNum, trigger: 'blur'}
           ],
           fileType: [
-            {validator: notNull, trigger: 'blur'}
+            {validator: notNull, trigger: 'change'}
           ]
         },
         fileArch: {
