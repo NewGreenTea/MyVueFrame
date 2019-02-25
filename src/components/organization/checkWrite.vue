@@ -450,7 +450,7 @@
           this.$Message.error('请选择质检档案！')
         }else{
           for(let i = 0; i < this.tempArchData.length; i++){
-            if(this.tempArchData[i].twoStatue>3){
+            if(this.tempArchData[i].twoStatue > 3){
               result = true;
               this.$Message.error('第'+(i+1)+'行，不是待著录质检状态！')
             }else{
@@ -458,7 +458,7 @@
             }
           }
         }
-        if(result){
+        if(!result){
           //质检状态为通过
           this.axios.post('/api/loadArch/testwriteCheck',this.qs.stringify({ids:JSON.stringify(ids),result:checkResult})).then(res=>{
             if(res.data.code ===0){
