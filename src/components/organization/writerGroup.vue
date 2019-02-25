@@ -552,20 +552,9 @@
       }
     },
     methods: {
-      //加载工作组负责的待著录档案数据
+      //加载工作组负责的档案数据
       loadGroupArch() {
-        this.axios.get('/api/loadArch/getGroupArch', {
-          params: {
-            'archStatue': this.archStatueCode,
-            'keyword': this.keyword,
-            'page': this.needToDoPage,
-            'pageSize': this.needToDoPageSize
-          }
-        }).then(res => {
-            this.needToDoData = res.data.data.list;
-            this.needToDoCount = res.data.data.total
-          }
-        )
+        this.searchFunction(this.needToDoPage,this.needToDoPageSize)
       },
       //加载档案类型级联数据 -2019/02/19
       loadArchTypes() {
@@ -807,10 +796,10 @@
       }
     },
     mounted() {
-      // this.loadOneTypes();
-      // this.loadGroupArch();
+      //加载档案类型数据
       this.loadArchTypes();
-      // this.loadArchBatch();
+      //加载登录者所在工作组全部档案数据
+      this.loadGroupArch()
     }
   }
 
