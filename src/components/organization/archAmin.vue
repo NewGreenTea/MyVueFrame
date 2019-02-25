@@ -169,7 +169,7 @@
             desc: response.msg,
             duration: 0
           });
-          this.$refs.importForm.resetFields();
+          // this.impListReset()
         }
         //关闭导入加载状态
         this.importLoading = false;
@@ -203,13 +203,19 @@
         })).then(res => {
           this.$Message.info(res.data.msg);
           this.tableData = [];
-          this.$refs.importForm.resetFields();
+          this.impListReset()
         })
       },
       //清空按钮，清空导入清单数据
       clearList() {
-        this.$refs.importForm.resetFields();
         this.tableData = [];
+        this.impListReset()
+      },
+      //导入清单条件重置
+      impListReset(){
+        this.SQform.batch = '';
+        this.SQform.date = '';
+        this.SQform.inputDate = '';
       }
     },
     mounted(){
