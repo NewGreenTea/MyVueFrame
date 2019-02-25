@@ -328,7 +328,7 @@
                                 archTypeID: params.row.archVO.classId,
                                 operation: true
                               };
-                              this.showWriteData = true;
+                              // this.showWriteData = true;
                             } else {
                               this.showModal = true;
                               this.viewName = 'FileInfo';
@@ -336,9 +336,9 @@
                               this.fileParams = {
                                 archId: params.row.archId, //传递一些重要参数给下一个界面
                                 archNo: params.row.archNo,
-                                archTypeID: params.row.archVO.classId,
+                                archTypeID: params.row.classId,
                                 operation: false
-                              }
+                              };
                             }
                           });
                       }
