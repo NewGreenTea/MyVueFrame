@@ -40,7 +40,7 @@
                                 区局系统:
                               </Col>
                               <Col span="18">
-                                <Select placeholder="请选择区局系统" @on-change="choseSystem" ref="SystemSelect">
+                                <Select placeholder="请选择区局系统" @on-change="choseSystem" ref="SystemSelect" v-model="enterSystem">
                                   <Option :key="item.systemCode" v-for="item in systems" :value="item.systemCode">{{item.systemName}}</Option>
                                 </Select>
                               </Col>
@@ -77,7 +77,7 @@
         //系统列表
         systems: SystemFunction.systemObject(),
         //系统
-        enterSystem: '',
+        enterSystem: '无',
         //用户对象
         formInline: {
           user: '',
@@ -102,7 +102,7 @@
     methods: {
       //选择系统
       choseSystem(value){
-        this.enterSystem = value
+        this.enterSystem = value;
       },
       handleSubmit(name) {
         if(this.enterSystem === ''){
