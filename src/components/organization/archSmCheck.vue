@@ -123,12 +123,12 @@
               }
             },
             {
-              title: '导入日期',
+              title: '质检日期',
               align: 'center',
               width: 155,
-              key: 'importDate',
+              key: 'checkDate',
               render: (h, params) => {
-                let datadate = dateFormate(new Date(params.row.importDate))
+                let datadate = dateFormate(new Date(params.row.checkDate))
                 return h('div', datadate)
               }
             },
