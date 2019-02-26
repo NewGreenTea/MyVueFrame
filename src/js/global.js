@@ -127,43 +127,43 @@ let SystemFunction = {
   systemObject() {
     return [
       {
-        systemName: '市局',
+        systemName: '广州市国土资源和规划委员会',
         systemCode: '无'
       },
       {
-        systemName: '越秀分局',
+        systemName: '广州市越秀区国土资源和规划局',
         systemCode: '01'
       },
       {
-        systemName: '海珠分局',
+        systemName: '广州市海珠区国土资源和规划局',
         systemCode: '02'
       },
       {
-        systemName: '荔湾分局',
+        systemName: '广州市荔湾区国土资源和规划局',
         systemCode: '03'
       },
       {
-        systemName: '天河分局',
+        systemName: '广州市天河区国土资源和规划局',
         systemCode: '04'
       },
       {
-        systemName: '白云分局',
+        systemName: '广州市白云区国土资源和规划局',
         systemCode: '05'
       },
       {
-        systemName: '黄埔分局',
+        systemName: '广州市黄埔区国土资源和规划局',
         systemCode: '06'
       },
       {
-        systemName: '花都分局',
+        systemName: '广州市花都区国土资源和规划局',
         systemCode: '07'
       },
       {
-        systemName: '番禺分局',
+        systemName: '广州市番禺区国土资源和规划局',
         systemCode: '08'
       },
       {
-        systemName: '南沙分局',
+        systemName: '广州市南沙区国土资源和规划局',
         systemCode: '09'
       }]
   },
