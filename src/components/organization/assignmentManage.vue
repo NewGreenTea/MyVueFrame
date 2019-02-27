@@ -26,37 +26,31 @@
       <Col span="19" class="TableFontCss buttonMargin">
         <Row>
           <Col>
-            <Form class="formClass-right" @keydown.enter.native="keySearch">
+            <Form class="formClass-right" @keydown.enter.native="keySearch" :label-width="labelWidth">
               <Row :gutter="16">
                 <Col span="6">
-                  <FormItem label="档号:" :label-width="100">
+                  <FormItem label="档号:">
                     <Input type="text" v-model="keyArchNo"/>
                   </FormItem>
                 </Col>
-                <!-- 取消负责组 -->
-                <!--<Col span="5">-->
-                <!--<FormItem label="负责组:" :label-width="100">-->
-                <!--<Select placeholder="负责组" @on-change="choseSearchWrokGroup" ref="KeyWorkGroup" :clearable="InputClear">-->
-                <!--<Option :key="item.id" v-for="item in WorkGroup" :value="item.id">{{item.departName}}</Option>-->
-                <!--</Select>-->
-                <!--</FormItem>-->
-                <!--</Col>-->
+                <!-- 批次 -->
+                <Col span="5" v-if="!showDTData">
+                <FormItem label="批次:">
+                  <Input type="text" v-model="keyBatch"/>
+                </FormItem>
+                </Col>
                 <Col span="7">
-                  <FormItem label="开始时间:" :label-width="100">
+                  <FormItem label="开始时间:">
                     <DatePicker type="daterange" placement="bottom-end" placeholder="Select date"
                                 format="yyyy-MM-dd"
                                 :value="keyDate" @on-change="keyDate=$event"></DatePicker>
                   </FormItem>
                 </Col>
                 <Col span="2">
-                  <FormItem>
                     <Button type="primary" @click="keySearch">搜索</Button>
-                  </FormItem>
                 </Col>
                 <Col span="2">
-                  <FormItem>
                     <Button @click="keyResetLoad">重置</Button>
-                  </FormItem>
                 </Col>
               </Row>
             </Form>
@@ -166,7 +160,7 @@
           },
           {
             title: '批次',
-            key: 'batchId'
+            key: 'batchName'
           },
           {
             title: '任务名',
@@ -179,7 +173,7 @@
             key: 'importerName'
           },
           {
-            title: '开始时间',
+            title: '导入时间',
             key: 'createdDate'
           },
           {
@@ -245,7 +239,7 @@
           },
           {
             title: '批次',
-            key: 'batchId'
+            key: 'batchName'
           },
           {
             title: '任务名',
@@ -254,11 +248,11 @@
             }
           },
           {
-            title: '开始时间',
+            title: '导入时间',
             key: 'createdDate'
           },
           {
-            title: '结束时间',
+            title: '分配时间',
             key: 'completeDate'
           },
           {
@@ -726,7 +720,9 @@
         allUpdateWrokGroup: '',
         showAllUpdate: false,
         //搜索条件参数
+        labelWidth: 90,
         keyArchNo: '', //档号关键词
+        keyBatch: '', //批次关键词
         keyWorkGroup: '', //负责组关键词
         keyDate: '', //任务开始时间关键词
         isSearch: false,
@@ -1033,15 +1029,9 @@
         if (this.showATData === false && this.showHTData === false && this.showDTData === false) {
           this.$Message.warning('请选择左边需要查询的任务类型！')
         } else {
-          let keyArchNo;
           let keyDate;
-          if(this.keyArchNo === '' || this.keyArchNo.length ===0){
-            keyArchNo = null;
-          }else{
-            keyArchNo = this.keyArchNo;
-          }
           if(this.keyDate === '' || this.keyDate.length ===0){
-            keyDate = null;
+            keyDate = '';
           }else{
             keyDate = this.keyDate[0]+','+this.keyDate[1];
           }
@@ -1051,53 +1041,63 @@
           //批次任务搜索
           if (this.showATData === true) {
             this.searchParam ={
-              keyArchNo: keyArchNo,
+              keyArchNo: this.keyArchNo,
+              batchName: this.keyBatch,
               keyDate: keyDate,
               batchStatue: 0,
               pageNum: 1,
               pageSize: this.assPageSize
             };
             this.axios.post('/api/manageArch/searchBatchAssignment',this.qs.stringify(this.searchParam)).then(res => {
-              this.AssignmentData = res.data.data.list;
-              this.assDataCount = res.data.data.total;
-              this.spinShow = false;
-              if(res.data.data.list.length === 0){
-                this.$Message.info('没有找到！');
-                //不记录查询条件
-                this.searchParam ={};
+              if(res.data.data === null){
+                this.$Message.info('数据错误！');
               }else{
-                //记录查询条件
-                this.isSearch = true;
+                this.AssignmentData = res.data.data.list;
+                this.assDataCount = res.data.data.total;
+                if(res.data.data.list.length === 0){
+                  this.$Message.info('没有找到！');
+                  //不记录查询条件
+                  this.searchParam ={};
+                }else{
+                  //记录查询条件
+                  this.isSearch = true;
+                }
               }
+              this.spinShow = false;
             })
           }
           //历史批次任务搜索
           if (this.showHTData === true) {
             this.searchParam ={
-              keyArchNo: keyArchNo,
+              keyArchNo: this.keyArchNo,
+              batchName: this.keyBatch,
               keyDate: keyDate,
               batchStatue: 1,
               pageNum: 1,
               pageSize: this.assPageSize
             };
             this.axios.post('/api/manageArch/searchBatchAssignment',this.qs.stringify(this.searchParam)).then(res => {
-              this.AssignmentData = res.data.data.list;
-              this.assDataCount = res.data.data.total;
-              this.spinShow = false;
-              if(res.data.data.list.length === 0){
-                this.$Message.info('没有找到！');
-                //不记录查询条件
-                this.searchParam ={};
-              }else{
-                //记录查询条件
-                this.isSearch = true;
+              if(res.data.data === null){
+                this.$Message.info('数据错误！');
+              }else {
+                this.AssignmentData = res.data.data.list;
+                this.assDataCount = res.data.data.total;
+                if (res.data.data.list.length === 0) {
+                  this.$Message.info('没有找到！');
+                  //不记录查询条件
+                  this.searchParam = {};
+                } else {
+                  //记录查询条件
+                  this.isSearch = true;
+                }
               }
+              this.spinShow = false;
             })
           }
           //已分配任务搜索
           if (this.showDTData === true) {
             this.searchParam ={
-              keyArchNo: keyArchNo,
+              keyArchNo: this.keyArchNo,
               keyDate: keyDate,
               pageNum: 1,
               pageSize: this.assPageSize
@@ -1122,6 +1122,7 @@
       keyReset(){
         this.keyArchNo = '';
         this.keyDate = '';
+        this.keyBatch = '';
         this.isSearch = false;
         this.searchParam ={};
       },

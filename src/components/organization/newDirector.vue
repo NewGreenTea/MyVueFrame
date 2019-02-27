@@ -34,11 +34,6 @@
           <Col>
             <Form ref="searchForm" class="conditionFormFront" @keydown.enter.native="searchNotDistri">
               <Row>
-                <Col span="2">
-                  <FormItem>
-                    <h2>筛选条件:</h2>
-                  </FormItem>
-                </Col>
                 <!-- 筛选条件：档案状态 -->
                 <Col span="6">
                   <FormItem>
@@ -86,10 +81,23 @@
                     </Row>
                   </FormItem>
                 </Col>
+                <!-- 筛选条件：批次-->
+                <Col span="5">
+                  <FormItem>
+                    <Row>
+                      <Col span="7" offset="4">
+                        批次：
+                      </Col>
+                      <Col span="13">
+                        <Input placeholder="批次" v-model="batchKeyword" :clearable="InputClear"/>
+                      </Col>
+                    </Row>
+                  </FormItem>
+                </Col>
                 <!-- 搜索按钮 -->
-                <Col span="3">
+                <Col span="2">
                   <Row>
-                    <Col span="2" offset="5">
+                    <Col span="2" offset="6">
                       <FormItem>
                         <Button type="primary" @click="searchNotDistri">搜索</Button>
                       </FormItem>
@@ -152,10 +160,9 @@
             }
           },
           {
-            title: '任务id',
-            width: 80,
+            title: '批次',
             render: (h, params) => {
-              return h('p', params.row.batchVO.batchId)
+              return h('p', params.row.batchVO.batchName)
             }
           },
           {
@@ -252,6 +259,7 @@
         //***搜索条件***
         archStatues: '',
         keyword: '',
+        batchKeyword: '',
         keyDate: '',
         searchData: false,
         //vue 组件属性
@@ -373,6 +381,7 @@
             keyDate: this.keyDate,
             Statue: this.archStatues,
             keyword: this.keyword,
+            batchName:this.batchKeyword,
             pageNum: 1,
             pageSize: this.pageSize
           };
