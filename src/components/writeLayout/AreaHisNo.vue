@@ -20,7 +20,7 @@
     </Col>
     <Modal v-model="AddModal" :loading="loading" :mask-closable="false" title="添加局历史审批文件编号"
            @on-ok="addAHNoData" @on-cancel="addcancel" width="800px">
-      <Form :model="areaHisNoInfo" :rules="rules" ref="addForm">
+      <Form :model="areaHisNoInfo" :rules="rules" ref="addForm" @keydown.enter.native="modalAddData">
         <Row :gutter="16">
           <Col span="7">
             <p class="profSpecTableCss">文种类别</p>
@@ -35,22 +35,23 @@
 
         <Row :gutter="16">
           <Col span="7">
-            <FormItem prop="hisType" class="FormItemClass">
+            <FormItem class="FormItemClass">
               <Input placeholder="..." v-model="areaHisNoInfo.hisType" class="fileWriteInput"/>
             </FormItem>
           </Col>
           <Col span="7">
-            <FormItem prop="hisYear" class="FormItemClass">
+            <FormItem class="FormItemClass" prop="hisYear">
               <Input placeholder="..." v-model="areaHisNoInfo.hisYear" class="fileWriteInput"/>
             </FormItem>
           </Col>
           <Col span="7">
-            <FormItem prop="hisNum" class="FormItemClass">
+            <FormItem class="FormItemClass">
               <Input placeholder="..." v-model="areaHisNoInfo.hisNum" class="fileWriteInput"/>
             </FormItem>
           </Col>
-          <Col span="1">
-            <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
+          <Col span="1" offset="1">
+            <!--<a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>-->
+            <Button @click="modalAddData" style="color: red;font-size: 13px;float: right">+</Button>
           </Col>
         </Row>
       </Form>
@@ -87,12 +88,12 @@
             </FormItem>
           </Col>
           <Col span="7">
-            <FormItem prop="hisYear" class="FormItemClass">
+            <FormItem class="FormItemClass">
               <Input placeholder="..." v-model="areaHisNoInfo.hisYear" class="fileWriteInput"/>
             </FormItem>
           </Col>
           <Col span="7">
-            <FormItem prop="hisNum" class="FormItemClass">
+            <FormItem class="FormItemClass">
               <Input placeholder="..." v-model="areaHisNoInfo.hisNum" class="fileWriteInput"/>
             </FormItem>
           </Col>
@@ -339,7 +340,6 @@
           hisYear: '',
           hisNum: ''
         };
-        temp.id = this.areaHisNoInfo.id;
         temp.archId = this.archId;
         temp.hisType = this.areaHisNoInfo.hisType;
         temp.hisYear = this.areaHisNoInfo.hisYear;
@@ -457,6 +457,7 @@
       },
       //弹窗多添加事件2019/01/29
       modalAddData(){
+
         let temp={
           id: null,
           archId: '',
