@@ -91,8 +91,7 @@
       },
       updateArch() {
         this.axios.post('/api/profETC/updateD31', this.D31Info, ArchRequestConfig);
-        this.$refs.BPInfo.updatePMI();
-        this.$refs.PBInfo.updatePMI();
+        this.$emit('RealUpdate');
       },
       initParams(){
         this.D31SpecParams = this.specViewParams
