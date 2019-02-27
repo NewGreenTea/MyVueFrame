@@ -3,7 +3,7 @@
     <Row>
     <!-- 搜索 -->
     <Col span="22" offset="1">
-      <Form inline :label-width="100" class="formClass-right">
+      <Form inline :label-width="120" class="formClass-right">
         <FormItem label="档案状态：">
           <Select v-model="statusdata" placeholder="待组卷" @on-change="handleSerach()" style="width:200px">
             <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -13,12 +13,42 @@
           <Input search enter-button placeholder="请输入档号，发文号进行搜索" style="width: 400px" v-model="keyword"
                  @keyup.enter.native="handleSerach()" @on-search="handleSerach()"/>
         </FormItem>
+
+        <Collapse>
+          <Panel name="1">
+            更多搜索
+            <div slot="content">
+              <div>
+                <FormItem label="立案号：">
+                  <Input enter-button placeholder="" style="width: 300px" v-model="searchLah"
+                         @keyup.enter.native="search" @on-search="search"/>
+                </FormItem>
+                <FormItem label="创建人：">
+                  <Input enter-button placeholder="" style="width: 300px" v-model="searchCjr"
+                         @keyup.enter.native="search" @on-search="search"/>
+                </FormItem>
+                <FormItem label="导入时间：">
+                  <DatePicker format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请选择日期范围"
+                              @on-change="dateFormat" v-model="searchDate" style="width: 300px"></DatePicker>
+                </FormItem>
+              </div>
+              <div>
+                <FormItem label="档案一级状态：">
+                  <Select v-model="tstatusdata" placeholder="全部" @on-change="search" style="width:300px">
+                    <Option v-for="item in tstatusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                  </Select>
+                </FormItem>
+              </div>
+            </div>
+          </Panel>
+        </Collapse>
+
       </Form>
     </Col>
     </Row>
 
     <!--按钮-->
-    <Row style="margin: 0px 0px 10px">
+    <Row style="margin: 20px 0px 10px">
       <Col span="22" offset="1">
         <Button v-on:click="ifdoArchClassify()" size="large"  type="primary">档案组卷</Button>
       </Col>
@@ -72,6 +102,33 @@
             label:'全部'
           }
         ],
+        //一级状态下拉选框
+        tstatusdata:10,
+        tstatusList:[
+          {
+            value:'10',
+            label:'全部'
+          },
+          {
+            value:'0',
+            label:'整理（入库中）'
+          },
+          {
+            value:'1',
+            label:'在库'
+          },
+          {
+            value:'2',
+            label:'借阅中'
+          },
+          {
+            value:'3',
+            label:'出库'
+          }
+        ],
+        searchLah:'',
+        searchCjr:'',
+        searchDate:[],
         keyword: '', // 搜索关键词（档号，发文号）
         tempData: [], //档案临时存储
         WriterArchData: [], // 档案数据临时集合
@@ -142,7 +199,11 @@
         param.append('pageNum', currentPage);
         param.append('pageSize', pageSize);
         param.append('searchItem', this.keyword);
+        param.append('registerNo', this.searchLah);
         param.append('twoStatue', this.statusdata);
+        param.append('importername', this.searchCjr);
+        param.append('searchDate', this.searchDate);
+        param.append('oneStatue',this.tstatusdata);
         axios({
           method: 'post',
           url: '/api/arch/getClassifyArchInfo',
@@ -273,6 +334,15 @@
             ])
           }
         });
+      },
+      //批量转化时间
+      dateFormat(){
+        for (let i=0;i<this.searchDate.length;i++) {
+          if(this.searchDate[i]==''){
+            continue;
+          }
+          this.searchDate[i]=dateFormate(this.searchDate[i]);
+        }
       }
     },
     mounted : function () {

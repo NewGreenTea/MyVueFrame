@@ -18,7 +18,7 @@
           </Tooltip>
           <Collapse>
             <Panel name="1">
-              高级搜索
+              更多搜索
              <div slot="content">
                 <div>
                   <FormItem label="立案号：">

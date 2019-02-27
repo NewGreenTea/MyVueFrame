@@ -13,12 +13,35 @@
             <Input search enter-button placeholder="请输入档号，发文号进行搜索" v-model="keyword" style="width: 400px"
                    @keyup.enter.native="handleSerach()" @on-search="handleSerach()"/>
           </FormItem>
+
+          <Collapse>
+            <Panel name="1">
+              更多搜索
+              <div slot="content">
+                <div>
+                  <FormItem label="立案号：">
+                    <Input enter-button placeholder="" style="width: 300px" v-model="searchLah"
+                           @keyup.enter.native="search" @on-search="search"/>
+                  </FormItem>
+                  <FormItem label="质检人：">
+                    <Input enter-button placeholder="" style="width: 300px" v-model="searchZjr"
+                           @keyup.enter.native="search" @on-search="search"/>
+                  </FormItem>
+                  <FormItem label="质检日期：">
+                    <DatePicker format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请选择日期范围"
+                                @on-change="dateFormat" v-model="searchDate" style="width: 300px"></DatePicker>
+                  </FormItem>
+                </div>
+              </div>
+            </Panel>
+          </Collapse>
+
         </Form>
       </Col>
     </Row>
 
     <!--按钮-->
-    <Row style="margin: 0px 0px 10px">
+    <Row style="margin: 20px 0px 10px">
       <Col span="1" offset="1">
         <Button v-on:click="smpass()" size="large" :disabled="aPassB"  type="success">扫描质检通过</Button>
       </Col>
@@ -73,6 +96,10 @@
           pso: [10, 20, 30, 50, 100], // 分页显示条数
           currentPage: 1, // 分页插件：当前页
           totalCount: 0, // 分页插件：总数量
+          /*更多搜索表单*/
+          searchDate:[],
+          searchZjr:'',
+          searchLah:'',
           // 档案业务数据
           WAColumn: [
             {
@@ -252,6 +279,9 @@
           param.append('pageSize', pageSize);
           param.append('searchItem', this.keyword);
           param.append('twoStatue', this.statusdata);
+          param.append('registerNo', this.searchLah);
+          param.append('searchDate', this.searchDate);
+          param.append('checker', this.searchZjr);
           axios({
             method: 'post',
             url: '/api/arch/getsmcheckArchInfo',
@@ -393,6 +423,15 @@
         handleSerach(){
           this.currentPage = 1;
           this.writeLayout(this.currentPage,this.pageSize);
+        },
+        //批量转化时间
+        dateFormat(){
+          for (let i=0;i<this.searchDate.length;i++) {
+            if(this.searchDate[i]==''){
+              continue;
+            }
+            this.searchDate[i]=dateFormate(this.searchDate[i]);
+          }
         }
       },
       mounted : function () {
