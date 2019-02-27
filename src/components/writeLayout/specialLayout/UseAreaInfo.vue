@@ -20,7 +20,7 @@
     </Col>
     <Modal width="1000px" v-model="AddModal" :loading="loading" :mask-closable="false" title="添加用地性质详细著录"
            @on-ok="addUAIData" @on-cancel="addcancle">
-      <Form class="formClass" :model="UseAreaInfo" ref="addForm" :rules="rules">
+      <Form class="formClass" :model="UseAreaInfo" ref="addForm" :rules="rules" @keydown.enter.native="modalAddData">
         <Row>
           <Col>
             <Row :gutter="16">

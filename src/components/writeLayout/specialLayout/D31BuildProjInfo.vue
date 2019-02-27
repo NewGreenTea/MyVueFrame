@@ -20,7 +20,7 @@
     </Col>
     <Modal width="1000px" :loading="loading" v-model="AddModal" :mask-closable="false" title="添加报建项目详细"
            @on-ok="addBPIData" @on-cancel="addcancle">
-      <Form class="formClass" :model="D31BuildProjInfo" ref="addForm" :rules="rules">
+      <Form class="formClass" :model="D31BuildProjInfo" ref="addForm" :rules="rules" @keydown.enter.native="modalAddData">
         <Row>
           <Col>
             <Row :gutter="16">

@@ -19,14 +19,15 @@
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
     <Modal v-model="AddModal" :mask-closable="false" :loading="loading" title="添加地图型号" @on-ok="addMInfoData" @on-cancel="addCancel">
-      <Form v-model="mapInfo" class="formClass">
+      <Form v-model="mapInfo" class="formClass" @keydown.enter.native="modalAddData" >
         <FormItem label="地图型号">
           <Row>
-            <Col span="16" offset="3">
-              <Input placeholder="..." v-model="mapInfo.mapNo" class="writeInput"/>
+            <Col span="15" offset="2">
+              <Input placeholder="..." v-model="mapInfo.mapNo" class="writeInput" @keydown.native.enter.prevent ="()=>{}"/>
             </Col>
-            <Col span="1">
-              <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
+            <Col span="1" offset="2">
+              <!--<a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>-->
+              <Button @click="modalAddData" style="color: red;font-size: 13px;float: right">+</Button>
             </Col>
           </Row>
         </FormItem>
@@ -42,7 +43,7 @@
     </Modal>
     <Modal v-model="UpdateModal" :mask-closable="false" :loading="loading" title="修改地图型号" @on-ok="updateMInfoData"
            @on-cancel="cancleUpdate">
-      <Form v-model="mapInfo">
+      <Form v-model="mapInfo" @keydown.native.enter.prevent ="()=>{}">
         <FormItem label="地图型号">
           <Input placeholder="..." v-model="mapInfo.mapNo" class="writeInput"/>
         </FormItem>

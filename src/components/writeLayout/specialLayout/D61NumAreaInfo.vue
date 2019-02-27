@@ -20,7 +20,7 @@
     </Col>
     <Modal width="1000px" :loading="loading" v-model="AddModal" :mask-closable="false" title="添加验收建筑层数与面积"
            @on-ok="addNMIData" @on-cancel="addcancle">
-      <Form class="formClass" :model="D61NumAreaInfo" ref="addForm" :rules="rules">
+      <Form class="formClass" :model="D61NumAreaInfo" ref="addForm" :rules="rules" @keydown.enter.native="modalAddData">
         <Row>
           <Col>
             <Row :gutter="16">
@@ -81,7 +81,7 @@
                 </FormItem>
               </Col>
               <Col span="3">
-                <FormItem class="FormItemClass" prop="totalArea">
+                <FormItem class="FormItemClass" prop="totalArea" >
                   <Input placeholder="..." v-model="D61NumAreaInfo.totalArea" class="D31D61NumWriteInput"/>
                 </FormItem>
               </Col>
@@ -666,6 +666,7 @@
         this.D61NumAreaInfo.totalArea = '';
       },
       addcancle() {
+        this.modalAdd = [];
         this.$refs.addForm.resetFields();
         this.formReset();
       },

@@ -148,9 +148,9 @@
       <Col span="6" offset="9">
         <div>
           <Button type="success" v-if="archCommit" @click="commitArch">确认</Button>
-          <Button @click="goFileInfo">文件信息</Button>
-          <Button @click="saveArch" v-if="operation">保存</Button>
-          <Button @click="updateArch" v-if="!operation">修改</Button>
+          <Button @click="jumpPage">文件信息</Button>
+          <Button @click="saveArch" type="primary" v-if="operation">保存</Button>
+          <Button @click="updateArch" type="primary" v-if="!operation">修改</Button>
           <Button @click="goBack">返回</Button>
         </div>
       </Col>
@@ -159,6 +159,12 @@
     <Modal v-model="showModal" title="确认信息" @on-ok="tips(3)">
       <div>
         档案的基本信息，专业信息，文件信息都已著录完，是否完成这份档案?
+      </div>
+    </Modal>
+
+    <Modal v-model="showModal3" title="跳转信息" @on-ok="jump">
+      <div>
+        页面即将跳转，检查是否点击保存或修改档案信息？
       </div>
     </Modal>
   </div>
@@ -189,6 +195,7 @@
     data() {
       return {
         showModal: false,
+        showModal3: false,
         archCommit:false,
         labelWidth: 80,
         archID: this.ProfParams.archId,
@@ -451,11 +458,20 @@
                 archTypeName: archNoType.writeVueLayout2(this.archNo),
                 archInputDate: res2.data.inputDate,
                 title: title,
-                operation: temp
+                operation: temp,
+                archCommit: this.archCommit
               };
               this.$emit('toShowOther', 'BaseInfo', data)
             });
           })
+      },
+      //跳转确认提示
+      jumpPage(){
+        this.showModal3=true;
+      },
+      //跳转其他档案信息界面
+      jump(){
+        this.goFileInfo()
       },
       //跳转到文件级信息
       goFileInfo() {

@@ -20,11 +20,11 @@
     </Col>
     <Modal width="1000px" v-model="AddModal" :loading="loading" :mask-closable="false" title="添加记录册编号"
            @on-ok="add61MIData" @on-cancel="addcancle">
-      <Form class="formClass" :model="MeasureInfo">
+      <Form class="formClass" :model="MeasureInfo" @keydown.native.enter.prevent ="()=>{}">
         <FormItem class="FormItemClass" label="记录册编号">
           <Row>
             <Col span="16" offset="3">
-              <Input placeholder="..." v-model="MeasureInfo.remarkNo"/>
+              <Input placeholder="..." v-model="MeasureInfo.remarkNo" @keydown.enter.native="modalAddData"/>
             </Col>
             <Col span="1">
               <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>

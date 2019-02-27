@@ -18,9 +18,9 @@
              @on-select-all="selectAllData" @on-select="selectData"
              @on-select-cancel="cancelData" @on-select-all-cancel="cancelAllData"></Table>
     </Col>
-    <Modal v-model="AddModal" :loading="loading" :mask-closable="false" title="添加建设工程规划许可证号"
-           @on-ok="addPNoData" @on-cancel="addcancle" width="800px">
-      <Form :model="projectNoInfo" ref="addForm" :rules="rules">
+    <Modal v-model="AddModal" :loading="loading" :mask-closable="false" title="添加建设工程规划许可证号" width="800px"
+           @on-ok="addPNoData" @on-cancel="addcancle">
+      <Form :model="projectNoInfo" ref="addForm" :rules="rules" @keydown.enter.native="modalAddData">
         <Row :gutter="16">
           <Col span="7">
             <p class="profSpecTableCss">文种类别</p>
@@ -40,17 +40,18 @@
             </FormItem>
           </Col>
           <Col span="7">
-            <FormItem prop="projYear" class="FormItemClass">
+            <FormItem class="FormItemClass">
               <Input placeholder="..." v-model="projectNoInfo.projYear" class="fileWriteInput"/>
             </FormItem>
           </Col>
           <Col span="7">
-            <FormItem prop="projNum" class="FormItemClass">
+            <FormItem class="FormItemClass">
               <Input placeholder="..." v-model="projectNoInfo.projNum" class="fileWriteInput"/>
             </FormItem>
           </Col>
-          <Col span="1">
-            <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
+          <Col span="1" offset="1">
+            <!--<a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>-->
+            <Button @click="modalAddData" style="color: red;font-size: 13px;float: right">+</Button>
           </Col>
         </Row>
       </Form>
@@ -64,10 +65,14 @@
           </Col>
         </Row>
       </div>
+      <!--<div slot="footer">-->
+        <!--<Button @click="addcancle">取消</Button>-->
+        <!--<Button type="success"  @click="addPNoData" ref="alladd" @keydown.enter.native="EnterKeyDown('alladd')">添加</Button>-->
+      <!--</div>-->
     </Modal>
 
     <Modal v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改建设工程规划许可证号"
-           @on-ok="updatePNoData" @on-cancel="cancleUpdate" width="800px">
+           @on-ok="updatePNoData" width="800px">
       <Form :model="projectNoInfo" ref="updateForm" :rules="rules">
         <Row :gutter="16">
           <Col span="7">
@@ -88,12 +93,12 @@
             </FormItem>
           </Col>
           <Col span="7">
-            <FormItem prop="projYear" class="FormItemClass">
+            <FormItem class="FormItemClass">
               <Input placeholder="..." v-model="projectNoInfo.projYear" class="fileWriteInput"/>
             </FormItem>
           </Col>
           <Col span="7">
-            <FormItem prop="projNum" class="FormItemClass">
+            <FormItem class="FormItemClass">
               <Input placeholder="..." v-model="projectNoInfo.projNum" class="fileWriteInput"/>
             </FormItem>
           </Col>
@@ -213,7 +218,7 @@
         }
       },
       addcancle() {
-        this.modalAdd = [];  //todo 注意点
+        this.modalAdd = [];
         this.$refs.addForm.resetFields()
       },
       cancleUpdate() {
@@ -340,7 +345,6 @@
           projYear: '',
           projNum: ''
         };
-        temp.id = this.projectNoInfo.id;
         temp.archId = this.archId;
         temp.projType = this.projectNoInfo.projType;
         temp.projYear = this.projectNoInfo.projYear;
@@ -518,6 +522,13 @@
         this.projectNoInfo.projType = '';
         this.projectNoInfo.projYear = '';
         this.projectNoInfo.projNum = '';
+      },
+      EnterKeyDown(type){
+        if(type === 'tempadd'){
+          this.modalAddData()
+        }else if(type === 'alladd'){
+          this.addPNoData()
+        }
       }
     },
     mounted() {
