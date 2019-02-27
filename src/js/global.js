@@ -165,6 +165,10 @@ let SystemFunction = {
       {
         systemName: '广州市南沙区国土资源和规划局',
         systemCode: '09'
+      },
+      {
+        systemName: '广州市萝岗区国土资源和规划局',
+        systemCode: '10'
       }]
   },
 
@@ -191,6 +195,8 @@ let SystemFunction = {
       district = '番禺区'
     } else if (code === '09') {
       district = '南沙区'
+    }else if (code === '10') {
+      district = '萝岗区'
     }
     return district;
   },
