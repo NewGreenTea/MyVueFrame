@@ -1,13 +1,13 @@
 <template>
   <Row>
     <Col span="20" offset="2">
-      <Form :model="SQform" inline ref="importForm" class="conditionForm">
-        <FormItem prop="district">
+      <Form :model="SQform" inline ref="importForm" class="conditionForm" :rules="rules">
+        <FormItem>
           <h2>选择批次:</h2>
         </FormItem>
         <FormItem>
           区局：
-          <Input type="text" v-model="SQform.district" placeholder="区局" style="width: 150px" class="colorBack" disabled/>
+          <Input type="text" v-model="systemDistrict" placeholder="区局" style="width: 150px" class="colorBack" disabled/>
           <Icon type="ios-person-outline" slot="prepend"></Icon>
         </FormItem>
         <FormItem prop="date">
@@ -17,19 +17,19 @@
           <Button @click="CurrentTime" shape="circle" style="background: #7FFFAA;">当前时间</Button>
         </FormItem>
         <FormItem prop="batch">
-          批次：
+          批次标识：
           <Input type="text" v-model="SQform.batch" placeholder="批次" clearable style="width: 200px"/>
           <Icon type="ios-lock-outline" slot="prepend"></Icon>
         </FormItem>
         <!--设置表格显示高度：<Input type="text" v-model="tableHeight" placeholder="表格显示高度" style="width: 80px"/>-->
-        <FormItem prop="inputDate">
+        <FormItem>
           进馆日期：
           <DatePicker v-model="SQform.inputDate" type="date" format="yyyy-MM-dd" placeholder="日期"
                       style="width: 150px"></DatePicker>
         </FormItem>
         <FormItem>
           <Upload ref="upload" action="/api/importArch/handelExcel" :showUploadList="false" :on-success="importList"
-                  :data="{district:SQform.district}" :before-upload="beforeUpload">
+                  :data="{district:systemDistrict}" :before-upload="beforeUpload" accept=".xlsx,.xls">
             <i-button type="primary" :loading="importLoading">导入清单</i-button>
           </Upload>
         </FormItem>
@@ -74,9 +74,9 @@
         showMessage: false,
         message: '',
         tableHeight: 700,
+        systemDistrict: '', // 区号
         //导入清单的批次信息
         SQform: {
-          district: '', // 区号
           date: '', // 日期
           batch: '', // 批次
           inputDate: '' //进馆日期
@@ -120,10 +120,7 @@
             {validator: notNull, trigger: 'blur'}
           ],
           date: [
-            {validator: notNull, trigger: 'change'}
-          ],
-          inputDate: [
-            {validator: notNull, trigger: 'change'}
+            {validator: notNull, trigger: 'blur'}
           ]
         },
         //导入按钮加载状态
@@ -136,6 +133,7 @@
         this.SQform.date = date
       },
       beforeUpload() {
+        console.log(this.$refs.importForm);
         this.$refs.importForm.validate((valid) => {
           if (!valid) {
             this.$Message.error('请填写必要导入信息！');
@@ -143,7 +141,7 @@
             this.importLoading = true;
           }
         });
-        return !!(this.SQform.inputDate !== '' && this.SQform.date !== '' && this.SQform.batch);
+        return !!(this.SQform.date !== '' && this.SQform.batch !== '');
       },
       // 清单的处理
       importList(response, file, fileList) {
@@ -169,47 +167,58 @@
             desc: response.msg,
             duration: 0
           });
-          // this.impListReset()
         }
         //关闭导入加载状态
         this.importLoading = false;
       },
       //导入确认
       confirm() {
-        // 日期加0，例如2018-1-1 =》2018-01-01
-        function timeAdd0(str) {
-          if (str.length <= 1) {
-            str = '0' + str
+        if(this.SQform.inputDate !== '') {
+          // 日期加0，例如2018-1-1 =》2018-01-01
+          function timeAdd0(str) {
+            if (str.length <= 1) {
+              str = '0' + str
+            }
+            return str
           }
-          return str
+
+          // 对日期的格式进行转换（‘Tue Nov 06 2018 00:00:00 GMT+0800’=》‘yyyy-MM-dd’）
+          let tempDate = this.SQform.date;
+          let newDate = tempDate.getFullYear() + '-' + timeAdd0((tempDate.getMonth() + 1).toString()) + '-' + timeAdd0(tempDate.getDate().toString());
+          let tempDate2 = this.SQform.inputDate;
+          let newDate2 = tempDate2.getFullYear() + '-' + timeAdd0((tempDate2.getMonth() + 1).toString()) + '-' + timeAdd0(tempDate2.getDate().toString());
+
+          let batch = this.systemDistrict + newDate + this.SQform.batch;
+          let inputStoreDate = newDate2;
+          //导入清单数据
+          let arch = JSON.stringify(this.tableData);
+
+          this.axios.post('/api/importArch/importList', this.qs.stringify({
+            district: this.systemDistrict,
+            batch: batch,
+            arch: arch,
+            inputDate: inputStoreDate
+          })).then(res => {
+            if(res.data.code===1){
+              this.$Message.error(res.data.msg);
+            }else{ //success,0
+              this.$Message.info(res.data.msg);
+              this.tableData = [];
+              this.SQform.inputDate ='';
+              this.$refs.importForm.resetFields()
+            }
+          })
         }
-
-        // 对日期的格式进行转换（‘Tue Nov 06 2018 00:00:00 GMT+0800’=》‘yyyy-MM-dd’）
-        let tempDate = this.SQform.date;
-        let newDate = tempDate.getFullYear() + '-' + timeAdd0((tempDate.getMonth() + 1).toString()) + '-' + timeAdd0(tempDate.getDate().toString());
-        let tempDate2 = this.SQform.inputDate;
-        let newDate2 = tempDate2.getFullYear() + '-' + timeAdd0((tempDate2.getMonth() + 1).toString()) + '-' + timeAdd0(tempDate2.getDate().toString());
-
-        let batch = this.SQform.district + newDate + this.SQform.batch;
-        let inputStoreDate = newDate2;
-        //导入清单数据
-        let arch = JSON.stringify(this.tableData);
-
-        this.axios.post('/api/importArch/importList', this.qs.stringify({
-          district: this.SQform.district,
-          batch: batch,
-          arch: arch,
-          inputDate: inputStoreDate
-        })).then(res => {
-          this.$Message.info(res.data.msg);
-          this.tableData = [];
-          this.impListReset()
-        })
+        else{
+          this.$Message.error('请填写进馆日期！')
+        }
       },
       //清空按钮，清空导入清单数据
       clearList() {
         this.tableData = [];
-        this.impListReset()
+        // this.impListReset()
+        this.SQform.inputDate ='';
+        this.$refs.importForm.resetFields()
       },
       //导入清单条件重置
       impListReset(){
@@ -220,9 +229,9 @@
     },
     mounted(){
       if(this.getSystemCode === '无'){
-        this.SQform.district = ''
+        this.systemDistrict = ''
       }else{
-        this.SQform.district = this.getSystemCode
+        this.systemDistrict = this.getSystemCode
       }
     },
     computed:{
