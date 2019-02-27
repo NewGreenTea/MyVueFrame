@@ -105,9 +105,9 @@
               <Row :gutter="16">
                 <Col span="8">
                   <FormItem class="FormItemClass selectFontCss" label="公开属性" :label-width="lableWidth">
-                    <i-select placeholder="属性" v-model="baseArch.publicProperty">
-                      <i-option :key="item" v-for="item in pubProperty" :value="item">{{item}}</i-option>
-                    </i-select>
+                    <Select placeholder="属性" v-model="baseArch.publicProperty" filterable>
+                      <Option :key="item" v-for="item in pubProperty" :value="item">{{item}}</Option>
+                    </Select>
                   </FormItem>
                 </Col>
                 <Col span="8">
@@ -151,11 +151,10 @@
       <Col span="8" offset="8">
         <div>
           <Button type="success" v-if="archCommit" @click="commitArch">确认</Button>
-          <Button @click="goProfInfo">专业信息</Button>
-          <Button @click="goFileInfo2">文件信息</Button>
-          <Button @click="saveArch" v-if="this.baseArch.id===null">保存</Button>
-          <Button @click="updateArch" v-if="this.baseArch.id!==null">修改</Button>
-          <Button @click="reset">重置</Button>
+          <Button @click="jumpPage('prof')">专业信息</Button>
+          <Button @click="jumpPage('file')">文件信息</Button>
+          <Button @click="saveArch" type="primary" v-if="this.baseArch.id===null">保存</Button>
+          <Button @click="updateArch" type="primary" v-if="this.baseArch.id!==null">修改</Button>
           <Button @click="goBack">返回</Button>
         </div>
       </Col>
@@ -167,9 +166,15 @@
       </div>
     </Modal>
 
-    <Modal v-model="showModal2" title="确认信息" @on-ok="sureback(1)">
+    <Modal v-model="showModal2" title="确认信息" @on-ok="sureback(1)" >
       <div>
         档案信息进行了修改，没有点击确认，是否确定离开？
+      </div>
+    </Modal>
+
+    <Modal v-model="showModal3" title="跳转信息" @on-ok="jump">
+      <div>
+        页面即将跳转，检查是否保存档案信息？
       </div>
     </Modal>
   </div>
@@ -191,6 +196,9 @@
         ss: '100%',
         showModal: false,
         showModal2: false,
+        showModal3: false,
+        //跳转页面信息
+        pageText: '',
         //档案确认按钮
         archCommit: false,
         lableWidth: 90,
@@ -295,7 +303,7 @@
             this.axios.post('/api/baseInfo/add', this.baseArch, config).then(res => {
               this.$Message.success('保存完毕!');
               //保存时立即关闭保存按钮，显示修改按钮 -2019/02/25
-              this.baseArch.id='temp';
+              this.baseArch.id = 'temp';
               //检测
               this.checkComplete(this.BaseParams.archId);
             })
@@ -350,6 +358,21 @@
           this.archCommit = false;
           this.$emit('changeShowView')
         })
+      },
+      //跳转确认提示
+      jumpPage(page) {
+        this.showModal3 = true;
+        this.pageText = page;
+      },
+      //跳转其他档案信息界面
+      jump() {
+        if (this.pageText === 'prof') {
+          this.pageText = '';
+          this.goProfInfo();
+        } else if (this.pageText === 'file') {
+          this.pageText = '';
+          this.goFileInfo2()
+        }
       },
       //跳转到专业信息
       goProfInfo() {

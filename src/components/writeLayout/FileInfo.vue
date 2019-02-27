@@ -37,9 +37,9 @@
       <Col span="4" offset="10">
         <div>
         <Button type="success" v-if="archCommit" @click="commitArch">确认</Button>
-        <Button v-if="operation" @click="saveArch">保存</Button>
-        <Button v-if="!operation" @click="updateArch">修改</Button>
-        <Button @click="goBack">返回</Button>
+        <Button v-if="operation" type="primary" @click="saveArch">保存</Button>
+        <Button v-if="!operation" type="primary" @click="updateArch">修改</Button>
+        <Button @click="jumpPage">返回</Button>
         </div>
       </Col>
     </Row>
@@ -50,8 +50,7 @@
       </div>
     </Modal>
 
-    <Modal width="900px" v-model="AddModal" :loading="loading" :mask-closable="false" title="添加文件信息"
-           @on-ok="saveArchData" @on-cancel="cancleAdd">
+    <Modal width="900px" v-model="AddModal" :loading="loading" :mask-closable="false" title="添加文件信息">
       <Row>
         <Col span="20" offset="2">
           <Form class="formClass" :model="fileArch" :rules="rules" ref="addForm" :label-width="labelWidth">
@@ -93,9 +92,9 @@
 
               <Col>
                 <FormItem class="FormItemClass selectFontCss" label="文件材料分类" prop="fileType">
-                  <i-select placeholder="属性" v-model="fileArch.fileType">
-                    <i-option :key="item" v-for="item in fileType" :value="item">{{item}}</i-option>
-                  </i-select>
+                  <Select placeholder="属性" v-model="fileArch.fileType" filterable>
+                    <Option :key="item.name" v-for="item in fileType" :value="item.name">{{item.value}}</Option>
+                  </Select>
                 </FormItem>
               </Col>
 
@@ -125,21 +124,13 @@
           </Form>
         </Col>
       </Row>
-      <Row>
-        <Col span="2" offset="2">
-          <Button @click="reset" style="align-content: center">重置</Button>
-        </Col>
-        <!--<Col span="2">-->
-          <!--<Button @click="frontResult" style="align-content: center">上一条</Button>-->
-        <!--</Col>-->
-        <!--<Col span="2">-->
-          <!--<Button @click="nextResult" style="align-content: center">下一条</Button>-->
-        <!--</Col>-->
-      </Row>
+      <div slot="footer">
+        <Button @click="cancleAdd">取消</Button>
+        <Button type="success"  @click="saveArchData">添加</Button>
+      </div>
     </Modal>
 
-    <Modal width="900px" v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改文件信息"
-           @on-ok="updateArchData" @on-cancel="cancleUpdate">
+    <Modal width="900px" v-model="UpdateModal" :loading="loading" :mask-closable="false" title="修改文件信息">
       <Row>
         <Col span="20" offset="2">
           <Form class="formClass" :model="fileArch" :rules="rules" ref="updateForm" :label-width="labelWidth">
@@ -182,7 +173,7 @@
               <Col>
                 <FormItem class="FormItemClass selectFontCss" label="文件材料分类" prop="fileType">
                   <i-select placeholder="属性" v-model="fileArch.fileType">
-                    <i-option :key="item" v-for="item in fileType" :value="item">{{item}}</i-option>
+                    <i-option :key="item.name" v-for="item in fileType" :value="item.name">{{item.value}}</i-option>
                   </i-select>
                 </FormItem>
               </Col>
@@ -214,16 +205,23 @@
         </Col>
       </Row>
       <Row>
-        <Col span="2" offset="9">
-          <Button @click="reset" style="align-content: center">重置</Button>
-        </Col>
-        <Col span="2">
+        <Col span="2" offset="10">
           <Button @click="frontResult" style="align-content: center">上一条</Button>
         </Col>
         <Col span="2">
           <Button @click="nextResult" style="align-content: center">下一条</Button>
         </Col>
       </Row>
+      <div slot="footer">
+        <Button @click="cancleUpdate">取消</Button>
+        <Button type="primary"  @click="updateArchData">修改</Button>
+      </div>
+    </Modal>
+
+    <Modal v-model="showModal3" title="跳转信息" @on-ok="jump">
+      <div>
+        页面即将跳转，检查是否点击保存或修改档案信息？
+      </div>
     </Modal>
   </div>
 </template>
@@ -238,6 +236,7 @@
     data() {
       return {
         showModal: false,
+        showModal3: false,
         archCommit: false,
         labelWidth: 100,
         loading: true,
@@ -302,7 +301,26 @@
         UpdateAddData: [],
         //修改时要删除真实存在的数据
         UpdateDeleteData: [],
-        fileType: ['申请材料', '办案过程材料', '结论性文件', '其他材料', '档案变更材料'],
+        fileType: [
+          { name: '申请材料',
+            value:'01-申请材料'
+          },
+          { name: '办案过程材料',
+            value:'02-办案过程材料'
+          },
+          {
+            name: '结论性文件',
+            value: '03-结论性文件'
+          },
+          {
+            name: '其他材料',
+            value: '04-其他材料'
+          },
+          {
+            name: '档案变更材料',
+            value: '05-档案变更材料'
+          }
+        ],
         operation: this.FileParams.operation, //false为修改
         archId: this.FileParams.archId,
         archNo: this.FileParams.archNo,
@@ -315,13 +333,13 @@
             {validator: notNull, trigger: 'blur'}
           ],
           fileTitle: [
-            {validator: notNull, trigger: 'change'}
+            {validator: notNull, trigger: ['change','blur']}
           ],
           pageNo: [
             {validator: isNum, trigger: 'blur'}
           ],
           fileType: [
-            {validator: notNull, trigger: 'change'}
+            {validator: notNull, trigger: ['change','blur']}
           ]
         },
         fileArch: {
@@ -632,6 +650,7 @@
         } else if (Object.keys(this.tempData).length > 1) {
           this.$Message.info('请钩选一条要修改的文件信息')
         } else {
+          this.$refs.updateForm.resetFields();
           this.UpdateModal = true;
           this.fileArch.id = this.tempData[0].id;
           this.fileArch.archId = this.archId;
@@ -653,9 +672,7 @@
         this.reset();
         this.AddModal = false;
         this.$refs.fileTable.selectAll(false);
-        for (let i = 0; i < this.tableData.length; i++) {
-          console.log(JSON.stringify(this.tableData[i]))
-        }
+        this.AddModal = false;
       },
       //删除所选文件记录数（只能删除一条  --2019/01/14）
       cancelFileInfo() {
@@ -694,6 +711,7 @@
       },
       // 双击显示修改弹窗
       updateRowData(row, index) {
+        this.$refs.updateForm.resetFields();
         this.UpdateModal = true;
         this.fileArch.id = row.id;
         this.fileArch.archId = this.archId;
@@ -738,7 +756,8 @@
         this.$refs.addForm.resetFields();
         this.reset();
         this.tempData = [];
-        this.$refs.fileTable.selectAll(false)
+        this.$refs.fileTable.selectAll(false);
+        this.UpdateModal = false;
       },
       // 选择单条记录
       selectData(selection, row) {
@@ -775,6 +794,14 @@
         this.fileArch.fileDate = '';
         this.fileArch.pageNo = '';
         this.fileArch.remark = ''
+      },
+      //跳转确认提示
+      jumpPage(){
+        this.showModal3=true;
+      },
+      //跳转其他档案信息界面
+      jump(){
+        this.goBack()
       },
       //后退
       goBack() {
