@@ -158,13 +158,13 @@
 
     <Modal v-model="showModal" title="确认信息" @on-ok="tips(3)">
       <div>
-        档案的基本信息，专业信息，文件信息都已著录完，是否完成这份档案?
+        <p style="font-size: 15px;">档案的基本信息，专业信息，文件信息都已著录完，是否完成这份档案?</p>
       </div>
     </Modal>
 
     <Modal v-model="showModal3" title="跳转信息" @on-ok="jump">
       <div>
-        页面即将跳转，检查是否点击保存或修改档案信息？
+        <p style="font-size: 15px;">页面即将跳转，检查是否点击保存或修改档案信息？</p>
       </div>
     </Modal>
   </div>

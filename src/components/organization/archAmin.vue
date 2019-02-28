@@ -1,5 +1,5 @@
 <template>
-  <Row>
+  <Row style="margin-bottom: 50px;">
     <Col span="20" offset="2">
       <Form :model="SQform" inline ref="importForm" class="conditionForm" :rules="rules">
         <FormItem>
@@ -133,7 +133,6 @@
         this.SQform.date = date
       },
       beforeUpload() {
-        console.log(this.$refs.importForm);
         this.$refs.importForm.validate((valid) => {
           if (!valid) {
             this.$Message.error('请填写必要导入信息！');

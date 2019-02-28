@@ -46,7 +46,7 @@
                     更多搜索
                     <div slot="content">
                       <Row>
-                        <Col span="4">
+                        <Col span="6">
                           <FormItem label="批次：">
                             <Input placeholder="批次" v-model="batchData"/>
                           </FormItem>
@@ -73,12 +73,10 @@
         <Col span="20" offset="2">
           <!--按钮-->
           <Row :gutter="16" style="margin-bottom: 20px">
-            <Col span="2">
+            <div>
               <Button type="success" @click="allOperation('通过')">著录质检通过</Button>
-            </Col>
-            <Col span="2">
               <Button type="error" @click="allOperation('不通过')">著录质检不通过</Button>
-            </Col>
+            </div>
           </Row>
         </Col>
 
@@ -157,9 +155,8 @@
           },
           {
             title: '批次',
-            width: 90,
             render: (h, params) => {
-              return h('p', params.row.archVO.batchId)
+              return h('p', params.row.batchName)
             }
           },
           {

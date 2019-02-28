@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin-bottom: 50px;">
     <!-- 分配界面：头部 -->
     <Row>
       <Col>
@@ -32,85 +32,50 @@
         <Row>
           <!-- 分配界面：主体右边：（上半部分）筛选条件 -->
           <Col>
-            <Form ref="searchForm" class="conditionFormFront" @keydown.enter.native="searchNotDistri">
-              <Row>
+            <Form ref="searchForm" class="conditionFormFront" @keydown.enter.native="searchNotDistri" :label-width="labelWidth">
+              <table>
                 <!-- 筛选条件：档案状态 -->
-                <Col span="6">
-                  <FormItem>
-                    <Row>
-                      <Col span="6" offset="2">
-                        档案状态：
-                      </Col>
-                      <Col span="14">
-                        <Select placeholder="状态" @on-change="choseTwoStatue" ref="ArchStatue" :clearable="InputClear">
-                          <Option :key="item" v-for="item in twoStatues" :value="item">{{item}}</Option>
-                        </Select>
-                      </Col>
-                    </Row>
+                  <td>
+                  <FormItem label="档案状态：">
+                    <Select placeholder="状态" @on-change="choseTwoStatue" ref="ArchStatue" :clearable="InputClear">
+                      <Option :key="item" v-for="item in twoStatues" :value="item">{{item}}</Option>
+                    </Select>
                   </FormItem>
-                </Col>
+                  </td>
+
                 <!-- 筛选条件：任务开始时间 -->
-                <Col span="6">
-                  <FormItem>
-                    <Row>
-                      <Col>
-                        <Row>
-                          <Col span="9" offset="2">
-                            任务开始时间：
-                          </Col>
-                          <Col span="12">
-                            <DatePicker type="daterange" placement="bottom-end" placeholder="Select date"
-                                        format="yyyy-MM-dd"
-                                        style="width: 200px" :value="keyDate" @on-change="keyDate=$event"></DatePicker>
-                          </Col>
-                        </Row>
-                      </Col>
-                    </Row>
+                <td>
+                  <FormItem label="任务开始时间：" :label-width="labelWidth2">
+                    <DatePicker type="daterange" placement="bottom-end" placeholder="Select date"
+                                format="yyyy-MM-dd"
+                                style="width: 200px" :value="keyDate" @on-change="keyDate=$event"></DatePicker>
                   </FormItem>
-                </Col>
+                </td>
                 <!-- 筛选条件：档号，档案类型或人名-->
-                <Col span="5">
-                  <FormItem>
-                    <Row>
-                      <Col span="7" offset="4">
-                        档号：
-                      </Col>
-                      <Col span="13">
-                        <Input placeholder="档号" v-model="keyword" :clearable="InputClear"/>
-                      </Col>
-                    </Row>
+                <td>
+                  <FormItem label="档号：">
+                    <Input placeholder="档号" v-model="keyword" :clearable="InputClear"/>
                   </FormItem>
-                </Col>
+                </td>
                 <!-- 筛选条件：批次-->
-                <Col span="5">
-                  <FormItem>
-                    <Row>
-                      <Col span="7" offset="4">
-                        批次：
-                      </Col>
-                      <Col span="13">
-                        <Input placeholder="批次" v-model="batchKeyword" :clearable="InputClear"/>
-                      </Col>
-                    </Row>
+                <td>
+                  <FormItem label="批次：">
+                    <Input placeholder="批次" v-model="batchKeyword" :clearable="InputClear"/>
                   </FormItem>
-                </Col>
+                </td>
                 <!-- 搜索按钮 -->
-                <Col span="2">
-                  <Row>
-                    <Col span="2" offset="6">
-                      <FormItem>
-                        <Button type="primary" @click="searchNotDistri">搜索</Button>
-                      </FormItem>
-                    </Col>
-                  </Row>
-                </Col>
+                <td>
+                  <FormItem>
+                    <Button type="primary" @click="searchNotDistri">搜索</Button>
+                  </FormItem>
+                </td>
                 <!-- 返回初始未分配档案数据按钮  -2019/02/16弃用-->
                 <!--<Col span="3">-->
                 <!--<FormItem>-->
                 <!--<Button type="primary" @click="returnAll(1)">所有未分配档案</Button>-->
                 <!--</FormItem>-->
                 <!--</Col>-->
-              </Row>
+              </table>
             </Form>
           </Col>
 
@@ -140,6 +105,8 @@
     name: "newDirector",
     data() {
       return {
+        labelWidth: 100,
+        labelWidth2: 120,
         // 刷新著录组的状态
         hackReset: true,
         //分配档案的工作组
@@ -352,7 +319,7 @@
             this.tempArchData = [];
             this.taskArchID = [];
             //如果是任务界面传递过来的数据
-            if(this.searchData === false){
+            if (this.searchData === false) {
               this.spinShow = true;
               this.axios.get(this.pageUrl, {params: this.urlParams})
                 .then(res => {
@@ -362,7 +329,7 @@
                   this.searchData = false;
                   this.spinShow = false;
                 })
-            }else{
+            } else {
               //原本从分配界面本身的数据
               this.searchNotDistri()
             }
@@ -381,7 +348,7 @@
             keyDate: this.keyDate,
             Statue: this.archStatues,
             keyword: this.keyword,
-            batchName:this.batchKeyword,
+            batchName: this.batchKeyword,
             pageNum: 1,
             pageSize: this.pageSize
           };

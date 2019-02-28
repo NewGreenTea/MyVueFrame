@@ -168,13 +168,13 @@
 
     <Modal v-model="showModal2" title="确认信息" @on-ok="sureback(1)" >
       <div>
-        档案信息进行了修改，没有点击确认，是否确定离开？
+        <p style="font-size: 15px;">档案信息进行了修改，没有点击确认，是否确定离开？</p>
       </div>
     </Modal>
 
     <Modal v-model="showModal3" title="跳转信息" @on-ok="jump">
       <div>
-        页面即将跳转，检查是否保存档案信息？
+        <p style="font-size: 15px;">页面即将跳转，检查是否点击保存或修改档案信息？</p>
       </div>
     </Modal>
   </div>

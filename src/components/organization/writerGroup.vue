@@ -46,7 +46,7 @@
                     更多搜索
                     <div slot="content">
                       <Row>
-                        <Col span="4">
+                        <Col span="6">
                           <FormItem label="批次：">
                             <Input placeholder="批次" v-model="batchData"/>
                           </FormItem>
@@ -70,7 +70,7 @@
           </Form>
         </Col>
         <!-- 加载档案数据待著录表格 -->
-        <Col span="20" offset="2" class="TableFontCss">
+        <Col span="20" offset="2" class="TableFontCss" style="margin-bottom: 20px;">
           <Table border :columns="needToDoColumns" :data="needToDoData"></Table>
           <Page :current="needToDoPage" :total="needToDoCount" :page-size="needToDoPageSize" show-elevator show-total
                 placement="top"
@@ -82,7 +82,7 @@
         </Col>
       </Row>
 
-      <Row v-if="showArchData" style="margin-top: 20px;">
+      <Row v-if="showArchData" style="margin-bottom: 50px;">
         <!-- 加载档案数据表格 -->
         <Col span="20" offset="2" class="TableFontCss">
           <Table border :columns="columns" :data="tableData"></Table>
@@ -363,9 +363,8 @@
           },
           {
             title: '批次',
-            width: 70,
             render: (h, params) => {
-              return h('p', params.row.archVO.batchId)
+              return h('p', params.row.batchName)
             }
           },
           {
