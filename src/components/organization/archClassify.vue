@@ -146,6 +146,7 @@
           },
           {
             title: '序号',
+            width: 65,
             type: 'index'
           },
           {
@@ -188,6 +189,10 @@
               let datadate = dateFormate(new Date(params.row.importDate))
               return h('div', datadate)
             }
+          },
+          {
+            title: '已上传 / 总量',
+            key: 'scjd'
           }
         ]
       }
@@ -251,6 +256,7 @@
             }
           });
         }else {
+          this.$refs.table.selectAll(false);
           this.$Message.warning("当前的筛选档案状态不能进行档案组卷！");
         }
       },
