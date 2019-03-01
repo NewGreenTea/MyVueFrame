@@ -44,6 +44,10 @@
       <Row>
         <Col>
           <Table border :height="tableHeight" :columns="columns" :data="tableData"></Table>
+          <Spin fix v-if="spinShow">
+            <Icon type="ios-loading" size=36 class="demo-spin-icon-load"></Icon>
+            <div>加载中</div>
+          </Spin>
         </Col>
         <Col span="3" offset="10">
           <Button @click="confirm" type="primary">确认</Button>
@@ -70,6 +74,8 @@
     name: 'archAmin',
     data() {
       return {
+        //加载动画
+        spinShow: false,
         //消息的展示框
         showMessage: false,
         message: '',
@@ -189,9 +195,10 @@
 
           let batch = this.systemDistrict + newDate + this.SQform.batch;
           let inputStoreDate = newDate2;
-          //导入清单数据
+          //导入清单数据,参数化
           let arch = JSON.stringify(this.tableData);
 
+          this.spinShow = true;
           this.axios.post('/api/importArch/importList', this.qs.stringify({
             district: this.systemDistrict,
             batch: batch,
@@ -206,6 +213,7 @@
               this.SQform.inputDate ='';
               this.$refs.importForm.resetFields()
             }
+            this.spinShow = false;
           })
         }
         else{

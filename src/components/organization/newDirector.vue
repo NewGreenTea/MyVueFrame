@@ -272,12 +272,14 @@
       },
       // 选好档案数据和著录工作组即可进行分配任务
       distributeAssignment() {
+
         let archDataID = [];
         //判断工作组是否为空及是否选中档案的逻辑值
         let WGisNull = true;
         //判断著录工作组ID是否为空
         if (this.taskWG !== '') {
           if (this.tempArchData.length !== 0) {
+            this.spinShow = true;
             for (let i = 0; i < this.tempArchData.length; i++) {
               //判断档案二级状态是否是“待分配”状态
               if (this.tempArchData[i].twoStatue !== 0) { //不是
@@ -289,6 +291,7 @@
                 this.taskArchID = archDataID;
               }
             }
+            this.spinShow = false;
           }
           else {
             WGisNull = false;
@@ -302,6 +305,7 @@
         //逻辑值正确触发分配
         if (WGisNull === true) {
           let temp = JSON.stringify(this.taskArchID);
+          this.spinShow = true;
           this.axios.post('/api/importArch/distribute', this.qs.stringify({
             writeGroupID: this.taskWG,
             ids: temp
@@ -318,6 +322,8 @@
             this.taskWG = '';
             this.tempArchData = [];
             this.taskArchID = [];
+            this.spinShow = false;
+
             //如果是任务界面传递过来的数据
             if (this.searchData === false) {
               this.spinShow = true;

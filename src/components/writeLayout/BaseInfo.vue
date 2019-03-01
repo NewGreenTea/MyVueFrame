@@ -301,11 +301,16 @@
         this.$refs.BaseInfoForm.validate((valid) => {
           if (valid) {
             this.axios.post('/api/baseInfo/add', this.baseArch, config).then(res => {
-              this.$Message.success('保存完毕!');
-              //保存时立即关闭保存按钮，显示修改按钮 -2019/02/25
-              this.baseArch.id = 'temp';
-              //检测
-              this.checkComplete(this.BaseParams.archId);
+              if(res.data.code === 0){
+                this.$Message.success('保存完毕!');
+                //保存时立即关闭保存按钮，显示修改按钮 -2019/02/25
+                this.baseArch.id = 'temp';
+                //检测
+                this.checkComplete(this.BaseParams.archId);
+              }else{
+                //添加失败的情况
+                this.$Message.error(res.data.msg)
+              }
             })
           } else {
             this.$Message.error('著录信息有误！');
