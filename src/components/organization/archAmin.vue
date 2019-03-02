@@ -33,10 +33,6 @@
             <i-button type="primary" :loading="importLoading">导入清单</i-button>
           </Upload>
         </FormItem>
-        <!--<FormItem>-->
-        <!--<Button @click="ArchNOTool" shape="circle">档号设置</Button>-->
-        <!--</FormItem>-->
-        <!--<Button @click="test">测试</Button>-->
       </Form>
     </Col>
     <!-- 显示导进来的Excel的内容（并且是把档号补充完整的） -->
@@ -46,7 +42,7 @@
           <Table border :height="tableHeight" :columns="columns" :data="tableData"></Table>
           <Spin fix v-if="spinShow">
             <Icon type="ios-loading" size=36 class="demo-spin-icon-load"></Icon>
-            <div>加载中</div>
+            <div>导入中</div>
           </Spin>
         </Col>
         <Col span="3" offset="10">
@@ -250,5 +246,7 @@
 </script>
 
 <style scoped>
-
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
 </style>

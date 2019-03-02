@@ -148,10 +148,10 @@
       <Col span="6" offset="9">
         <div>
           <Button type="success" v-if="archCommit" @click="commitArch">确认</Button>
-          <Button @click="jumpPage">文件信息</Button>
+          <Button @click="jumpPage('file')">文件信息</Button>
           <Button @click="saveArch" type="primary" v-if="operation">保存</Button>
           <Button @click="updateArch" type="primary" v-if="!operation">修改</Button>
-          <Button @click="goBack">返回</Button>
+          <Button @click="jumpPage('base')">返回</Button>
         </div>
       </Col>
     </Row>
@@ -250,7 +250,9 @@
           no: [
             {validator: isIntegerNotMust, trigger: 'blur'}
           ]
-        }
+        },
+        //跳转页面参数
+        pageName: ''
       }
     },
     methods: {
@@ -466,12 +468,19 @@
           })
       },
       //跳转确认提示
-      jumpPage(){
+      jumpPage(type){
+        this.pageName = type;
         this.showModal3=true;
       },
       //跳转其他档案信息界面
       jump(){
-        this.goFileInfo()
+        if(this.pageName === 'base'){
+          this.pageName = '';
+          this.goBack();
+        }else if(this.pageName === 'file'){
+          this.pageName = '';
+          this.goFileInfo();
+        }
       },
       //跳转到文件级信息
       goFileInfo() {

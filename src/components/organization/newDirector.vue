@@ -89,7 +89,7 @@
                   show-sizer @on-change="destPage" @on-page-size-change="changePageSize" :page-size-opts="pso"/>
             <Spin fix v-if="spinShow">
               <Icon type="ios-loading" size=36 class="demo-spin-icon-load"></Icon>
-              <div>加载中</div>
+              <div>{{loadMessage}}</div>
             </Spin>
           </Col>
         </Row>
@@ -232,7 +232,8 @@
         //vue 组件属性
         InputClear: true,
         //加载动画
-        spinShow: false
+        spinShow: false,
+        loadMessage: '加载中'
       }
     },
     methods: {
@@ -272,7 +273,7 @@
       },
       // 选好档案数据和著录工作组即可进行分配任务
       distributeAssignment() {
-
+        this.loadMessage = '分配中';
         let archDataID = [];
         //判断工作组是否为空及是否选中档案的逻辑值
         let WGisNull = true;
@@ -323,6 +324,7 @@
             this.tempArchData = [];
             this.taskArchID = [];
             this.spinShow = false;
+            this.loadMessage = '加载中';
 
             //如果是任务界面传递过来的数据
             if (this.searchData === false) {
@@ -340,7 +342,7 @@
               this.searchNotDistri()
             }
           })
-        }
+        };
       },
       //改变选择著录工作组
       selectWG(writeGroupID) {
@@ -363,6 +365,7 @@
             .then(res => {
               if (res.data.data === null) {
                 this.$Message.info('没有数据！');
+                this.archDataCount = 0;
               } else {
                 if (res.data.data.list.length === 0) {
                   this.$Message.info('没有找到！');
@@ -373,12 +376,6 @@
                   this.searchData = true;
                 }
               }
-
-              // this.keyDate = '';
-              // this.archStatues = '';
-              // this.keyword = '';
-              //清空下拉选项的选择值
-              // this.$refs.ArchStatue.clearSingleSelect();
               this.spinShow = false;
             })
         } else {
@@ -473,5 +470,7 @@
 </script>
 
 <style scoped>
-
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
 </style>

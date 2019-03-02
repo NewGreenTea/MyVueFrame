@@ -432,6 +432,7 @@
         this.$refs.addForm.validate((valid) => {
           if (valid) {
             if (this.operation === false) { //判断是否在修改著录还是新建著录
+              //修改
               this.UpdateAddData.push(temp);
               this.spinShow = true;
               this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig)
@@ -468,6 +469,7 @@
                 });
             }
             else {
+              //添加
               //添加一条文件级信息  --2019/01/14
               this.UpdateAddData.push(temp);
               this.axios.post('/api/fileInfo/add', JSON.stringify(this.UpdateAddData), ArchRequestConfig)
@@ -506,7 +508,13 @@
             this.UpdateAddData = [];
             this.tempData = [];
             this.reset();
-            this.AddModal = false;
+            // this.AddModal = false;
+            setTimeout(() => {
+              this.loading = false;
+              this.$nextTick(() => {
+                this.loading = true;
+              });
+            }, 1000);
           }
           else {
             this.$Message.error('著录信息有误！');

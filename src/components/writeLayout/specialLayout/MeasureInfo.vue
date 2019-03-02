@@ -27,7 +27,8 @@
               <Input placeholder="..." v-model="MeasureInfo.remarkNo" @keydown.enter.native="modalAddData"/>
             </Col>
             <Col span="1">
-              <a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>
+              <!--<a @click="modalAddData" style="color: red;font-size: 14px;float: right">+</a>-->
+              <Button @click="modalAddData" style="color: red;font-size: 13px;float: right">+</Button>
             </Col>
           </Row>
         </FormItem>
