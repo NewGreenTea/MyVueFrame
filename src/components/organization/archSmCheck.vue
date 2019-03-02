@@ -132,7 +132,7 @@
             {
               title: '档案一级状态',
               align: 'center',
-              width: 135,
+              width: 130,
               key: 'oneStatue',
               render: (h, params) => {
                 let statue = onestatueDes(params.row.oneStatue)
@@ -162,7 +162,7 @@
             {
               title: '质检人',
               align: 'center',
-              width: 100,
+              width: 90,
               key: 'checker'
             },
             {
@@ -359,8 +359,10 @@
           }).then(res=>{
               this.$Message.success("操作成功");
               this.handleSerach();
+              this.$refs.table.selectAll(false);
           }).catch(error=>{
-            this.$Message.error('数据错误')
+            this.$Message.error('数据错误');
+            this.$refs.table.selectAll(false);
           })
           this.tempData=[];
         },
@@ -388,9 +390,10 @@
           }).then(res=>{
               this.$Message.success("操作成功");
               this.handleSerach();
-            }
-          ).catch(error=>{
-            this.$Message.error('数据错误')
+              this.$refs.table.selectAll(false);
+          }).catch(error=>{
+            this.$Message.error('数据错误');
+            this.$refs.table.selectAll(false);
           })
           this.bzinput='';
         },
