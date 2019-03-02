@@ -75,14 +75,15 @@
           <Row :gutter="16" style="margin-bottom: 20px">
             <div>
               <Button type="success" @click="allOperation('通过')">著录质检通过</Button>
-              <Button type="error" @click="allOperation('不通过')">著录质检不通过</Button>
+              <Button type="error" @click="failAll">著录质检不通过</Button>
             </div>
           </Row>
         </Col>
 
         <!-- 加载档案数据待著录表格 -->
         <Col span="20" offset="2" class="TableFontCss">
-          <Table border :columns="needToDoColumns" :data="needToDoData" @on-select-all="selectAllData" @on-select="selectRowData"
+          <Table border :columns="needToDoColumns" :data="needToDoData" @on-select-all="selectAllData"
+                 @on-select="selectRowData"
                  @on-select-cancel="cancelRowData" @on-select-all-cancel="cancelAllData"></Table>
           <Page :current="needToDoPage" :total="needToDoCount" :page-size="needToDoPageSize" show-elevator show-total
                 placement="top"
@@ -93,15 +94,6 @@
           </Spin>
         </Col>
       </Row>
-
-      <!-- 加载档案数据表格 -2019/02/22暂时弃用-->
-      <!--<Row v-if="showArchData" style="margin-top: 20px;">-->
-        <!--<Col span="20" offset="2" class="TableFontCss">-->
-          <!--<Table border :columns="columns" :data="tableData"></Table>-->
-          <!--<Page :current="currentPage" :total="totalCount" :page-size="pageSize" show-elevator show-total show-sizer-->
-                <!--:page-size-opts="pageSizeOpt"/>-->
-        <!--</Col>-->
-      <!--</Row>-->
     </div>
 
     <!-- 质检档案信息的路由界面 -->
@@ -111,12 +103,16 @@
         <CheckLayout @changeShowView="showView" :checkParams="checkParam"></CheckLayout>
       </keep-alive>
     </div>
+
+    <Modal v-model="showReason" title="质检不通过原因" @on-ok="allOperation('不通过')">
+      <Input type="textarea" :autosize="reasonText" placeholder="..." v-model="reason"/>
+    </Modal>
   </div>
 </template>
 
 <script>
   import CheckLayout from "./CheckLayout";
-  import {ArchStatueChange,archNoType} from './../../js/global'
+  import {ArchStatueChange, archNoType} from './../../js/global'
 
   export default {
     name: "checkWrite",
@@ -211,7 +207,7 @@
                           archId: params.row.archId, //传递一些重要参数给下一个界面
                           classId: params.row.archVO.classId,
                           openCheck: params.row.archVO.twoStatue > 3,
-                          archType:archNoType.writeVueLayout(params.row.archVO.archNo)
+                          archType: archNoType.writeVueLayout(params.row.archVO.archNo)
                         };
                         this.showWriteData = true;
                       }
@@ -316,7 +312,14 @@
         //搜索条件中的档案发文号关键字
         dispatchKeyword: '',
         //多选的待质检档案数据
-        tempArchData:[]
+        tempArchData: [],
+        //批量质检不通过弹窗
+        showReason: false,
+        reason: '',
+        reasonText: {
+          minRows: 5,
+          maxRows: 15
+        },
       }
     },
     methods: {
@@ -446,30 +449,51 @@
         })
       },
       //质检批量操作
-      allOperation(checkResult){
-        let result=false;
-        let ids=[];
-        if(this.tempArchData.length === 0){
+      allOperation(checkResult) {
+        let result = false;
+        let ids = [];
+        if (this.tempArchData.length === 0) {
           this.$Message.error('请选择质检档案！')
-        }else{
-          for(let i = 0; i < this.tempArchData.length; i++){
-            if(this.tempArchData[i].twoStatue > 3){
+        } else {
+          for (let i = 0; i < this.tempArchData.length; i++) {
+            if (this.tempArchData[i].twoStatue > 3) {
               result = true;
-              this.$Message.error('第'+(i+1)+'行，不是待著录质检状态！')
-            }else{
+              this.$Message.error('第' + (i + 1) + '行，不是待著录质检状态！')
+            } else {
               ids.push(this.tempArchData[i].archId)
             }
           }
         }
-        if(!result){
-          //质检状态为通过
-          this.axios.post('/api/loadArch/testwriteCheck',this.qs.stringify({ids:JSON.stringify(ids),result:checkResult})).then(res=>{
-            if(res.data.code ===0){
-              this.$Message.success('档案已质检'+checkResult+'！')
-            }
-            this.searchFunction(this.needToDoPage, this.needToDoPageSize)
-          })
+
+        if (!result) {
+          if (checkResult === '不通过') {
+              //质检状态为不通过
+              this.axios.post('/api/loadArch/writeCheck', this.qs.stringify({
+                ids: JSON.stringify(ids),
+                result: checkResult,
+                reason: this.reason
+              })).then(res => {
+                if (res.data.code === 0) {
+                  this.$Message.success('档案已质检' + checkResult + '！')
+                }
+                this.searchFunction(this.needToDoPage, this.needToDoPageSize)
+              })
+          } else if(checkResult === '通过'){
+            //质检状态为通过
+            this.axios.post('/api/loadArch/writeCheck', this.qs.stringify({
+              ids: JSON.stringify(ids),
+              result: checkResult
+            })).then(res => {
+              if (res.data.code === 0) {
+                this.$Message.success('档案已质检' + checkResult + '！')
+              }
+              this.searchFunction(this.needToDoPage, this.needToDoPageSize)
+            })
+          }
         }
+      },
+      failAll() {
+        this.showReason = true;
       },
       //表格选中操作（4个）
       selectAllData(selection) {

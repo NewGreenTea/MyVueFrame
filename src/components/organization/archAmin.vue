@@ -1,4 +1,5 @@
 <template>
+  <div class="importCss">
   <Row style="margin-bottom: 50px;">
     <Col span="20" offset="2">
       <Form :model="SQform" inline ref="importForm" class="conditionForm" :rules="rules">
@@ -59,8 +60,8 @@
       </Alert>
       <div slot="footer"></div>
     </Modal>
-
   </Row>
+  </div>
 </template>
 
 <script>
@@ -154,19 +155,41 @@
           if (response.data.failData.length !== 0) { //含有部分有问题的档案
             let message = '';
             for (let j = 0; j < response.data.failData.length; j++) {
-              message = message + response.data.failData[j] + '<br>';
+              if(response.data.failData[j].length>30){
+                message = message + response.data.failData[j].substring(0,30) + '\n';
+                message = message + response.data.failData[j].substring(30,response.data.failData[j].length) + '\n';
+              }else{
+                message = message + response.data.failData[j] + '\n';
+              }
             }
+            // message=message+'</p>';
             this.$Notice.error({
               title: '错误信息：',
-              desc: message,
-              duration: 0
+              //desc: message,
+              duration: 0,
+              render: h => {
+                return h('pre',message)
+                  // {
+                  //   style: {
+                  //     'max-height': '400px',
+                  //     'height': '400px',
+                  //     'max-width': '400px',
+                  //     'width': 'auto',
+                  //     'overflow':'scroll',
+                  //     'font-size': '15px',
+                  //   },
+                  // },message)
+              }
             });
           }
         } else { //全是有问题的档案
           this.$Notice.error({
             title: '错误信息：',
-            desc: response.msg,
-            duration: 0
+            //desc: response.msg,
+            duration: 0,
+            render: h => {
+              return h('span',response.msg)
+            }
           });
         }
         //关闭导入加载状态
@@ -248,5 +271,9 @@
 <style scoped>
   .demo-spin-icon-load{
     animation: ani-demo-spin 1s linear infinite;
+  }
+
+  .ivu-notice{
+    max-width: 400px;
   }
 </style>

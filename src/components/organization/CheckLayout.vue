@@ -505,7 +505,7 @@
                       <Col span="12">
                         <FormItem class="FormItemClass" label="埋设深度：">
                           <!--<Input placeholder="..." v-model="D34Info.underPipeHight" class="writeInput"/>-->
-                          {{(D34Info !== null && D32Info.underPipeHight !== null)? D32Info.underPipeHight +'（m/米）': ''}}
+                          {{(D34Info !== null && D34Info.underPipeHight !== null)? D34Info.underPipeHight +'（m/米）': ''}}
                         </FormItem>
                       </Col>
                       <Col span="12">
@@ -1134,7 +1134,7 @@
               this.D31PubBuildData = res.data.data.list[0].d31PubBuildInfoList
             }
             if (this.checkParams.archType === 'D32') {
-              this.D32Info = res.data.data.list[0].d32PlanInfoList;
+              this.D32Info = res.data.data.list[0].d32PlanInfoList[0];
             }
             if (this.checkParams.archType === 'D34') {
               this.D34Info = res.data.data.list[0].d34PlanInfoVO;

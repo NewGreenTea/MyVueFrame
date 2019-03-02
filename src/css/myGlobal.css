@@ -19,4 +19,5 @@ pre{
   line-height:15px;
   max-height: 600px;
   overflow: auto;
+  max-width: 400px;
 }
